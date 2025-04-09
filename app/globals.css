@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "katex/dist/katex.min.css";
+@import "../components//editor/styles/block-editor.css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,5 +122,11 @@
 	}
 	button {
 		@apply cursor-pointer;
+	}
+
+	html body[data-scroll-locked] {
+		--removed-body-scroll-bar-size: 0px !important;
+		margin-right: 0px !important;
+		overflow-y: auto !important;
 	}
 }
