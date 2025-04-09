@@ -2,8 +2,6 @@ import { Firecrawl } from "@/lib/firecrawls";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { openai } from "@ai-sdk/openai";
-import { embedMany } from "ai";
 import { vector } from "@/lib/vector";
 import { nanoid } from "@/lib/nanoid";
 

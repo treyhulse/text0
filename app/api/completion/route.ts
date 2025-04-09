@@ -48,7 +48,6 @@ export async function POST(req: Request) {
       ${body.prompt}
       </input>
 
-
       Your completion:
     `,
     temperature: 0.7,
