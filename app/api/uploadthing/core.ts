@@ -2,6 +2,10 @@ import { Firecrawl } from "@/lib/firecrawls";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { openai } from "@ai-sdk/openai";
+import { embedMany } from "ai";
+import { vector } from "@/lib/vector";
+import { nanoid } from "@/lib/nanoid";
 
 const f = createUploadthing();
 
@@ -59,7 +63,7 @@ export const ourFileRouter = {
 
       // Start timing the scraping process
       const startTime = performance.now();
-      
+
       const response = await Firecrawl.scrapeUrl(file.ufsUrl, {
         formats: ["markdown"],
       });
@@ -98,11 +102,27 @@ export const ourFileRouter = {
 
       console.log("Chunks:", chunks);
 
+      const vectorStartTime = performance.now();
+      await vector.upsert(
+        chunks.map((chunk) => ({
+          id: nanoid(),
+          data: chunk,
+          metadata: {
+            source: file.ufsUrl,
+          },
+        }))
+      );
+      const vectorEndTime = performance.now();
+      const vectorDuration = vectorEndTime - vectorStartTime;
+      console.log(
+        `Vector upsert took ${vectorDuration.toFixed(2)} milliseconds`
+      );
+
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { 
+      return {
         uploadedBy: metadata.userId,
         chunks: chunks,
-        scrapingDuration: scrapingDuration 
+        scrapingDuration: scrapingDuration,
       };
     }),
 } satisfies FileRouter;
