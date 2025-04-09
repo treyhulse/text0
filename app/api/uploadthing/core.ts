@@ -1,5 +1,7 @@
+import { Firecrawl } from "@/lib/firecrawls";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 const f = createUploadthing();
 
@@ -55,8 +57,53 @@ export const ourFileRouter = {
 
       console.log("file url", file.ufsUrl);
 
+      // Start timing the scraping process
+      const startTime = performance.now();
+      
+      const response = await Firecrawl.scrapeUrl(file.ufsUrl, {
+        formats: ["markdown"],
+      });
+
+      // Calculate and log the scraping duration
+      const endTime = performance.now();
+      const scrapingDuration = endTime - startTime;
+      console.log(`Scraping took ${scrapingDuration.toFixed(2)} milliseconds`);
+
+      console.log("response", response);
+
+      if (!response.success) {
+        console.error("Error scraping URL:", response.error);
+        return {
+          uploadedBy: metadata.userId,
+          error: response.error,
+        };
+      }
+
+      if (!response.markdown) {
+        console.error("No markdown found");
+        return {
+          uploadedBy: metadata.userId,
+          error: "No markdown found",
+        };
+      }
+
+      // Create a text splitter
+      const textSplitter = new RecursiveCharacterTextSplitter({
+        chunkSize: 1000, // Adjust based on your needs
+        chunkOverlap: 200, // Adjust based on your needs
+      });
+
+      // Split the content into chunks
+      const chunks = await textSplitter.splitText(response.markdown);
+
+      console.log("Chunks:", chunks);
+
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { uploadedBy: metadata.userId };
+      return { 
+        uploadedBy: metadata.userId,
+        chunks: chunks,
+        scrapingDuration: scrapingDuration 
+      };
     }),
 } satisfies FileRouter;
 
