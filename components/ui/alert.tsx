@@ -25,7 +25,7 @@ function Alert({ variant, className, ...props }: AlertProps) {
       className={cn(alertVariants({ variant, className }))}
       role="alert"
       {...props}
-    ></div>
+    />
   );
 }
 
