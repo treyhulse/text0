@@ -35,7 +35,6 @@
 		"@tiptap/starter-kit": "^2.11.7",
 		"@tiptap/suggestion": "^2.11.7",
 		"ai": "^4.3.4",
-		"ai": "^4.3.4",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"gsap": "^3.12.7",

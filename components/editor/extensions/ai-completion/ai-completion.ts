@@ -1,46 +1,54 @@
 import { mergeAttributes, Node } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
-import AiWriterView from "./ai-writer-view";
+import AiCompletionView from "./ai-completion-view";
 
-export interface AiWriterOptions {
+export interface AiCompletionOptions {
 	HTMLAttributes: Record<string, string>;
 }
 
 declare module "@tiptap/core" {
 	interface Commands<ReturnType> {
-		aiWriterCommands: {
-			setAiWriter: () => ReturnType;
+		aiCompletionCommands: {
+			setAiCompletion: () => ReturnType;
 		};
 	}
 }
 
-export const AiWriter = Node.create<AiWriterOptions>({
-	name: "aiWriter",
+export const AiCompletion = Node.create<AiCompletionOptions>({
+	name: "aiCompletion",
 	group: "block",
 	draggable: true,
 	marks: "",
+	content: "inline*",
+
+	addAttributes() {
+		return {
+			content: {
+				default: "",
+			},
+		};
+	},
 
 	addOptions() {
 		return {
-			apiUrl: "/api/completion",
 			HTMLAttributes: {},
 		};
 	},
 
 	addCommands() {
 		return {
-			setAiWriter:
+			setAiCompletion:
 				() =>
 				({ editor, chain }) => {
-					const $aiWriter = editor.$node(this.name);
-					if ($aiWriter) {
+					const $aiCompletion = editor.$node(this.name);
+					if ($aiCompletion) {
 						return false;
 					}
 
 					return chain()
-						.aiReset()
 						.insertContent({
 							type: this.name,
+							attrs: { content: "" },
 						})
 						.setMeta("preventUpdate", true)
 						.run();
@@ -52,11 +60,12 @@ export const AiWriter = Node.create<AiWriterOptions>({
 		return [
 			"div",
 			mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+			0,
 		];
 	},
 
 	addNodeView() {
-		return ReactNodeViewRenderer(AiWriterView, {
+		return ReactNodeViewRenderer(AiCompletionView, {
 			className: this.options.HTMLAttributes.class,
 		});
 	},

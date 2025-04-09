@@ -12,6 +12,7 @@ import { DefaultBubbleMenu } from "./menus/default-bubble-menu";
 import { TableOptionsMenu } from "./menus/table-options-menu";
 import { toast } from "sonner";
 import { useCallback } from "react";
+import type { SuggestionOptions } from "@tiptap/suggestion";
 
 interface BlockEditorProps {
 	content?: Content;
@@ -41,7 +42,7 @@ const BlockEditor = ({
 				},
 			}),
 			SlashCommand.configure({
-				suggestion: getSuggestion({ ai: true }),
+				suggestion: getSuggestion({ ai: true }) as SuggestionOptions,
 			}),
 		],
 		content: content,

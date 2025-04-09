@@ -61,7 +61,12 @@ const AiWriterView = ({ editor, node, getPos }: NodeViewProps) => {
 
 				{!error && !!message && (
 					<>
-						<label className="mb-1 font-medium text-foreground">Preview</label>
+						<label
+							htmlFor="ai-writer-preview"
+							className="mb-1 font-medium text-foreground"
+						>
+							Preview
+						</label>
 						<div className="flex max-h-80">
 							<ScrollArea className="prose dark:prose-invert prose-headings:mt-0 max-w-full mb-6 prose-pre:rounded-md prose-pre:bg-gray-800 dark:prose-pre:bg-gray-900">
 								<Markdown>{message}</Markdown>
@@ -103,7 +108,7 @@ const AiWriterView = ({ editor, node, getPos }: NodeViewProps) => {
 						>
 							Remove
 						</Button>
-						<div className="flex-1"></div>
+						<div className="flex-1" />
 						{isSuccess && (
 							<Button
 								type="button"
