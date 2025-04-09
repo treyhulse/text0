@@ -4,23 +4,23 @@ import { streamText } from "ai";
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-	const { blocks, currentBlock }: { blocks: string[]; currentBlock: string } =
-		await req.json();
+  const { blocks, currentBlock }: { blocks: string[]; currentBlock: string } =
+    await req.json();
 
-	const apiKey = process.env.GEMINI_API_KEY;
-	if (!apiKey) {
-		throw new Error("Gemini API key is required");
-	}
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Gemini API key is required");
+  }
 
-	const google = createGoogleGenerativeAI({ apiKey });
+  const google = createGoogleGenerativeAI({ apiKey });
 
-	const context = blocks.length
-		? `${blocks.join("\n")}\n\nCurrent Block:\n${currentBlock}`
-		: `Current Block:\n${currentBlock}`;
+  const context = blocks.length
+    ? `${blocks.join("\n")}\n\nCurrent Block:\n${currentBlock}`
+    : `Current Block:\n${currentBlock}`;
 
-	const result = await streamText({
-		model: google("models/gemini-2.0-flash"),
-		prompt: `
+  const result = streamText({
+    model: google("models/gemini-2.0-flash"),
+    prompt: `
       <context>
 <article>
 <title>My Math Academy Learning Workflow</title>
@@ -47,9 +47,9 @@ Navigating complex Math Academy lessons can be challenging. Over time, I’ve de
       </example>
       </examples>
     `,
-		temperature: 0.7,
-		maxTokens: 50,
-	});
+    temperature: 0.7,
+    maxTokens: 50,
+  });
 
-	return result.toDataStreamResponse();
+  return result.toDataStreamResponse();
 }
