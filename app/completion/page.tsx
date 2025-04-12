@@ -1,69 +1,124 @@
 "use client";
 
 import { useCompletion } from "@ai-sdk/react";
-import { useState, useEffect } from "react";
+import React from "react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function EditorPage() {
-	const [blockContent, setBlockContent] = useState(""); // Current block text
-	const [blocks, setBlocks] = useState<string[]>([]); // Previous blocks
+  const editorRef = React.useRef<HTMLTextAreaElement>(null);
+  const [cursorPosition, setCursorPosition] = React.useState(0);
+  const [isEnabled, setIsEnabled] = React.useState(true);
+  const { completion, input, setInput, handleSubmit, stop, setCompletion } =
+    useCompletion({
+      api: "/api/completion",
+    });
 
-	const { completion, input, setInput, handleSubmit, error, isLoading } =
-		useCompletion({
-			api: "/api/completion",
-			body: { blocks, currentBlock: blockContent },
-		});
+  React.useEffect(() => {
+    if (!isEnabled) {
+      setCompletion("");
+    }
+  }, [isEnabled, setCompletion]);
 
-	// Debounce input to trigger streaming
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setInput(blockContent); // Update input to trigger stream
-			handleSubmit(
-				new Event("submit") as unknown as React.FormEvent<HTMLFormElement>,
-			); // Auto-submit to stream
-		}, 500);
-		return () => clearTimeout(timer);
-	}, [blockContent, setInput, handleSubmit]);
+  // Debounce input to trigger streaming
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isEnabled) {
+        handleSubmit();
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [handleSubmit, isEnabled]);
 
-	// Handle new block creation
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === "Enter" && !e.shiftKey) {
-			e.preventDefault();
-			if (blockContent.trim()) {
-				setBlocks([...blocks, blockContent]);
-				setBlockContent("");
-			}
-		}
-	};
+  // Update cursor position when input changes
+  React.useEffect(() => {
+    if (editorRef.current && cursorPosition === -1) {
+      editorRef.current.selectionStart = editorRef.current.selectionEnd = input.length;
+      setCursorPosition(input.length);
+    }
+  }, [input, cursorPosition]);
 
-	return (
-		<div style={{ padding: "20px", fontFamily: "Arial" }}>
-			<h1>ObsidianX PoC</h1>
-			{/* Render previous blocks */}
-			{blocks.map((block, index) => (
-				<div
-					key={block.replace(/\s+/g, "-")}
-					style={{ margin: "10px 0", padding: "8px", background: "#f5f5f5" }}
-				>
-					{block}
-				</div>
-			))}
-			{/* Current block with streaming completion */}
-			<form onSubmit={handleSubmit}>
-				<input
-					value={blockContent}
-					onChange={(e) => setBlockContent(e.target.value)}
-					onKeyDown={handleKeyDown}
-					placeholder="Start typing..."
-					style={{ width: "100%", padding: "8px", fontSize: "16px" }}
-				/>
-				{isLoading && <span style={{ color: "#999" }}>Thinking...</span>}
-				{completion && (
-					<span style={{ color: "#666", opacity: 0.7 }}>
-						{` ${completion}`} {/* Streamed ghost text */}
-					</span>
-				)}
-				{error && <div style={{ color: "red" }}>Error: {error.message}</div>}
-			</form>
-		</div>
-	);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Tab" && completion) {
+      e.preventDefault();
+      const completionText = parseCompletion(completion, input);
+      stop();
+      setCompletion(""); // Immediately clear the completion
+      const newText = input + completionText;
+      setInput(newText);
+      setCursorPosition(-1); // Special value to indicate we should move to end
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      stop();
+      setCompletion("");
+    }
+  };
+
+  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newText = e.target.value;
+    stop();
+    setInput(newText);
+    setCursorPosition(e.target.selectionStart);
+  };
+
+  const displayedCompletion = parseCompletion(completion, input);
+
+  return (
+    <div className="container mx-auto max-w-4xl mt-16 pt-7 pb-32">
+      <div className="flex items-center space-x-2 mb-4">
+        <Switch
+          id="autocompletion"
+          checked={isEnabled}
+          onCheckedChange={setIsEnabled}
+        />
+        <Label htmlFor="autocompletion">Enable Autocompletion</Label>
+      </div>
+
+      <h1>Autocompletion PoC</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <div className="relative w-full h-96 border-2 border-gray-300 rounded-md">
+          <textarea
+            ref={editorRef}
+            value={input}
+            onChange={handleInput}
+            onKeyDown={handleKeyDown}
+            className="w-full h-full p-2 outline-none whitespace-pre-wrap font-mono bg-transparent z-10 relative text-white resize-none"
+            style={{
+              caretColor: "red",
+            }}
+          />
+          {isEnabled && displayedCompletion && (
+            <div
+              aria-hidden="true"
+              className="absolute font-mono pointer-events-none whitespace-pre-wrap p-2 top-0 left-0 right-0 bottom-0 text-white"
+            >
+              <span className="invisible">{input}</span>
+              <span className="text-gray-400">{displayedCompletion}</span>
+            </div>
+          )}
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function parseCompletion(completion: string | undefined, input: string) {
+  if (!completion) return "";
+  const startTag = "<completion>";
+  const endTag = "</completion>";
+  if (completion.startsWith(startTag) && completion.includes(endTag)) {
+    const startIndex = startTag.length;
+    const endIndex = completion.indexOf(endTag);
+    let result = completion.substring(startIndex, endIndex);
+    if (input.endsWith(" ") && result.startsWith(" ")) {
+      result = result.trimStart();
+    }
+    return result;
+  }
+  return "";
 }
