@@ -3,7 +3,7 @@ import { ArrowLeft, Rocket, Timer, Ship } from "lucide-react";
 
 export default function NotFound() {
 	return (
-		<div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background p-4">
+		<div className="relative container mx-auto flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background p-4">
 			{/* Floating gradients */}
 			<div
 				className="pointer-events-none absolute left-1/4 top-1/3 h-[500px] w-[500px] animate-float"
