@@ -228,7 +228,7 @@ export default function WritingPage() {
 					{isEnabled && displayedCompletion && (
 						<div
 							aria-hidden="true"
-							className="absolute font-serif text-lg pointer-events-none whitespace-pre-wrap px-8 top-20 left-1/2 -translate-x-1/2 w-full max-w-4xl"
+							className="absolute font-serif text-lg pointer-events-none whitespace-pre-wrap px-8 top-22 left-1/2 -translate-x-1/2 w-full max-w-4xl"
 						>
 							<span className="invisible">{input}</span>
 							<span className="text-muted-foreground/50">
