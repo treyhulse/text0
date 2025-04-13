@@ -39,55 +39,63 @@ import { LinearIcon } from "@/components/ui/icons/linear";
 import { GithubIcon } from "@/components/ui/icons/github";
 import Link from "next/link";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-
-const integrationCategories = [
-	{
-		title: "Productivity",
-		integrations: [
-			{ name: "GitHub", icon: GithubIcon, link: "/integrations/github" },
-			{ name: "Notion", icon: NotionIcon, link: "/integrations/notion" },
-			{ name: "Linear", icon: LinearIcon, link: "/integrations/linear" },
-			{
-				name: "Google Calendar",
-				icon: GoogleCalendarIcon,
-				link: "/integrations/google-calendar",
-				disabled: true,
-				status: "Soon",
-			},
-			{
-				name: "Google Docs",
-				icon: GoogleDocsIcon,
-				link: "/integrations/google-docs",
-				disabled: true,
-				status: "Soon",
-			},
-		],
-	},
-	{
-		title: "Communication",
-		integrations: [
-			{ name: "Discord", icon: DiscordIcon, link: "/integrations/discord" },
-			{ name: "Slack", icon: SlackIcon, link: "/integrations/slack" },
-			{
-				name: "Gmail",
-				icon: GmailIcon,
-				link: "/integrations/gmail",
-				disabled: true,
-				status: "Soon",
-			},
-			{
-				name: "Microsoft Teams",
-				icon: MsTeamsIcon,
-				link: "/integrations/microsoft-teams",
-				disabled: true,
-				status: "Soon",
-			},
-		],
-	},
-];
+import {
+	SignInButton,
+	SignUpButton,
+	SignedIn,
+	SignedOut,
+	UserButton,
+	useUser,
+} from "@clerk/nextjs";
 
 export function MinimalIntegrationSidebar() {
+	const user = useUser();
+
+	const integrationCategories = [
+		{
+			title: "Productivity",
+			integrations: [
+				{ name: "GitHub", icon: GithubIcon, link: "/integrations/github" },
+				{ name: "Notion", icon: NotionIcon, link: "/integrations/notion" },
+				{ name: "Linear", icon: LinearIcon, link: "/integrations/linear" },
+				{
+					name: "Google Calendar",
+					icon: GoogleCalendarIcon,
+					link: "/integrations/google-calendar",
+					disabled: true,
+					status: "Soon",
+				},
+				{
+					name: "Google Docs",
+					icon: GoogleDocsIcon,
+					link: "/integrations/google-docs",
+					disabled: true,
+					status: "Soon",
+				},
+			],
+		},
+		{
+			title: "Communication",
+			integrations: [
+				{ name: "Discord", icon: DiscordIcon, link: "/integrations/discord" },
+				{ name: "Slack", icon: SlackIcon, link: "/integrations/slack" },
+				{
+					name: "Gmail",
+					icon: GmailIcon,
+					link: "/integrations/gmail",
+					disabled: true,
+					status: "Soon",
+				},
+				{
+					name: "Microsoft Teams",
+					icon: MsTeamsIcon,
+					link: "/integrations/microsoft-teams",
+					disabled: true,
+					status: "Soon",
+				},
+			],
+		},
+	];
 	return (
 		<Sidebar
 			collapsible="icon"
@@ -96,22 +104,18 @@ export function MinimalIntegrationSidebar() {
 			{/* Header with User Name */}
 			<SidebarHeader className="px-3 py-4">
 				<div className="flex items-center space-x-2 group-data-[collapsible=icon]:justify-center">
-					<svg
-						aria-label="Railly Hugo"
-						role="img"
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="currentColor"
-					>
-						<path d="M0 0h24v24H0z" fill="none" />
-						<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-					</svg>
-
-					<span className="text-xs font-medium group-data-[collapsible=icon]:hidden">
-						Railly Hugo
-					</span>
+					<SignedOut>
+						<SignInButton />
+						<SignUpButton />
+					</SignedOut>
+					<SignedIn>
+						<UserButton />
+					</SignedIn>
+					{user.user && (
+						<span className="text-xs font-medium group-data-[collapsible=icon]:hidden">
+							{user.user.fullName}
+						</span>
+					)}
 				</div>
 			</SidebarHeader>
 

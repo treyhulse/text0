@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useUser } from "@clerk/nextjs";
 
 // Mock data for projects and notes
 const projects = [
@@ -71,6 +72,7 @@ const notes = [
 ];
 
 export default function HomePage() {
+	const user = useUser();
 	return (
 		<div className="relative min-h-screen bg-background">
 			{/* Hero Section with Gradient */}
@@ -78,7 +80,7 @@ export default function HomePage() {
 				<div className="container px-4">
 					<div className="mx-auto max-w-2xl text-center">
 						<h1 className="mb-3 text-2xl font-semibold tracking-tight">
-							Welcome back, Railly!
+							Welcome back, {user.user?.fullName}!
 						</h1>
 						<p className="text-base text-muted-foreground">
 							Continue where you left off or create something new
