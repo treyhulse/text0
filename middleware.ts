@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPublicRoute = createRouteMatcher(["/api/uploadthing(.*)"]);
+const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
@@ -15,6 +15,6 @@ export const config = {
     // Include all API routes except uploadthing
     "/api/((?!uploadthing).*)",
     // Include all trpc routes
-    "/trpc/(.*)"
+    "/trpc/(.*)",
   ],
 };
