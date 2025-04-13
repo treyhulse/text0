@@ -1,11 +1,7 @@
-import { Firecrawl } from "@/lib/firecrawls";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { vector } from "@/lib/vector";
-import { nanoid } from "@/lib/nanoid";
 import { auth } from "@clerk/nextjs/server";
-import { redis, USER_DOCUMENTS_KEY, DOCUMENT_KEY } from "@/lib/redis";
+import { processDocumentTask } from "@/trigger/process-document";
 
 const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
@@ -53,66 +49,19 @@ export const ourFileRouter = {
       return { userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      const response = await Firecrawl.scrapeUrl(file.ufsUrl, {
-        formats: ["markdown"],
+      console.log("Upload complete", { metadata, file });
+      // Trigger the document processing task
+      await processDocumentTask.trigger({
+        userId: metadata.userId,
+        fileUrl: file.ufsUrl,
+        fileName: file.name,
       });
 
-      if (!response.success) {
-        console.error("Error scraping URL:", response.error);
-        return {
-          uploadedBy: metadata.userId,
-          error: response.error,
-        };
-      }
-
-      if (!response.markdown) {
-        console.error("No markdown found");
-        return {
-          uploadedBy: metadata.userId,
-          error: "No markdown found",
-        };
-      }
-
-      // Create a text splitter
-      const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 1000, // Adjust based on your needs
-        chunkOverlap: 200, // Adjust based on your needs
-      });
-
-      // Split the content into chunks
-      const chunks = await textSplitter.splitText(response.markdown);
-
-      // Store document information in Redis
-      const documentId = nanoid();
-      const documentInfo = {
-        id: documentId,
-        url: file.ufsUrl,
-        name: file.name,
-        uploadedAt: new Date().toISOString(),
-        chunks: chunks.length,
-      };
-
-      // Add document to user's document list
-      await redis.sadd(USER_DOCUMENTS_KEY(metadata.userId), documentId);
-      // Store document details
-      await redis.hset(DOCUMENT_KEY(documentId), documentInfo);
-
-      await vector.upsert(
-        chunks.map((chunk) => ({
-          id: nanoid(),
-          data: chunk,
-          metadata: {
-            userId: metadata.userId,
-            documentId: documentId,
-          },
-        }))
-      );
-
-      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      // Return immediately to the client
       return {
         uploadedBy: metadata.userId,
-        chunks: chunks,
-        documentId: documentId,
+        fileUrl: file.ufsUrl,
+        fileName: file.name,
       };
     }),
 } satisfies FileRouter;
