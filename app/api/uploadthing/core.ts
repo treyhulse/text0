@@ -1,7 +1,8 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { auth } from "@clerk/nextjs/server";
-import { processDocumentTask } from "@/trigger/process-document";
+import type { processDocumentTask } from "@/trigger/process-document";
+import { tasks } from "@trigger.dev/sdk/v3";
 
 const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
@@ -51,7 +52,7 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("Upload complete", { metadata, file });
       // Trigger the document processing task
-      await processDocumentTask.trigger({
+      await tasks.trigger<typeof processDocumentTask>("process-document", {
         userId: metadata.userId,
         fileUrl: file.ufsUrl,
         fileName: file.name,
