@@ -4,11 +4,10 @@ import { UploadThingError } from "uploadthing/server";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { vector } from "@/lib/vector";
 import { nanoid } from "@/lib/nanoid";
+import { auth } from "@clerk/nextjs/server";
+import { redis, USER_DOCUMENTS_KEY, DOCUMENT_KEY } from "@/lib/redis";
 
 const f = createUploadthing();
-
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
-
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
@@ -45,33 +44,18 @@ export const ourFileRouter = {
   })
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
-      const user = auth(req);
+      const { userId } = await auth();
 
       // If you throw, the user will not be able to upload
-      if (!user) throw new UploadThingError("Unauthorized");
+      if (!userId) throw new UploadThingError("Unauthorized");
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.id };
+      return { userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.ufsUrl);
-
-      // Start timing the scraping process
-      const startTime = performance.now();
-
       const response = await Firecrawl.scrapeUrl(file.ufsUrl, {
         formats: ["markdown"],
       });
-
-      // Calculate and log the scraping duration
-      const endTime = performance.now();
-      const scrapingDuration = endTime - startTime;
-      console.log(`Scraping took ${scrapingDuration.toFixed(2)} milliseconds`);
-
-      console.log("response", response);
 
       if (!response.success) {
         console.error("Error scraping URL:", response.error);
@@ -98,29 +82,37 @@ export const ourFileRouter = {
       // Split the content into chunks
       const chunks = await textSplitter.splitText(response.markdown);
 
-      console.log("Chunks:", chunks);
+      // Store document information in Redis
+      const documentId = nanoid();
+      const documentInfo = {
+        id: documentId,
+        url: file.ufsUrl,
+        name: file.name,
+        uploadedAt: new Date().toISOString(),
+        chunks: chunks.length,
+      };
 
-      const vectorStartTime = performance.now();
+      // Add document to user's document list
+      await redis.sadd(USER_DOCUMENTS_KEY(metadata.userId), documentId);
+      // Store document details
+      await redis.hset(DOCUMENT_KEY(documentId), documentInfo);
+
       await vector.upsert(
         chunks.map((chunk) => ({
           id: nanoid(),
           data: chunk,
           metadata: {
-            source: file.ufsUrl,
+            userId: metadata.userId,
+            documentId: documentId,
           },
         }))
-      );
-      const vectorEndTime = performance.now();
-      const vectorDuration = vectorEndTime - vectorStartTime;
-      console.log(
-        `Vector upsert took ${vectorDuration.toFixed(2)} milliseconds`
       );
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return {
         uploadedBy: metadata.userId,
         chunks: chunks,
-        scrapingDuration: scrapingDuration,
+        documentId: documentId,
       };
     }),
 } satisfies FileRouter;
