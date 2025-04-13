@@ -6,7 +6,7 @@ export default function ContentUpload() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <UploadButton
-        endpoint="contentUploader"
+        endpoint="documentUploader"
         onClientUploadComplete={(res) => {
           // Do something with the response
           console.log("Files: ", res);
