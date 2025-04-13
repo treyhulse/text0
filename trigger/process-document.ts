@@ -1,4 +1,4 @@
-import { task } from "@trigger.dev/sdk/v3";
+import { task, logger } from "@trigger.dev/sdk/v3";
 import { Firecrawl } from "@/lib/firecrawl";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { vector } from "@/lib/vector";
@@ -18,6 +18,7 @@ export const processDocumentTask = task({
     // Scrape the document content
     const response = await Firecrawl.scrapeUrl(fileUrl, {
       formats: ["markdown"],
+      timeout: 200000,
     });
 
     if (!response.success) {
@@ -27,6 +28,7 @@ export const processDocumentTask = task({
     if (!response.markdown) {
       throw new Error("No markdown found in document");
     }
+    logger.info(`Scraped document: ${fileUrl}`);
 
     // Create a text splitter
     const textSplitter = new RecursiveCharacterTextSplitter({
@@ -36,6 +38,7 @@ export const processDocumentTask = task({
 
     // Split the content into chunks
     const chunks = await textSplitter.splitText(response.markdown);
+    logger.info(`Split document into ${chunks.length} chunks`);
 
     // Store document information in Redis
     const documentId = nanoid();
@@ -49,8 +52,10 @@ export const processDocumentTask = task({
 
     // Add document to user's document list
     await redis.sadd(USER_DOCUMENTS_KEY(userId), documentId);
+    logger.info(`Added document to user's document list: ${documentId}`);
     // Store document details
     await redis.hset(DOCUMENT_KEY(documentId), documentInfo);
+    logger.info(`Stored document details: ${documentId}`);
 
     // Store chunks in vector database
     await vector.upsert(
@@ -63,6 +68,7 @@ export const processDocumentTask = task({
         },
       }))
     );
+    logger.info(`Upserted ${chunks.length} chunks into vector database`);
 
     return {
       documentId,
