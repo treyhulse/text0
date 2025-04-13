@@ -154,6 +154,19 @@ export function MinimalIntegrationSidebar() {
 								asChild
 								className="w-full justify-start space-x-2 group-data-[collapsible=icon]:justify-center py-1.5 px-3"
 							>
+								<Link href="/writing">
+									<MessageSquare className="h-3 w-3 text-muted-foreground" />
+									<span className="text-sm group-data-[collapsible=icon]:hidden">
+										Writing
+									</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								asChild
+								className="w-full justify-start space-x-2 group-data-[collapsible=icon]:justify-center py-1.5 px-3"
+							>
 								<Link href="/notifications">
 									<Bell className="h-3 w-3 text-muted-foreground" />
 									<span className="text-sm group-data-[collapsible=icon]:hidden">
