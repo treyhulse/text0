@@ -1,5 +1,5 @@
 import { task } from "@trigger.dev/sdk/v3";
-import { Firecrawl } from "@/lib/firecrawls";
+import { Firecrawl } from "@/lib/firecrawl";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { vector } from "@/lib/vector";
 import { nanoid } from "@/lib/nanoid";
