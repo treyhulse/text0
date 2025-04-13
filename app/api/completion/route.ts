@@ -46,10 +46,6 @@ export async function POST(request: NextRequest) {
 
   const contextData = context.map((c) => c.data).join("\n");
 
-  console.log("contextData", contextData);
-
-  console.log("model", model);
-
   const result = streamText({
     model,
     prompt: `
