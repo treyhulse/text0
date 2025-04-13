@@ -131,6 +131,8 @@ const integrationCategories: {
 				iconColor: "text-blue-500",
 				link: "/integrations/google-calendar",
 				provider: "google",
+				disabled: true,
+				status: "Soon",
 			},
 			{
 				name: "Google Docs",
@@ -150,6 +152,8 @@ const integrationCategories: {
 				iconColor: "text-blue-500",
 				link: "/integrations/google-docs",
 				provider: "google",
+				disabled: true,
+				status: "Soon",
 			},
 		],
 	},
@@ -207,6 +211,8 @@ const integrationCategories: {
 				iconColor: "text-red-500",
 				link: "/integrations/gmail",
 				provider: "google",
+				disabled: true,
+				status: "Soon",
 			},
 			{
 				name: "Microsoft Teams",
