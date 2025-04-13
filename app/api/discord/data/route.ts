@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { createClerkClient, type OauthAccessToken } from "@clerk/backend";
 import { ClerkAPIResponseError } from "@clerk/shared";
+
 export async function GET() {
 	try {
 		const { userId } = await auth();
@@ -18,9 +19,11 @@ export async function GET() {
 
 		let oauthTokens: OauthAccessToken[] | undefined;
 		try {
-			const oauthTokensResponse =
-				await clerkClient.users.getUserOauthAccessToken(userId, "discord");
-			oauthTokens = oauthTokensResponse.data;
+			const response = await clerkClient.users.getUserOauthAccessToken(
+				userId,
+				"discord",
+			);
+			oauthTokens = response.data;
 		} catch (error) {
 			if (error instanceof ClerkAPIResponseError) {
 				return NextResponse.json(
@@ -84,36 +87,9 @@ export async function GET() {
 		}
 		const guildsData = await guildsResponse.json();
 
-		// Fetch channels for the first guild (as an example)
-		const guildId = guildsData[0]?.id;
-		let channelsData = [];
-		if (guildId) {
-			const channelsResponse = await fetch(
-				`https://discord.com/api/guilds/${guildId}/channels`,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				},
-			);
-			if (!channelsResponse.ok) {
-				const errorData = await channelsResponse.json();
-				return NextResponse.json(
-					{
-						error: "Failed to fetch channels from Discord",
-						details: errorData,
-						status: channelsResponse.status,
-					},
-					{ status: channelsResponse.status },
-				);
-			}
-			channelsData = await channelsResponse.json();
-		}
-
 		return NextResponse.json({
 			user: userData,
 			guilds: guildsData,
-			channels: channelsData,
 		});
 	} catch (error) {
 		console.error("Error in Discord API route:", error);

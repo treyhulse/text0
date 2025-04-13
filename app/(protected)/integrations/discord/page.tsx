@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DiscordIcon } from "@/components/ui/icons/discord";
-import { CheckCircle2, AlertCircle, Server, Hash } from "lucide-react";
+import { CheckCircle2, AlertCircle, Server } from "lucide-react";
 import Link from "next/link";
 
 interface DiscordUser {
@@ -14,7 +14,6 @@ interface DiscordUser {
 	username: string;
 	discriminator: string;
 	avatar?: string;
-	email?: string;
 }
 
 interface DiscordGuild {
@@ -25,17 +24,10 @@ interface DiscordGuild {
 	permissions: string;
 }
 
-interface DiscordChannel {
-	id: string;
-	name: string;
-	type: number; // 0 for text, 2 for voice, etc.
-}
-
 export default function DiscordIntegrationPage() {
 	const { user, isLoaded: userLoaded } = useUser();
 	const [discordUser, setDiscordUser] = useState<DiscordUser | null>(null);
 	const [guilds, setGuilds] = useState<DiscordGuild[]>([]);
-	const [channels, setChannels] = useState<DiscordChannel[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<{
 		message: string;
@@ -69,7 +61,6 @@ export default function DiscordIntegrationPage() {
 				const data = await response.json();
 				setDiscordUser(data.user);
 				setGuilds(data.guilds);
-				setChannels(data.channels);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
 					setError({
@@ -107,10 +98,12 @@ export default function DiscordIntegrationPage() {
 					</CardHeader>
 					<CardContent>
 						<p className="text-muted-foreground mb-4">
-							Connect your Discord account to access your servers and channels.
+							Connect your Discord account to view your profile and servers.
 						</p>
 						<Button asChild>
-							<Link href="">Connect Discord</Link>
+							<Link href="/sign-in?redirect=/integrations/discord">
+								Connect Discord
+							</Link>
 						</Button>
 					</CardContent>
 				</Card>
@@ -148,7 +141,7 @@ export default function DiscordIntegrationPage() {
 							Discord Integration
 						</h2>
 						<p className="text-muted-foreground">
-							Manage your Discord servers and channels
+							View your Discord profile and servers
 						</p>
 					</div>
 					<Badge
@@ -182,11 +175,6 @@ export default function DiscordIntegrationPage() {
 							<h3 className="text-lg font-medium">
 								{discordUser.username}#{discordUser.discriminator}
 							</h3>
-							{discordUser.email && (
-								<p className="text-sm text-muted-foreground">
-									Email: {discordUser.email}
-								</p>
-							)}
 						</div>
 					</CardContent>
 				</Card>
@@ -225,47 +213,13 @@ export default function DiscordIntegrationPage() {
 									</div>
 								</div>
 								<Button variant="outline" disabled>
-									View Channels
+									View Details
 								</Button>
 							</div>
 						))}
 					</div>
 				</CardContent>
 			</Card>
-
-			{/* Channels (from the first guild) */}
-			{guilds.length > 0 && (
-				<Card>
-					<CardHeader>
-						<CardTitle>Channels (from {guilds[0].name})</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className="grid gap-4">
-							{channels.length === 0 && (
-								<p className="text-muted-foreground">No channels found.</p>
-							)}
-							{channels
-								.filter((channel) => channel.type === 0) // Text channels only
-								.map((channel) => (
-									<div
-										key={channel.id}
-										className="flex items-center justify-between border-b py-2"
-									>
-										<div className="flex items-center space-x-3">
-											<Hash className="h-5 w-5 text-muted-foreground" />
-											<div>
-												<span className="text-blue-500">{channel.name}</span>
-											</div>
-										</div>
-										<Button variant="outline" disabled>
-											View Messages
-										</Button>
-									</div>
-								))}
-						</div>
-					</CardContent>
-				</Card>
-			)}
 		</div>
 	);
 }
