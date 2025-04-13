@@ -1,14 +1,9 @@
-import { Firecrawl } from "@/lib/firecrawls";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { vector } from "@/lib/vector";
-import { nanoid } from "@/lib/nanoid";
+import { auth } from "@clerk/nextjs/server";
+import { processDocumentTask } from "@/trigger/process-document";
 
 const f = createUploadthing();
-
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
-
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
@@ -45,82 +40,28 @@ export const ourFileRouter = {
   })
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
-      const user = auth(req);
+      const { userId } = await auth();
 
       // If you throw, the user will not be able to upload
-      if (!user) throw new UploadThingError("Unauthorized");
+      if (!userId) throw new UploadThingError("Unauthorized");
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.id };
+      return { userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.ufsUrl);
-
-      // Start timing the scraping process
-      const startTime = performance.now();
-
-      const response = await Firecrawl.scrapeUrl(file.ufsUrl, {
-        formats: ["markdown"],
+      console.log("Upload complete", { metadata, file });
+      // Trigger the document processing task
+      await processDocumentTask.trigger({
+        userId: metadata.userId,
+        fileUrl: file.ufsUrl,
+        fileName: file.name,
       });
 
-      // Calculate and log the scraping duration
-      const endTime = performance.now();
-      const scrapingDuration = endTime - startTime;
-      console.log(`Scraping took ${scrapingDuration.toFixed(2)} milliseconds`);
-
-      console.log("response", response);
-
-      if (!response.success) {
-        console.error("Error scraping URL:", response.error);
-        return {
-          uploadedBy: metadata.userId,
-          error: response.error,
-        };
-      }
-
-      if (!response.markdown) {
-        console.error("No markdown found");
-        return {
-          uploadedBy: metadata.userId,
-          error: "No markdown found",
-        };
-      }
-
-      // Create a text splitter
-      const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 1000, // Adjust based on your needs
-        chunkOverlap: 200, // Adjust based on your needs
-      });
-
-      // Split the content into chunks
-      const chunks = await textSplitter.splitText(response.markdown);
-
-      console.log("Chunks:", chunks);
-
-      const vectorStartTime = performance.now();
-      await vector.upsert(
-        chunks.map((chunk) => ({
-          id: nanoid(),
-          data: chunk,
-          metadata: {
-            source: file.ufsUrl,
-          },
-        }))
-      );
-      const vectorEndTime = performance.now();
-      const vectorDuration = vectorEndTime - vectorStartTime;
-      console.log(
-        `Vector upsert took ${vectorDuration.toFixed(2)} milliseconds`
-      );
-
-      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      // Return immediately to the client
       return {
         uploadedBy: metadata.userId,
-        chunks: chunks,
-        scrapingDuration: scrapingDuration,
+        fileUrl: file.ufsUrl,
+        fileName: file.name,
       };
     }),
 } satisfies FileRouter;

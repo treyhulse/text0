@@ -19,6 +19,8 @@ import { cn } from "@/lib/utils";
 import { useSidebar } from "@/components/ui/sidebar";
 import { ModelSelector } from "./model-selector";
 import { useModel } from "@/hooks/use-model";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function WritingPage() {
   const [model] = useModel();
@@ -30,6 +32,8 @@ export default function WritingPage() {
     useCompletion({
       api: `/api/completion?model=${model}`,
     });
+
+  const router = useRouter();
 
   React.useEffect(() => {
     if (!isEnabled) {
@@ -150,12 +154,11 @@ export default function WritingPage() {
                 <ScrollArea className="h-[300px] rounded-md border p-4">
                   <UploadDropzone
                     endpoint="contentUploader"
-                    onClientUploadComplete={(res) => {
-                      console.log("Files: ", res);
-                      alert("Upload Completed");
+                    onClientUploadComplete={() => {
+                      toast.success("File uploaded successfully");
                     }}
                     onUploadError={(error: Error) => {
-                      alert(`ERROR! ${error.message}`);
+                      toast.error(`ERROR! ${error.message}`);
                     }}
                     className="ut-upload-dropzone:bg-muted ut-button:bg-primary ut-button:text-primary-foreground ut-button:hover:bg-primary/90 ut-button:transition-colors ut-allowed-content:text-muted-foreground/80 ut-label:text-foreground/80 ut-upload-icon:text-muted-foreground/50"
                     appearance={{
