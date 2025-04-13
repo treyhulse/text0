@@ -39,7 +39,7 @@ export const ourFileRouter = {
         maxFileCount: 1,
       },
   })
-    .middleware(async ({ req }) => {
+    .middleware(async () => {
       // This code runs on your server before upload
       const { userId } = await auth();
 
