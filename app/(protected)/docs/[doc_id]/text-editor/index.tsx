@@ -21,9 +21,11 @@ import { ModelSelector } from "./model-selector";
 import { useModel } from "@/hooks/use-model";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { AIChatSidebar } from "@/components/ai-chat-sidebar";
+import { AIChatSidebar } from "./ai-chat-sidebar";
 import { TextSelectionMenu } from "@/components/text-selection-menu";
 import { InlineDiffView } from "@/components/inline-diff-view";
+import { EditableDocumentName } from "@/components/editable-document-name";
+import useDebouncedCallback from "@/hooks/use-debounced-callback";
 
 // Add these types at the top
 interface CompletionResponse {
@@ -31,17 +33,17 @@ interface CompletionResponse {
 	statusText: string;
 }
 
-interface CompletionData {
-	prompt: string;
-	completion: string;
+interface TextEditorProps {
+	initialContent: string;
+	documentId: string;
+	initialName: string;
 }
 
-// Add this type for the streaming data
-interface StreamData {
-	data: string;
-}
-
-export default function WritingPage() {
+export function TextEditor({
+	initialContent,
+	documentId,
+	initialName,
+}: TextEditorProps) {
 	const [model] = useModel();
 	const editorRef = React.useRef<HTMLTextAreaElement>(null);
 	const [cursorPosition, setCursorPosition] = React.useState(0);
@@ -54,6 +56,7 @@ export default function WritingPage() {
 	const { completion, input, setInput, handleSubmit, stop, setCompletion } =
 		useCompletion({
 			api: `/api/completion?model=${model}`,
+			initialInput: initialContent,
 		});
 
 	const [selectedText, setSelectedText] = React.useState("");
@@ -96,6 +99,18 @@ export default function WritingPage() {
 			setPendingUpdate(null);
 		},
 	});
+
+	// Add debounced update function
+	const debouncedUpdateContent = useDebouncedCallback(
+		(documentId: string, content: string) => {
+			fetch(`/api/docs/${documentId}`, {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ content }),
+			});
+		},
+		3000,
+	);
 
 	React.useEffect(() => {
 		if (!isAutocompleteEnabled) {
@@ -195,6 +210,8 @@ export default function WritingPage() {
 		setLastManualInput(newText); // Track that this was a manual input
 		setCursorPosition(newPosition);
 		setIsAcceptingDiff(false);
+		// Add debounced update
+		debouncedUpdateContent(documentId, newText);
 	};
 
 	const handleSelectionChange = () => {
@@ -452,7 +469,12 @@ export default function WritingPage() {
 				)}
 
 				<div className="flex h-full justify-center py-4">
-					<div className={cn("w-full max-w-4xl h-full pt-18")}>
+					<div className={cn("w-full max-w-4xl h-full pt-8")}>
+						{/* Add EditableDocumentName component */}
+						<EditableDocumentName
+							documentId={documentId}
+							initialName={initialName}
+						/>
 						<div className="relative w-full h-full flex-1">
 							<textarea
 								ref={editorRef}
@@ -743,8 +765,6 @@ export default function WritingPage() {
 				<div className="w-80">
 					<AIChatSidebar
 						content={input}
-						onUpdateContent={setInput}
-						model={model}
 						isEnabled={isAutocompleteEnabled}
 						onEnableChange={setIsAutocompleteEnabled}
 						onPendingUpdate={setPendingUpdate}

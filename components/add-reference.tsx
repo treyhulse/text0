@@ -24,11 +24,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useActionState } from "react";
+import { addWebsiteReference } from "../actions/websites";
 
-export function FileUploadUploadThing() {
+export function AddReference() {
   const [isUploading, setIsUploading] = React.useState(false);
   const [files, setFiles] = React.useState<File[]>([]);
   const [open, setOpen] = React.useState(false);
+  const [url, setUrl] = React.useState("");
+  const [state, formAction, isPendingAddWebsiteReferenceAction] =
+    useActionState(addWebsiteReference, undefined);
 
   const onUpload = React.useCallback(
     async (
@@ -103,12 +110,44 @@ export function FileUploadUploadThing() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Upload Files</Button>
+        <Button variant="outline">Add Reference</Button>
       </DialogTrigger>
-      <DialogContent title="Upload Files" className="sm:max-w-md">
+      <DialogContent title="Add Reference" className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Upload Files</DialogTitle>
+          <DialogTitle>Add Reference</DialogTitle>
         </DialogHeader>
+        <form action={formAction} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="url">Website URL</Label>
+            <Input
+              id="url"
+              name="url"
+              type="url"
+              placeholder="https://example.com"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              disabled={isPendingAddWebsiteReferenceAction || isUploading}
+            />
+          </div>
+          <Button
+            type="submit"
+            disabled={!url || isPendingAddWebsiteReferenceAction || isUploading}
+          >
+            {isPendingAddWebsiteReferenceAction
+              ? "Adding..."
+              : "Add Website Reference"}
+          </Button>
+        </form>
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or upload a file
+            </span>
+          </div>
+        </div>
         <FileUpload
           accept=".pdf,.docx,.xlsx,.pptx,.txt,.md"
           maxFiles={1}
@@ -118,7 +157,7 @@ export function FileUploadUploadThing() {
           onUpload={onUpload}
           onFileReject={onFileReject}
           multiple={false}
-          disabled={isUploading}
+          disabled={isUploading || isPendingAddWebsiteReferenceAction}
         >
           <FileUploadDropzone>
             <div className="flex flex-col items-center gap-1">

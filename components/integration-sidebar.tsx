@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  MessageSquare,
-  ChevronDown,
-  Home,
-  Settings,
-  FileText,
-} from "lucide-react";
+import { ChevronDown, Home, Settings, FileText } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -160,23 +154,10 @@ export function MinimalIntegrationSidebar() {
                 asChild
                 className="w-full justify-start space-x-2 group-data-[collapsible=icon]:justify-center py-1.5 px-3"
               >
-                <Link href="/writing">
-                  <MessageSquare className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-sm group-data-[collapsible=icon]:hidden">
-                    Writing
-                  </span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                className="w-full justify-start space-x-2 group-data-[collapsible=icon]:justify-center py-1.5 px-3"
-              >
-                <Link href="/documents">
+                <Link href="/references">
                   <FileText className="h-3 w-3 text-muted-foreground" />
                   <span className="text-sm group-data-[collapsible=icon]:hidden">
-                    Documents for Context
+                    References
                   </span>
                 </Link>
               </SidebarMenuButton>
@@ -227,18 +208,28 @@ export function MinimalIntegrationSidebar() {
                               : ""
                           }`}
                         >
-                          <a
-                            href={integration.disabled ? "#" : integration.link}
-                            className="flex items-center"
-                            onClick={(e) =>
-                              integration.disabled && e.preventDefault()
-                            }
-                          >
-                            <integration.icon className="h-3 w-3" />
-                            <span className="text-sm text-foreground group-data-[collapsible=icon]:hidden ml-2">
-                              {integration.name}
-                            </span>
-                          </a>
+                          {integration.disabled ? (
+                            <button
+                              type="button"
+                              className="flex items-center"
+                              disabled
+                            >
+                              <integration.icon className="h-3 w-3" />
+                              <span className="text-sm text-foreground group-data-[collapsible=icon]:hidden ml-2">
+                                {integration.name}
+                              </span>
+                            </button>
+                          ) : (
+                            <a
+                              href={integration.link}
+                              className="flex items-center"
+                            >
+                              <integration.icon className="h-3 w-3" />
+                              <span className="text-sm text-foreground group-data-[collapsible=icon]:hidden ml-2">
+                                {integration.name}
+                              </span>
+                            </a>
+                          )}
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}

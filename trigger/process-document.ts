@@ -3,20 +3,24 @@ import { Firecrawl } from "@/lib/firecrawl";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { vector } from "@/lib/vector";
 import { nanoid } from "@/lib/nanoid";
-import { redis, USER_DOCUMENTS_KEY, DOCUMENT_KEY } from "@/lib/redis";
+import { redis, REFERENCE_KEY, type Reference } from "@/lib/redis";
 
-export const processDocumentTask = task({
-  id: "process-document",
+export const processReferenceTask = task({
+  id: "process-reference",
   maxDuration: 300, // 5 minutes
-  run: async (payload: {
-    userId: string;
-    fileUrl: string;
-    fileName: string;
-  }) => {
-    const { userId, fileUrl, fileName } = payload;
+  run: async (payload: { userId: string; referenceId: string }) => {
+    const { userId, referenceId } = payload;
 
-    // Scrape the document content
-    const response = await Firecrawl.scrapeUrl(fileUrl, {
+    const referenceInfo = await redis.hgetall<Reference>(
+      REFERENCE_KEY(referenceId)
+    );
+
+    if (!referenceInfo) {
+      throw new Error(`Reference not found: ${referenceId}`);
+    }
+
+    // Scrape the reference content
+    const response = await Firecrawl.scrapeUrl(referenceInfo.url, {
       formats: ["markdown"],
       timeout: 200000,
     });
@@ -25,10 +29,12 @@ export const processDocumentTask = task({
       throw new Error(`Error scraping URL: ${response.error}`);
     }
 
+    logger.info("Scraped document", JSON.parse(JSON.stringify(response)));
+
     if (!response.markdown) {
       throw new Error("No markdown found in document");
     }
-    logger.info(`Scraped document: ${fileUrl}`);
+    logger.info(`Scraped document: ${referenceInfo.url}`);
 
     // Create a text splitter
     const textSplitter = new RecursiveCharacterTextSplitter({
@@ -40,23 +46,6 @@ export const processDocumentTask = task({
     const chunks = await textSplitter.splitText(response.markdown);
     logger.info(`Split document into ${chunks.length} chunks`);
 
-    // Store document information in Redis
-    const documentId = nanoid();
-    const documentInfo = {
-      id: documentId,
-      url: fileUrl,
-      name: fileName,
-      uploadedAt: new Date().toISOString(),
-      chunks: chunks.length,
-    };
-
-    // Add document to user's document list
-    await redis.sadd(USER_DOCUMENTS_KEY(userId), documentId);
-    logger.info(`Added document to user's document list: ${documentId}`);
-    // Store document details
-    await redis.hset(DOCUMENT_KEY(documentId), documentInfo);
-    logger.info(`Stored document details: ${documentId}`);
-
     // Store chunks in vector database
     await vector.upsert(
       chunks.map((chunk) => ({
@@ -64,14 +53,32 @@ export const processDocumentTask = task({
         data: chunk,
         metadata: {
           userId: userId,
-          documentId: documentId,
+          referenceId: referenceId,
         },
       }))
     );
     logger.info(`Upserted ${chunks.length} chunks into vector database`);
 
+    const info = {
+      ...referenceInfo,
+      chunksCount: chunks.length,
+      processed: true,
+    } satisfies Reference;
+
+    if (response.metadata?.title) {
+      info.name = response.metadata.title;
+    }
+
+    if (response.title) {
+      info.name = response.title;
+    }
+
+    await redis.hset(REFERENCE_KEY(referenceId), info);
+
+    logger.info(`Processed document: ${referenceInfo.url}`);
+
     return {
-      documentId,
+      referenceId,
       chunks: chunks.length,
     };
   },
