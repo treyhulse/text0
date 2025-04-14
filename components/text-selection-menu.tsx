@@ -1,28 +1,36 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-	DropdownMenuSeparator,
-	DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+	Menubar,
+	MenubarContent,
+	MenubarItem,
+	MenubarMenu,
+	MenubarSeparator,
+	MenubarTrigger,
+	MenubarSub,
+	MenubarSubContent,
+	MenubarSubTrigger,
+	MenubarShortcut,
+	MenubarRadioGroup,
+	MenubarRadioItem,
+} from "@/components/ui/menubar";
 import {
 	Wand2,
-	Type,
-	MessageSquare,
 	Sparkles,
 	Check,
-	ArrowRight,
 	Minimize2,
 	Maximize2,
 	Languages,
-	Volume2,
+	MessageSquare,
+	Pencil,
+	Palette,
+	Type,
+	Baseline,
+	Lightbulb,
+	Loader2,
 } from "lucide-react";
-import { useCompletion } from "@ai-sdk/react";
+import { cn } from "@/lib/utils";
 
 interface TextSelectionMenuProps {
 	selectedText: string;
@@ -30,6 +38,8 @@ interface TextSelectionMenuProps {
 	model: string;
 	onPendingUpdate: (update: string | null) => void;
 	onOpenChange?: (open: boolean) => void;
+	isLoading?: boolean;
+	onModificationStart: (instruction: string) => Promise<void>;
 }
 
 export function TextSelectionMenu({
@@ -38,8 +48,12 @@ export function TextSelectionMenu({
 	model,
 	onPendingUpdate,
 	onOpenChange,
+	isLoading,
+	onModificationStart,
 }: TextSelectionMenuProps) {
 	const [position, setPosition] = useState({ top: 0, left: 0 });
+	const [selectedTone, setSelectedTone] = useState("professional");
+	const [activeItem, setActiveItem] = useState<string | null>(null);
 
 	useEffect(() => {
 		const updatePosition = () => {
@@ -47,180 +61,232 @@ export function TextSelectionMenu({
 			if (selection && selection.rangeCount > 0) {
 				const range = selection.getRangeAt(0);
 				const rect = range.getBoundingClientRect();
-
-				// Get scroll position
 				const scrollX = window.scrollX || window.pageXOffset;
 				const scrollY = window.scrollY || window.pageYOffset;
-
-				// Position the menu above the selection
 				setPosition({
-					top: rect.top + scrollY - 10, // 10px above selection
-					left: rect.left + scrollX + rect.width / 2, // Centered horizontally
+					top: rect.top + scrollY - 10,
+					left: rect.left + scrollX + rect.width / 2,
 				});
 			}
 		};
 
 		updatePosition();
-
-		// Update position when window is resized
 		window.addEventListener("resize", updatePosition);
 		return () => window.removeEventListener("resize", updatePosition);
 	}, []);
 
-	const { complete, completion, isLoading } = useCompletion({
-		api: "/api/text-modification",
-		body: {
-			model: model,
-		},
-		onResponse: (response) => {
-			// Check if the response is ok
-			if (!response.ok) {
-				throw new Error(response.statusText);
-			}
-		},
-		onFinish: (prompt, completion) => {
-			// Only update when we have the complete response
-			onPendingUpdate(completion.trim());
-		},
-		onError: (error) => {
-			console.error("Error modifying text:", error);
-			onPendingUpdate(null);
-		},
-	});
-
-	const handleModification = async (instruction: string) => {
+	const handleModification = async (instruction: string, itemId: string) => {
 		try {
-			// Reset any previous completion
+			setActiveItem(itemId);
 			onPendingUpdate(null);
-			// Send the instruction and text as the prompt
-			await complete(`${instruction}:\n\n${selectedText}`);
+			await onModificationStart(instruction);
 		} catch (error) {
 			console.error("Error in text modification:", error);
 			onPendingUpdate(null);
+			setActiveItem(null);
 		}
 	};
 
-	// Optional: Show loading state while processing
-	useEffect(() => {
-		if (isLoading) {
-			// You could show a loading indicator here if needed
-			console.log("Processing text modification...");
-		}
-	}, [isLoading]);
+	const LoadingSpinner = () => (
+		<Loader2 className="w-4 h-4 animate-spin ml-auto" />
+	);
 
 	return (
 		<div
-			className="fixed z-50"
+			className="fixed z-50 w-fit bg-transparent"
 			style={{
 				top: `${position.top}px`,
 				left: `${position.left}px`,
-				transform: "translate(-50%, -100%)", // Center horizontally and position above
+				transform: "translate(-50%, -100%)",
 			}}
 		>
-			<DropdownMenu modal={false} onOpenChange={onOpenChange}>
-				<DropdownMenuTrigger asChild>
-					<Button
-						variant="ghost"
-						size="sm"
-						className="bg-white dark:bg-gray-900 shadow-lg rounded-lg flex items-center gap-2 h-9 px-3 hover:bg-gray-100 dark:hover:bg-gray-800"
+			<Menubar>
+				<MenubarMenu>
+					<MenubarTrigger className="gap-2 data-[state=open]:bg-accent">
+						<Wand2
+							className={cn(
+								"w-4 h-4",
+								isLoading && "animate-pulse text-primary",
+							)}
+						/>
+						<span className="text-sm font-medium">Enhance</span>
+					</MenubarTrigger>
+					<MenubarContent
+						className="animate-in fade-in-0 zoom-in-95"
+						align="start"
 					>
-						<Wand2 className="w-4 h-4" />
-						<span className="text-sm">Ask AI what to do next...</span>
-						<ArrowRight className="w-4 w-4 ml-2 opacity-60" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent
-					align="center"
-					className="w-64 p-2 bg-white dark:bg-gray-900 shadow-xl rounded-xl border-gray-200"
-				>
-					<DropdownMenuLabel className="px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">
-						EDIT OR REVIEW SELECTION
-					</DropdownMenuLabel>
-					<DropdownMenuItem
-						onClick={() =>
-							handleModification(
-								"Enhance this text while preserving its core message. Focus on clarity, conciseness, and professional tone. Make it more engaging and impactful",
-							)
-						}
-						className="gap-2 rounded-md cursor-pointer px-2 py-1.5 text-sm"
-					>
-						<Sparkles className="w-4 h-4" />
-						<span>Improve writing</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onClick={() =>
-							handleModification(
-								"Fix any grammatical errors, spelling mistakes, and punctuation issues. Ensure proper sentence structure and formatting while maintaining the original style",
-							)
-						}
-						className="gap-2 rounded-md cursor-pointer px-2 py-1.5 text-sm"
-					>
-						<Check className="w-4 h-4" />
-						<span>Fix spelling and grammar</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onClick={() =>
-							handleModification(
-								"Make this text more concise while retaining all key information and main points. Remove redundancies and unnecessary words. Prioritize clarity and brevity",
-							)
-						}
-						className="gap-2 rounded-md cursor-pointer px-2 py-1.5 text-sm"
-					>
-						<Minimize2 className="w-4 h-4" />
-						<span>Make shorter</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onClick={() =>
-							handleModification(
-								"Expand this text with relevant details, examples, and explanations. Maintain the same tone and style while adding depth and context. Ensure smooth flow between ideas",
-							)
-						}
-						className="gap-2 rounded-md cursor-pointer px-2 py-1.5 text-sm"
-					>
-						<Maximize2 className="w-4 h-4" />
-						<span>Make longer</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onClick={() =>
-							handleModification(
-								"Simplify this text to make it more accessible. Use clearer language, shorter sentences, and simpler words where appropriate. Maintain technical accuracy while improving readability",
-							)
-						}
-						className="gap-2 rounded-md cursor-pointer px-2 py-1.5 text-sm"
-					>
-						<Languages className="w-4 h-4" />
-						<span>Simplify language</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onClick={() =>
-							handleModification(
-								"Adjust the tone to be more professional and formal. Maintain the core message while using appropriate business language, improved structure, and professional vocabulary",
-							)
-						}
-						className="gap-2 rounded-md cursor-pointer px-2 py-1.5 text-sm"
-					>
-						<Volume2 className="w-4 h-4" />
-						<span>Change tone</span>
-					</DropdownMenuItem>
+						<MenubarItem
+							onClick={() =>
+								handleModification(
+									"Enhance this text while preserving its core message. Focus on clarity, conciseness, and professional tone",
+									"improve",
+								)
+							}
+							className="gap-2 cursor-pointer relative group"
+							disabled={isLoading}
+						>
+							<Sparkles className="w-4 h-4 text-primary" />
+							<span>Improve writing</span>
+							{activeItem === "improve" ? (
+								<LoadingSpinner />
+							) : (
+								<MenubarShortcut>⌘I</MenubarShortcut>
+							)}
+						</MenubarItem>
 
-					<DropdownMenuSeparator className="my-2" />
+						<MenubarItem
+							onClick={() =>
+								handleModification(
+									"Fix any grammatical errors, spelling mistakes, and punctuation issues",
+									"grammar",
+								)
+							}
+							className="gap-2 cursor-pointer relative group"
+							disabled={isLoading}
+						>
+							<Check className="w-4 h-4 text-green-500" />
+							<span>Fix grammar & spelling</span>
+							{activeItem === "grammar" ? (
+								<LoadingSpinner />
+							) : (
+								<MenubarShortcut>⌘G</MenubarShortcut>
+							)}
+						</MenubarItem>
 
-					<DropdownMenuLabel className="px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">
-						GENERATE FROM SELECTION
-					</DropdownMenuLabel>
-					<DropdownMenuItem
-						onClick={() =>
-							handleModification(
-								"Create a clear and concise summary of this text. Capture the main points and key ideas while maintaining accuracy. Focus on essential information and logical flow",
-							)
-						}
-						className="gap-2 rounded-md cursor-pointer px-2 py-1.5 text-sm"
-					>
-						<MessageSquare className="w-4 h-4" />
-						<span>Summarize</span>
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
+						<MenubarSeparator />
+
+						<MenubarSub>
+							<MenubarSubTrigger className="gap-2">
+								<Type className="w-4 h-4 text-blue-500" />
+								<span>Adjust length</span>
+							</MenubarSubTrigger>
+							<MenubarSubContent>
+								<MenubarItem
+									onClick={() =>
+										handleModification(
+											"Make this text more concise while retaining all key information",
+											"shorter",
+										)
+									}
+									disabled={isLoading}
+								>
+									<Minimize2 className="w-4 h-4 mr-2" />
+									Make shorter
+									{activeItem === "shorter" && <LoadingSpinner />}
+								</MenubarItem>
+								<MenubarItem
+									onClick={() =>
+										handleModification(
+											"Expand this text with relevant details and examples",
+											"longer",
+										)
+									}
+									disabled={isLoading}
+								>
+									<Maximize2 className="w-4 h-4 mr-2" />
+									Make longer
+									{activeItem === "longer" && <LoadingSpinner />}
+								</MenubarItem>
+							</MenubarSubContent>
+						</MenubarSub>
+
+						<MenubarSub>
+							<MenubarSubTrigger className="gap-2">
+								<Palette className="w-4 h-4 text-violet-500" />
+								<span>Change tone</span>
+							</MenubarSubTrigger>
+							<MenubarSubContent>
+								<MenubarRadioGroup
+									value={selectedTone}
+									onValueChange={setSelectedTone}
+								>
+									<MenubarRadioItem
+										value="professional"
+										onClick={() =>
+											handleModification(
+												"Make the tone more professional and formal",
+												"tone-professional",
+											)
+										}
+										className="gap-2"
+										disabled={isLoading}
+									>
+										<Baseline className="w-4 h-4 mr-2" />
+										Professional
+										{activeItem === "tone-professional" && <LoadingSpinner />}
+									</MenubarRadioItem>
+									<MenubarRadioItem
+										value="casual"
+										onClick={() =>
+											handleModification(
+												"Make the tone more casual and conversational",
+												"tone-casual",
+											)
+										}
+										className="gap-2"
+										disabled={isLoading}
+									>
+										<Pencil className="w-4 h-4 mr-2" />
+										Casual
+										{activeItem === "tone-casual" && <LoadingSpinner />}
+									</MenubarRadioItem>
+									<MenubarRadioItem
+										value="confident"
+										onClick={() =>
+											handleModification(
+												"Make the tone more confident and assertive",
+												"tone-confident",
+											)
+										}
+										className="gap-2"
+										disabled={isLoading}
+									>
+										<Lightbulb className="w-4 h-4 mr-2" />
+										Confident
+										{activeItem === "tone-confident" && <LoadingSpinner />}
+									</MenubarRadioItem>
+								</MenubarRadioGroup>
+							</MenubarSubContent>
+						</MenubarSub>
+
+						<MenubarSeparator />
+
+						<MenubarItem
+							onClick={() =>
+								handleModification(
+									"Simplify this text to make it more accessible. Use clearer language",
+									"simplify",
+								)
+							}
+							className="gap-2 cursor-pointer"
+							disabled={isLoading}
+						>
+							<Languages className="w-4 h-4 text-yellow-500" />
+							<span>Simplify language</span>
+							{activeItem === "simplify" && <LoadingSpinner />}
+						</MenubarItem>
+
+						<MenubarItem
+							onClick={() =>
+								handleModification(
+									"Create a clear and concise summary of this text",
+									"summarize",
+								)
+							}
+							className="gap-2 cursor-pointer"
+							disabled={isLoading}
+						>
+							<MessageSquare className="w-4 h-4 text-teal-500" />
+							<span>Summarize</span>
+							{activeItem === "summarize" ? (
+								<LoadingSpinner />
+							) : (
+								<MenubarShortcut>⌘S</MenubarShortcut>
+							)}
+						</MenubarItem>
+					</MenubarContent>
+				</MenubarMenu>
+			</Menubar>
 		</div>
 	);
 }

@@ -7,6 +7,8 @@ import { Check, X } from "lucide-react";
 interface InlineDiffViewProps {
 	originalText: string;
 	newText: string;
+	streamingText?: string;
+	isLoading?: boolean;
 	className?: string;
 	onAccept: () => void;
 	onReject: () => void;
@@ -16,11 +18,13 @@ interface InlineDiffViewProps {
 export function InlineDiffView({
 	originalText,
 	newText,
+	isLoading,
 	className,
 	onAccept,
 	onReject,
 	isZenMode,
 }: InlineDiffViewProps) {
+	// Use streaming text while loading, otherwise use final newText
 	const diff = diffWords(originalText, newText);
 
 	return (
@@ -35,32 +39,41 @@ export function InlineDiffView({
 					<span
 						key={`${i}-${part.value.slice(0, 10)}`}
 						className={cn(
-							"inline",
-							part.added && "text-green-500 bg-green-500/10",
-							part.removed && "text-red-500 line-through bg-red-500/10",
+							"inline transition-colors duration-200",
+							part.added && "text-success bg-success/20",
+							part.removed && "text-destructive line-through bg-destructive/20",
 							!part.added && !part.removed && "text-foreground",
 						)}
 					>
 						{part.value}
 					</span>
 				))}
+				{isLoading && (
+					<span className="inline-block w-1 h-4 bg-primary/80 animate-pulse ml-0.5">
+						▋
+					</span>
+				)}
 			</div>
-			<div className="flex items-center gap-1.5 self-end">
+			<div className="flex w-full mt-2 items-center gap-1.5 self-end">
 				<Button
 					size="sm"
 					variant="destructive"
 					className="h-7 px-2"
 					onClick={onReject}
+					disabled={isLoading}
 				>
 					<X className="h-3.5 w-3.5" />
+					<span className="text-xs">Reject</span>
 				</Button>
 				<Button
 					size="sm"
-					variant="default"
+					variant="success"
 					className="h-7 px-2"
 					onClick={onAccept}
+					disabled={isLoading}
 				>
 					<Check className="h-3.5 w-3.5" />
+					<span className="text-xs">Accept</span>
 				</Button>
 			</div>
 		</div>

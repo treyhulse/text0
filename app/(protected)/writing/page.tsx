@@ -1,7 +1,7 @@
 "use client";
 
 import { useCompletion } from "@ai-sdk/react";
-import React from "react";
+import React, { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { UploadDropzone } from "@/lib/uploadthing";
@@ -25,6 +25,22 @@ import { AIChatSidebar } from "@/components/ai-chat-sidebar";
 import { TextSelectionMenu } from "@/components/text-selection-menu";
 import { InlineDiffView } from "@/components/inline-diff-view";
 
+// Add these types at the top
+interface CompletionResponse {
+	ok: boolean;
+	statusText: string;
+}
+
+interface CompletionData {
+	prompt: string;
+	completion: string;
+}
+
+// Add this type for the streaming data
+interface StreamData {
+	data: string;
+}
+
 export default function WritingPage() {
 	const [model] = useModel();
 	const editorRef = React.useRef<HTMLTextAreaElement>(null);
@@ -34,6 +50,7 @@ export default function WritingPage() {
 	const { state, toggleSidebar } = useSidebar();
 	const [isAIChatOpen, setIsAIChatOpen] = React.useState(true);
 	const [isZenMode, setIsZenMode] = React.useState(false);
+	const [isAcceptingDiff, setIsAcceptingDiff] = React.useState(false);
 	const { completion, input, setInput, handleSubmit, stop, setCompletion } =
 		useCompletion({
 			api: `/api/completion?model=${model}`,
@@ -48,6 +65,37 @@ export default function WritingPage() {
 
 	const router = useRouter();
 	const [pendingUpdate, setPendingUpdate] = React.useState<string | null>(null);
+	const [isTextLoading, setIsTextLoading] = useState(false);
+	const [selectionStyles, setSelectionStyles] = useState<{
+		backgroundColor: string;
+		transition: string;
+	} | null>(null);
+
+	const [isModifying, setIsModifying] = useState(false);
+	const [streamingText, setStreamingText] = useState("");
+	const [loadingProgress, setLoadingProgress] = useState(0);
+
+	const [lastManualInput, setLastManualInput] = React.useState<string | null>(
+		null,
+	);
+
+	const { complete, isLoading } = useCompletion({
+		api: "/api/text-modification",
+		body: { model },
+		onResponse: (response) => {
+			if (!response.ok) throw new Error(response.statusText);
+		},
+		onFinish: () => {
+			setIsModifying(false);
+			setStreamingText("");
+		},
+		onError: (error) => {
+			console.error("Error modifying text:", error);
+			setIsModifying(false);
+			setStreamingText("");
+			setPendingUpdate(null);
+		},
+	});
 
 	React.useEffect(() => {
 		if (!isAutocompleteEnabled) {
@@ -56,13 +104,14 @@ export default function WritingPage() {
 	}, [isAutocompleteEnabled, setCompletion]);
 
 	React.useEffect(() => {
-		const timer = setTimeout(() => {
-			if (isAutocompleteEnabled) {
+		// Only trigger autocomplete if the input change came from manual typing
+		if (isAutocompleteEnabled && input === lastManualInput) {
+			const timer = setTimeout(() => {
 				handleSubmit();
-			}
-		}, 300);
-		return () => clearTimeout(timer);
-	}, [handleSubmit, isAutocompleteEnabled]);
+			}, 300);
+			return () => clearTimeout(timer);
+		}
+	}, [handleSubmit, isAutocompleteEnabled, input, lastManualInput]);
 
 	React.useEffect(() => {
 		if (editorRef.current && cursorPosition === -1) {
@@ -118,9 +167,19 @@ export default function WritingPage() {
 			const completionText = parseCompletion(completion, input);
 			stop();
 			setCompletion("");
-			const newText = input + completionText;
+			const newText =
+				input.substring(0, cursorPosition) +
+				completionText +
+				input.substring(cursorPosition);
 			setInput(newText);
-			setCursorPosition(-1);
+			// Set cursor position to end of the inserted completion
+			const newCursorPosition = cursorPosition + completionText.length;
+			setCursorPosition(newCursorPosition);
+			// Ensure the textarea cursor is also updated
+			if (editorRef.current) {
+				editorRef.current.selectionStart = newCursorPosition;
+				editorRef.current.selectionEnd = newCursorPosition;
+			}
 		} else if (e.key === "Escape") {
 			e.preventDefault();
 			stop();
@@ -130,9 +189,12 @@ export default function WritingPage() {
 
 	const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const newText = e.target.value;
+		const newPosition = e.target.selectionStart;
 		stop();
 		setInput(newText);
-		setCursorPosition(e.target.selectionStart);
+		setLastManualInput(newText); // Track that this was a manual input
+		setCursorPosition(newPosition);
+		setIsAcceptingDiff(false);
 	};
 
 	const handleSelectionChange = () => {
@@ -206,6 +268,12 @@ export default function WritingPage() {
 					textareaRect.left + startCoords.left + selectionWidth / 2;
 				const y = textareaRect.top + startCoords.top - scrollTop;
 
+				// Set selection styles
+				setSelectionStyles({
+					backgroundColor: "hsl(var(--primary) / 0.1)",
+					transition: "background-color 0.2s ease",
+				});
+
 				// Store the range and text
 				setSelectedRange(range.cloneRange());
 				setSelectedText(selectedText);
@@ -219,6 +287,7 @@ export default function WritingPage() {
 				setSelectedText("");
 				setSelectionPosition(null);
 				setSelectedRange(null);
+				setSelectionStyles(null);
 			}
 		}
 	};
@@ -291,11 +360,59 @@ export default function WritingPage() {
 		if (editorRef.current) {
 			const start = editorRef.current.selectionStart;
 			const end = editorRef.current.selectionEnd;
-			const newText =
-				input.substring(0, start) + modifiedText + input.substring(end);
-			setInput(newText);
-			setSelectedText("");
-			setSelectionPosition(null);
+
+			// Keep the selection and show loading state
+			setIsTextLoading(true);
+			setSelectionStyles({
+				backgroundColor: "hsl(var(--primary) / 0.15)",
+				transition: "background-color 0.3s ease",
+			});
+
+			// Show the streaming process in the selection
+			setPendingUpdate(modifiedText);
+		}
+	};
+
+	const handleModificationStart = async (instruction: string) => {
+		setIsModifying(true);
+		setStreamingText("");
+		setLoadingProgress(0);
+
+		const progressInterval = setInterval(() => {
+			setLoadingProgress((prev) => {
+				if (prev >= 100) {
+					clearInterval(progressInterval);
+					return 100;
+				}
+				const increment = Math.max(1, (100 - prev) * 0.1);
+				return Math.min(99, prev + increment);
+			});
+		}, 100);
+
+		try {
+			const stream = await complete(`${instruction}:\n\n${selectedText}`, {
+				body: { model },
+				onResponse: (response: CompletionResponse) => {
+					if (!response.ok) throw new Error(response.statusText);
+				},
+				onFinish: (_prompt: string, completion: string) => {
+					setStreamingText(completion.trim());
+					setPendingUpdate(completion.trim());
+				},
+			});
+
+			if (stream) {
+				setPendingUpdate(stream);
+			}
+		} catch (error) {
+			console.error("Error in modification:", error);
+			setIsModifying(false);
+			setStreamingText("");
+			setPendingUpdate(null);
+		} finally {
+			clearInterval(progressInterval);
+			setLoadingProgress(100);
+			setTimeout(() => setLoadingProgress(0), 300);
 		}
 	};
 
@@ -310,6 +427,30 @@ export default function WritingPage() {
 					isZenMode && "bg-background/95 fixed inset-0 z-50",
 				)}
 			>
+				{/* Decorative gradients - only show when modifying */}
+				{isModifying && (
+					<>
+						<div
+							className="pointer-events-none absolute left-[15%] top-1/4 h-[400px] w-[400px] animate-float-slow"
+							style={{
+								background:
+									"radial-gradient(circle at center,var(--primary) 0%, transparent 70%)",
+								opacity: 0.15,
+								filter: "blur(60px)",
+							}}
+						/>
+						<div
+							className="pointer-events-none absolute bottom-1/3 right-[15%] h-[350px] w-[350px] animate-float"
+							style={{
+								background:
+									"radial-gradient(circle at center, var(--primary) 0%, transparent 70%)",
+								opacity: 0.12,
+								filter: "blur(50px)",
+							}}
+						/>
+					</>
+				)}
+
 				<div className="flex h-full justify-center py-4">
 					<div className={cn("w-full max-w-4xl h-full pt-18")}>
 						<div className="relative w-full h-full flex-1">
@@ -325,9 +466,15 @@ export default function WritingPage() {
 									"w-full h-full flex-1 outline-none whitespace-pre-wrap font-serif text-lg bg-transparent resize-none placeholder:text-muted-foreground/50 px-8",
 									isZenMode && "text-xl leading-relaxed px-4",
 									pendingUpdate && "opacity-0",
+									isTextLoading && "selection:bg-primary/20",
+									isModifying && "opacity-70",
 								)}
 								style={{
 									caretColor: "var(--primary)",
+									...(selectionStyles && {
+										"::selection": selectionStyles,
+										"::MozSelection": selectionStyles,
+									}),
 								}}
 							/>
 							{isAutocompleteEnabled &&
@@ -340,11 +487,21 @@ export default function WritingPage() {
 											isZenMode
 												? "text-xl leading-relaxed opacity-30 px-4"
 												: "text-lg w-full opacity-50 px-8",
+											isModifying &&
+												"after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent after:animate-shine",
 										)}
 									>
-										<span className="whitespace-pre-wrap">{input}</span>
-										<span className="text-muted-foreground">
-											{displayedCompletion}
+										<span className="whitespace-pre-wrap">
+											{input.substring(0, cursorPosition)}
+											<span
+												className={cn(
+													"text-muted-foreground",
+													isModifying && "animate-pulse",
+												)}
+											>
+												{displayedCompletion}
+											</span>
+											{input.substring(cursorPosition)}
 										</span>
 									</div>
 								)}
@@ -359,7 +516,6 @@ export default function WritingPage() {
 										)}
 									>
 										<div className="whitespace-pre-wrap">
-											{/* Content before selection */}
 											<span>
 												{input.substring(
 													0,
@@ -367,29 +523,48 @@ export default function WritingPage() {
 												)}
 											</span>
 
-											{/* Diff view container with improved styling */}
-											<div className="flex justify-start items-start bg-background/50 backdrop-blur-sm rounded-lg">
-												<InlineDiffView
-													originalText={selectedText}
-													newText={pendingUpdate}
-													className="inline"
-													onAccept={() => {
-														if (editorRef.current) {
-															const start = editorRef.current.selectionStart;
-															const end = editorRef.current.selectionEnd;
-															const newText =
-																input.substring(0, start) +
-																pendingUpdate +
-																input.substring(end);
-															setInput(newText);
-															setPendingUpdate(null);
-														}
-													}}
-													onReject={() => setPendingUpdate(null)}
-												/>
-											</div>
+											<InlineDiffView
+												originalText={selectedText}
+												newText={pendingUpdate}
+												className="inline relative"
+												onAccept={() => {
+													if (editorRef.current) {
+														const start = editorRef.current.selectionStart;
+														const end = editorRef.current.selectionEnd;
+														const newText =
+															input.substring(0, start) +
+															pendingUpdate +
+															input.substring(end);
 
-											{/* Content after selection */}
+														// Clean up all states at once
+														setInput(newText);
+														// Don't update lastManualInput here since this isn't manual input
+														setPendingUpdate(null);
+														setIsModifying(false);
+														setStreamingText("");
+														setCompletion("");
+														setSelectionPosition(null);
+														setSelectedText("");
+														setSelectedRange(null);
+														setSelectionStyles(null);
+
+														// Reset cursor position
+														const newPosition =
+															start + (pendingUpdate?.length || 0);
+														setCursorPosition(newPosition);
+														if (editorRef.current) {
+															editorRef.current.selectionStart = newPosition;
+															editorRef.current.selectionEnd = newPosition;
+														}
+													}
+												}}
+												onReject={() => {
+													setPendingUpdate(null);
+													setIsModifying(false);
+													setStreamingText("");
+												}}
+											/>
+
 											<span>
 												{input.substring(editorRef.current?.selectionEnd || 0)}
 											</span>
@@ -496,7 +671,7 @@ export default function WritingPage() {
 										<Separator />
 										<ScrollArea className="h-[300px] rounded-md border p-4">
 											<UploadDropzone
-												endpoint="contentUploader"
+												endpoint="documentUploader"
 												onClientUploadComplete={() => {
 													toast.success("File uploaded successfully");
 												}}
@@ -584,7 +759,7 @@ export default function WritingPage() {
 					style={{
 						left: `${selectionPosition.x}px`,
 						top: `${selectionPosition.y}px`,
-						transform: "translate(-50%, 0)", // Center the menu exactly
+						transform: "translate(-50%, 0)",
 					}}
 				>
 					<TextSelectionMenu
@@ -593,6 +768,8 @@ export default function WritingPage() {
 						model={model}
 						onPendingUpdate={setPendingUpdate}
 						onOpenChange={handleDropdownOpen}
+						isLoading={isModifying}
+						onModificationStart={handleModificationStart}
 					/>
 				</div>
 			)}
