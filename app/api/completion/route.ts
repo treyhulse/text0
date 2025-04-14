@@ -49,6 +49,8 @@ export async function POST(request: NextRequest) {
       filter: `userId = '${user.userId}'`,
     });
 
+    console.log(context);
+
     const contextData = context.map((c) => c.data).join("\n");
 
     const result = streamText({
@@ -57,12 +59,11 @@ export async function POST(request: NextRequest) {
       <task>
       You are an autocompletion system that suggests text completions.
       Your name is text0.
-      If the context you have is not relevant return an empty string (also in <completion> tags).
       
       Rules:
       - USE the provided context in <context> tags
       - Read CAREFULLY the input text in <input> tags
-      - Suggest up to 8 words maximum
+      - Suggest up to 10 words maximum
       - Ensure suggestions maintain semantic meaning
       - Wrap completion in <completion> tags
       - Return only the completion text
