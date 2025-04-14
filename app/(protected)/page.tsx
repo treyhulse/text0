@@ -53,7 +53,7 @@ export default async function HomePage() {
 					className="pointer-events-none absolute left-[15%] top-1/4 h-[400px] w-[400px] animate-float-slow"
 					style={{
 						background:
-							"radial-gradient(circle at center, hsl(var(--primary)) 0%, transparent 70%)",
+							"radial-gradient(circle at center, var(--primary) 0%, transparent 70%)",
 						opacity: 0.15,
 						filter: "blur(60px)",
 					}}
@@ -62,7 +62,7 @@ export default async function HomePage() {
 					className="pointer-events-none absolute bottom-1/3 right-[15%] h-[350px] w-[350px] animate-float"
 					style={{
 						background:
-							"radial-gradient(circle at center, hsl(var(--primary)) 0%, transparent 70%)",
+							"radial-gradient(circle at center, var(--primary) 0%, transparent 70%)",
 						opacity: 0.12,
 						filter: "blur(50px)",
 					}}
