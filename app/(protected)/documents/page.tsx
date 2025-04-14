@@ -1,9 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
-import { FileText, Upload, ArrowRight } from "lucide-react";
+import { FileText, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { redis, USER_DOCUMENTS_KEY, DOCUMENT_KEY } from "@/lib/redis";
+import { FileUploadUploadThing } from "@/components/file-upload-uploadthing";
 
 interface Document {
   id: string;
@@ -52,15 +53,7 @@ export default async function FilesPage() {
             <FileText className="h-4 w-4 text-muted-foreground" />
             <h2 className="text-sm font-medium tracking-wide">My Documents</h2>
           </div>
-          <Button variant="ghost" size="sm" asChild>
-            <Link
-              href="/content-upload"
-              className="flex items-center gap-2 text-sm"
-            >
-              <Upload className="h-4 w-4" />
-              Upload Document
-            </Link>
-          </Button>
+          <FileUploadUploadThing />
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -98,12 +91,9 @@ export default async function FilesPage() {
                 Upload your first document to get started. We support various file
                 formats including PDF, DOCX, and more.
               </p>
-              <Button className="mt-4" asChild>
-                <Link href="/content-upload">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload Document
-                </Link>
-              </Button>
+              <div className="mt-4">
+                <FileUploadUploadThing />
+              </div>
             </CardContent>
           </Card>
         )}
