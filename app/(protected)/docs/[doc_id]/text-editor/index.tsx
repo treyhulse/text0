@@ -23,7 +23,7 @@ import { TextSelectionMenu } from "@/components/text-selection-menu";
 import { InlineDiffView } from "@/components/inline-diff-view";
 import { EditableDocumentName } from "@/components/editable-document-name";
 import useDebouncedCallback from "@/hooks/use-debounced-callback";
-
+import { useSelectedReferences } from "@/hooks/use-selected-references";
 // Add these types at the top
 interface TextEditorProps {
   initialContent: string;
@@ -36,7 +36,6 @@ export function TextEditor({
   documentId,
   initialName,
 }: Readonly<TextEditorProps>) {
-  const [model] = useModel();
   const editorRef = React.useRef<HTMLTextAreaElement>(null);
   const [cursorPosition, setCursorPosition] = React.useState(0);
   const [isAutocompleteEnabled, setIsAutocompleteEnabled] =
@@ -44,10 +43,17 @@ export function TextEditor({
   const [isAIChatOpen, setIsAIChatOpen] = React.useState(true);
   const [isZenMode, setIsZenMode] = React.useState(false);
   const [isAcceptingDiff, setIsAcceptingDiff] = React.useState(false);
+
+  const [model] = useModel();
+  const { getSelectedReferences } = useSelectedReferences(documentId);
+
   const { completion, input, setInput, handleSubmit, stop, setCompletion } =
     useCompletion({
       api: `/api/completion?model=${model}`,
       initialInput: initialContent,
+      body: {
+        references: getSelectedReferences(),
+      },
     });
 
   const [selectedText, setSelectedText] = React.useState("");
