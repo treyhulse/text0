@@ -6,13 +6,7 @@ export default function ProtectedLayout({
 	return (
 		<div className="flex w-full h-screen">
 			<MinimalIntegrationSidebar />
-			<main
-				className="flex-1
-              w-full
-               overflow-auto"
-			>
-				{children}
-			</main>
+			<main className="flex-1 w-full overflow-auto">{children}</main>
 		</div>
 	);
 }
