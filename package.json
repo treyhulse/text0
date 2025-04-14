@@ -45,6 +45,7 @@
     "ai": "^4.3.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "diff": "^7.0.0",
     "elevenlabs": "latest",
     "googleapis": "^148.0.0",
