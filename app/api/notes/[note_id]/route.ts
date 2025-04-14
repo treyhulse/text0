@@ -9,10 +9,11 @@ const updateNoteSchema = z.object({
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { note_id: string } }
+  { params }: { params: Promise<{ note_id: string }> }
 ) {
   try {
     const user = await auth();
+    const { note_id } = await params;
     if (!user.userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -25,13 +26,15 @@ export async function PATCH(
     }
 
     // Verify the note belongs to the user
-    const note = await redis.hgetall(NOTE_KEY(params.note_id));
+    const note = await redis.hgetall(NOTE_KEY(note_id));
     if (!note || note.userId !== user.userId) {
-      return new NextResponse("Note not found or unauthorized", { status: 404 });
+      return new NextResponse("Note not found or unauthorized", {
+        status: 404,
+      });
     }
 
     // Update the note content
-    await redis.hset(NOTE_KEY(params.note_id), {
+    await redis.hset(NOTE_KEY(note_id), {
       ...note,
       content: parsed.data.content,
     });
@@ -41,4 +44,4 @@ export async function PATCH(
     console.error("[NOTE_UPDATE]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-} 
+}

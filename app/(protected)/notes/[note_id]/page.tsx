@@ -1,5 +1,4 @@
 import { Redis } from "@upstash/redis";
-import { EditableNoteName } from "@/components/editable-note-name";
 import { auth } from "@clerk/nextjs/server";
 import { type Note, NOTE_KEY } from "@/lib/redis";
 import { TextEditor } from "./text-editor";
@@ -18,10 +17,11 @@ const redis = new Redis({
 export default async function NotePage({
   params,
 }: Readonly<{
-  params: { note_id: string };
+  params: Promise<{ note_id: string }>;
 }>) {
+  const { note_id } = await params;
   const user = await auth();
-  const note: Note | null = await redis.hgetall(NOTE_KEY(params.note_id));
+  const note: Note | null = await redis.hgetall(NOTE_KEY(note_id));
 
   if (!note) {
     return <div>Note not found</div>;
