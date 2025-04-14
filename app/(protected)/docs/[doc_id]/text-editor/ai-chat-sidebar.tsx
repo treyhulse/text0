@@ -1,24 +1,15 @@
+"use client";
+
 import { useRef, useEffect, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import {
-  Send,
-  Sparkles,
-  Wand2,
-  Type,
-  Check,
-  ChevronRight,
-  Plus,
-  History,
-  X,
-  MoreHorizontal,
-  Loader2,
-} from "lucide-react";
+import { Send, Plus, History, X, MoreHorizontal, Loader2 } from "lucide-react";
 import { ModelSelector } from "./model-selector";
 import { useModel } from "@/hooks/use-model";
+import { ReferenceSelector } from "./reference-selector";
 
 export interface AIChatSidebarProps {
   content: string;
@@ -26,29 +17,6 @@ export interface AIChatSidebarProps {
   onEnableChange: (enabled: boolean) => void;
   onPendingUpdate?: (update: string | null) => void;
 }
-
-const QUICK_ACTIONS = [
-  {
-    icon: Sparkles,
-    label: "Improve writing",
-    prompt: "Improve this text while maintaining its meaning:",
-  },
-  {
-    icon: Check,
-    label: "Fix grammar & spelling",
-    prompt: "Fix any grammar and spelling errors in this text:",
-  },
-  {
-    icon: Type,
-    label: "Make it concise",
-    prompt: "Make this text more concise while keeping its key points:",
-  },
-  {
-    icon: Wand2,
-    label: "Make it professional",
-    prompt: "Make this text more professional and formal:",
-  },
-];
 
 export function AIChatSidebar({
   content,
@@ -107,12 +75,6 @@ export function AIChatSidebar({
     }
   }, [messages.length, scrollToBottomMemo]);
 
-  const handleQuickAction = (prompt: string) => {
-    if (status === "streaming") return;
-    setInput(`${prompt}\n\n${content}`);
-    handleSubmit();
-  };
-
   const customSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || status === "streaming") return;
@@ -131,9 +93,9 @@ export function AIChatSidebar({
   };
 
   return (
-    <div className="h-full border-l border-border bg-background/95 flex flex-col">
+    <div className="h-full border-l border-border bg-background/95 flex flex-col max-h-full">
       {/* Header */}
-      <div className="px-4 h-12 border-b flex items-center justify-between bg-background">
+      <div className="shrink-0 px-4 h-12 border-b flex items-center justify-between bg-background">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-medium">AI Assistant</h2>
           {status === "streaming" && (
@@ -176,27 +138,13 @@ export function AIChatSidebar({
       </div>
 
       {/* Quick Actions */}
-      <div className="p-2 border-b bg-background">
+      <div className="shrink-0 p-2 border-b bg-background">
         <ModelSelector />
-        <div className="mt-2 space-y-1">
-          {QUICK_ACTIONS.map((action) => (
-            <Button
-              key={action.label}
-              variant="ghost"
-              className="w-full justify-start h-8 px-2 text-xs"
-              onClick={() => handleQuickAction(action.prompt)}
-              disabled={status === "streaming"}
-            >
-              <action.icon className="h-3.5 w-3.5 mr-2" />
-              {action.label}
-              <ChevronRight className="h-3.5 w-3.5 ml-auto opacity-50" />
-            </Button>
-          ))}
-        </div>
+        <ReferenceSelector />
       </div>
 
       {/* Chat Messages */}
-      <ScrollArea className="flex-1" ref={scrollAreaRef}>
+      <ScrollArea className="flex-1 min-h-0" ref={scrollAreaRef}>
         <div className="flex flex-col gap-3 p-4">
           {messages.map((message) => (
             <div
@@ -220,7 +168,7 @@ export function AIChatSidebar({
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="p-2 border-t bg-background">
+      <div className="shrink-0 p-2 border-t bg-background">
         <form onSubmit={customSubmit} className="flex flex-col gap-2">
           <div className="relative">
             <Textarea
