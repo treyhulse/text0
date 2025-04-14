@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
-import { updateNoteName, UpdateNoteNameActionState } from "@/app/actions/notes";
+import { updateNoteName } from "@/app/actions/notes";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 
@@ -15,7 +15,7 @@ interface EditableNoteNameProps {
 export function EditableNoteName({
   noteId,
   initialName,
-}: EditableNoteNameProps) {
+}: Readonly<EditableNoteNameProps>) {
   const [state, formAction, isPending] = React.useActionState(
     updateNoteName,
     undefined
@@ -46,7 +46,7 @@ export function EditableNoteName({
   };
 
   return (
-    <form action={formAction}>
+    <form action={formAction} className="px-8 mb-4">
       <input type="hidden" name="noteId" value={noteId} />
       <Input
         ref={inputRef}
@@ -54,7 +54,7 @@ export function EditableNoteName({
         defaultValue={initialName}
         onKeyDown={handleKeyDown}
         disabled={isPending}
-        className="h-8 border-none bg-transparent p-0 text-lg font-semibold focus-visible:ring-0"
+        className="h-8 border-none bg-transparent p-0 !text-2xl font-semibold focus-visible:ring-0"
       />
       <Button
         ref={buttonRef}

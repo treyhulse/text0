@@ -1,36 +1,26 @@
-"use client";
-
-import React from "react";
 import { FileText, Search, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { Input } from "@/components/ui/input";
-import { useUser } from "@clerk/nextjs";
 import { NewNoteButton } from "@/components/new-notebutton";
+import { NOTE_KEY, type Note, USER_NOTES_KEY, redis } from "@/lib/redis";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+export default async function HomePage() {
+  const user = await currentUser();
+  if (!user) {
+    redirect("/sign-in");
+  }
+  const notesWithIds = await redis.zrange<string[]>(
+    USER_NOTES_KEY(user.id),
+    0,
+    -1
+  );
+  const _notes = await Promise.all(
+    notesWithIds.map((noteId) => redis.hgetall<Note>(NOTE_KEY(noteId)))
+  );
+  const notes = _notes.map((note) => note as Note);
 
-const notes = [
-  {
-    id: 1,
-    title: "How to conduct a user interview that could improve your product?",
-    content:
-      "You cannot understand good design if you do not understand people; design is made for people. User interviews are a tool that can help you get this understanding...",
-    lastModified: "2024-03-20T10:00:00Z",
-    tags: ["Needs to be done", "Questions"],
-    readTime: "3 min",
-  },
-  {
-    id: 2,
-    title: "Design challenges",
-    content:
-      "What Is A Design Challenge? Design challenges are exercises or competitions that designers can do to boost creativity, create positive habits, and learn new methods for...",
-    lastModified: "2024-03-19T15:30:00Z",
-    tags: ["Workshops", "Design challenges", "Work in progress"],
-    readTime: "5 min",
-  },
-];
-
-export default function HomePage() {
-  const user = useUser();
   return (
     <div className="relative min-h-screen bg-background">
       {/* Hero Section with Gradient */}
@@ -38,7 +28,7 @@ export default function HomePage() {
         <div className="container px-4">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="mb-3 text-2xl font-semibold tracking-tight">
-              Welcome back, {user.user?.fullName}!
+              Welcome back, {user?.fullName}!
             </h1>
             <p className="text-base text-muted-foreground">
               Continue where you left off or create something new
@@ -95,27 +85,17 @@ export default function HomePage() {
               {notes.map((note) => (
                 <Link
                   key={note.id}
-                  href={`/writing?note=${note.id}`}
+                  href={`/notes/${note.id}`}
                   className="group flex flex-col rounded-lg border bg-card p-4 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
                 >
                   <h3 className="mb-2 text-base font-medium transition-colors group-hover:text-primary">
-                    {note.title}
+                    {note.name}
                   </h3>
                   <p className="line-clamp-2 text-sm text-muted-foreground">
                     {note.content}
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {note.tags.map((tag) => (
-                      <span
-                        key={`${tag}`}
-                        className="inline-flex items-center rounded-md border border-border/40 bg-background/40 px-2 py-0.5 text-xs font-medium text-foreground/80"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
                   <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 text-sm text-muted-foreground">
-                    <span>{note.readTime}</span>
+                    <span>{note.createdAt}</span>
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 </Link>

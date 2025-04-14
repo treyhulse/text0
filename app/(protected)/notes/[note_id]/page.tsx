@@ -1,5 +1,8 @@
 import { Redis } from "@upstash/redis";
 import { EditableNoteName } from "@/components/editable-note-name";
+import { auth } from "@clerk/nextjs/server";
+import { type Note, NOTE_KEY } from "@/lib/redis";
+import { TextEditor } from "./text-editor";
 if (
   !process.env.UPSTASH_REDIS_REST_URL ||
   !process.env.UPSTASH_REDIS_REST_TOKEN
@@ -12,28 +15,27 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-interface Note {
-  id: string;
-  name: string;
-  content: string;
-  createdAt: string;
-}
-
 export default async function NotePage({
   params,
-}: {
+}: Readonly<{
   params: { note_id: string };
-}) {
-  const note = (await redis.hgetall(`note:${params.note_id}`)) as Note | null;
+}>) {
+  const user = await auth();
+  const note: Note | null = await redis.hgetall(NOTE_KEY(params.note_id));
 
   if (!note) {
     return <div>Note not found</div>;
   }
 
+  if (user.userId !== note.userId) {
+    return <div>Note not found</div>;
+  }
+
   return (
-    <div className="container mx-auto p-4">
-      <EditableNoteName noteId={note.id} initialName={note.name} />
-      <h1 className="text-2xl font-bold">{note.name}</h1>
-    </div>
+    <TextEditor
+      initialContent={note.content}
+      noteId={note.id}
+      initialName={note.name}
+    />
   );
 }
