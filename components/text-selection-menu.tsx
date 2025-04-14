@@ -130,7 +130,9 @@ export function TextSelectionMenu({
 							{activeItem === "improve" ? (
 								<LoadingSpinner />
 							) : (
-								<MenubarShortcut>⌘I</MenubarShortcut>
+								<MenubarShortcut className="text-foreground">
+									⌘I
+								</MenubarShortcut>
 							)}
 						</MenubarItem>
 
@@ -149,7 +151,9 @@ export function TextSelectionMenu({
 							{activeItem === "grammar" ? (
 								<LoadingSpinner />
 							) : (
-								<MenubarShortcut>⌘G</MenubarShortcut>
+								<MenubarShortcut className="text-foreground">
+									⌘G
+								</MenubarShortcut>
 							)}
 						</MenubarItem>
 
@@ -281,7 +285,9 @@ export function TextSelectionMenu({
 							{activeItem === "summarize" ? (
 								<LoadingSpinner />
 							) : (
-								<MenubarShortcut>⌘S</MenubarShortcut>
+								<MenubarShortcut className="text-foreground">
+									⌘S
+								</MenubarShortcut>
 							)}
 						</MenubarItem>
 					</MenubarContent>

@@ -117,7 +117,7 @@ export function CommandMenu({
 			>
 				<span className="inline-flex w-full justify-between items-center">
 					Search or press
-					<kbd className="pointer-events-none ml-auto h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+					<kbd className="pointer-events-none ml-auto h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-foreground sm:flex">
 						<span className="text-xs">⌘</span>K
 					</kbd>
 				</span>
