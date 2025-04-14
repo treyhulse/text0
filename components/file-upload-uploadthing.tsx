@@ -103,11 +103,11 @@ export function FileUploadUploadThing() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Upload Files</Button>
+        <Button variant="outline">Add Reference</Button>
       </DialogTrigger>
-      <DialogContent title="Upload Files" className="sm:max-w-md">
+      <DialogContent title="Add Reference" className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Upload Files</DialogTitle>
+          <DialogTitle>Add Reference</DialogTitle>
         </DialogHeader>
         <FileUpload
           accept=".pdf,.docx,.xlsx,.pptx,.txt,.md"

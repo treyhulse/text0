@@ -1,8 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { FileText, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
 import { redis, USER_DOCUMENTS_KEY, DOCUMENT_KEY } from "@/lib/redis";
 import { FileUploadUploadThing } from "@/components/file-upload-uploadthing";
 
@@ -17,7 +15,7 @@ interface Document {
 async function getDocuments(userId: string): Promise<Document[]> {
   // Get all document IDs for the user
   const documentIds = await redis.smembers(USER_DOCUMENTS_KEY(userId));
-  
+
   // Fetch details for each document
   const documents = await Promise.all(
     documentIds.map(async (documentId) => {
@@ -30,8 +28,9 @@ async function getDocuments(userId: string): Promise<Document[]> {
   );
 
   // Sort documents by upload date (newest first)
-  documents.sort((a, b) => 
-    new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+  documents.sort(
+    (a, b) =>
+      new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
   );
 
   return documents;
@@ -88,8 +87,8 @@ export default async function FilesPage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Upload your first document to get started. We support various file
-                formats including PDF, DOCX, and more.
+                Upload your first document to get started. We support various
+                file formats including PDF, DOCX, and more.
               </p>
               <div className="mt-4">
                 <FileUploadUploadThing />

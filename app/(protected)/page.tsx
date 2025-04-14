@@ -3,9 +3,16 @@ import Link from "next/link";
 
 import { Input } from "@/components/ui/input";
 import { NewNoteButton } from "@/components/new-notebutton";
-import { NOTE_KEY, type Note, USER_NOTES_KEY, redis } from "@/lib/redis";
+import {
+  NOTE_KEY,
+  type Note,
+  USER_DOCUMENTS_KEY,
+  USER_NOTES_KEY,
+  redis,
+} from "@/lib/redis";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { FileUploadUploadThing } from "@/components/file-upload-uploadthing";
 export default async function HomePage() {
   const user = await currentUser();
   if (!user) {
@@ -21,6 +28,8 @@ export default async function HomePage() {
   );
   const notes = _notes.map((note) => note as Note);
 
+  const documentsCount = await redis.scard(USER_DOCUMENTS_KEY(user.id));
+
   return (
     <div className="relative min-h-screen bg-background">
       {/* Hero Section with Gradient */}
@@ -28,25 +37,13 @@ export default async function HomePage() {
         <div className="container px-4">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="mb-3 text-2xl font-semibold tracking-tight">
-              Welcome back, {user?.fullName}!
+              Welcome{documentsCount > 0 && " back"}, {user?.fullName}!
             </h1>
             <p className="text-base text-muted-foreground">
-              Continue where you left off or create something new
+              {documentsCount > 0
+                ? "Continue where you left off or create something new"
+                : "Add some references to text0 and experience an absurdly smart writing"}
             </p>
-            <div className="mx-auto mt-6 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search notes..."
-                  className="h-9 w-full rounded-md pl-9 pr-4 text-sm"
-                />
-                <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                  <kbd className="text-muted-foreground/70 inline-flex h-5 items-center rounded border px-1 font-mono text-[10px] font-medium">
-                    ⌘K
-                  </kbd>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         {/* Decorative gradients */}
@@ -72,36 +69,55 @@ export default async function HomePage() {
 
       <div className="container px-4 pb-8">
         <div className="mx-auto max-w-5xl space-y-8">
-          {/* Notes Section */}
-          <div>
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-sm font-medium tracking-wide">My notes</h2>
+          {/* Documents Section */}
+          {documentsCount === 0 && (
+            <div>
+              <div className="mb-4 flex w-full flex-col items-center justify-center">
+                <FileUploadUploadThing />
               </div>
+            </div>
+          )}
+          {/* Notes Section */}
+          {notes.length > 0 ? (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <h2 className="text-sm font-medium tracking-wide">
+                    My notes
+                  </h2>
+                </div>
+                <NewNoteButton />
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                {notes.map((note) => (
+                  <Link
+                    key={note.id}
+                    href={`/notes/${note.id}`}
+                    className="group flex flex-col rounded-lg border bg-card p-4 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
+                  >
+                    <h3 className="mb-2 text-base font-medium transition-colors group-hover:text-primary">
+                      {note.name}
+                    </h3>
+                    <p className="line-clamp-2 text-sm text-muted-foreground">
+                      {note.content}
+                    </p>
+                    <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 text-sm text-muted-foreground">
+                      <span>{note.createdAt}</span>
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center">
+              <p className="text-muted-foreground text-xs">
+                Create your first note!
+              </p>
               <NewNoteButton />
             </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              {notes.map((note) => (
-                <Link
-                  key={note.id}
-                  href={`/notes/${note.id}`}
-                  className="group flex flex-col rounded-lg border bg-card p-4 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
-                >
-                  <h3 className="mb-2 text-base font-medium transition-colors group-hover:text-primary">
-                    {note.name}
-                  </h3>
-                  <p className="line-clamp-2 text-sm text-muted-foreground">
-                    {note.content}
-                  </p>
-                  <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 text-sm text-muted-foreground">
-                    <span>{note.createdAt}</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
