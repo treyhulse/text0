@@ -1,48 +1,12 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Plus,
-  FileText,
-  MoreVertical,
-  Folder,
-  Search,
-  ArrowRight,
-} from "lucide-react";
+import { FileText, Search, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { Input } from "@/components/ui/input";
 import { useUser } from "@clerk/nextjs";
-
-// Mock data for projects and notes
-const projects = [
-  {
-    id: 1,
-    title: "Workshop planning and ideas",
-    lastModified: "2024-03-20T10:00:00Z",
-    tag: "Planning",
-  },
-  {
-    id: 2,
-    title: "Design exploration",
-    lastModified: "2024-03-19T15:30:00Z",
-    tag: "Design",
-  },
-  {
-    id: 3,
-    title: "Users' feedback",
-    lastModified: "2024-03-18T09:00:00Z",
-    tag: "Research",
-  },
-  {
-    id: 4,
-    title: "Testing results",
-    lastModified: "2024-03-17T14:20:00Z",
-    tag: "Testing",
-  },
-];
+import { NewNoteButton } from "@/components/new-notebutton";
 
 const notes = [
   {
@@ -125,15 +89,7 @@ export default function HomePage() {
                 <FileText className="h-4 w-4 text-muted-foreground" />
                 <h2 className="text-sm font-medium tracking-wide">My notes</h2>
               </div>
-              <Button variant="ghost" size="sm" asChild>
-                <Link
-                  href="/writing"
-                  className="flex items-center gap-2 text-sm"
-                >
-                  <Plus className="h-4 w-4" />
-                  New Note
-                </Link>
-              </Button>
+              <NewNoteButton />
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               {notes.map((note) => (
