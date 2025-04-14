@@ -153,7 +153,7 @@ export default function WritingPage() {
                 <Separator />
                 <ScrollArea className="h-[300px] rounded-md border p-4">
                   <UploadDropzone
-                    endpoint="contentUploader"
+                    endpoint="documentUploader"
                     onClientUploadComplete={() => {
                       toast.success("File uploaded successfully");
                     }}
