@@ -10,6 +10,8 @@ import { Send, Plus, History, X, MoreHorizontal, Loader2 } from "lucide-react";
 import { ModelSelector } from "./model-selector";
 import { useModel } from "@/hooks/use-model";
 import { ReferenceSelector } from "./reference-selector";
+import { useSelectedReferences } from "@/hooks/use-selected-references";
+import { useParams } from "next/navigation";
 
 export interface AIChatSidebarProps {
 	content: string;
@@ -25,8 +27,10 @@ export function AIChatSidebar({
 	onPendingUpdate,
 }: Readonly<AIChatSidebarProps>) {
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
-	const [model] = useModel();
 
+	const { doc_id } = useParams();
+	const [model] = useModel();
+	const { getSelectedReferences } = useSelectedReferences(doc_id as string);
 	const {
 		messages,
 		input,
@@ -41,6 +45,7 @@ export function AIChatSidebar({
 		api: "/api/chat",
 		body: {
 			model,
+			references: getSelectedReferences(),
 		},
 		onFinish: (message) => {
 			if (message.content.startsWith("UPDATED_CONTENT:")) {
