@@ -1,8 +1,13 @@
 import { auth } from "@clerk/nextjs/server";
 import { FileText, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { redis, USER_DOCUMENTS_KEY, DOCUMENT_KEY } from "@/lib/redis";
-import { FileUploadUploadThing } from "@/components/file-upload-uploadthing";
+import {
+  redis,
+  USER_REFERENCES_KEY,
+  REFERENCE_KEY,
+  type Reference,
+} from "@/lib/redis";
+import { AddReference } from "@/components/add-reference";
 
 interface Document {
   id: string;
@@ -12,18 +17,18 @@ interface Document {
   chunks: number;
 }
 
-async function getDocuments(userId: string): Promise<Document[]> {
+async function getReferences(userId: string): Promise<Reference[]> {
   // Get all document IDs for the user
-  const documentIds = await redis.smembers(USER_DOCUMENTS_KEY(userId));
+  const referenceIds = await redis.smembers(USER_REFERENCES_KEY(userId));
 
   // Fetch details for each document
   const documents = await Promise.all(
-    documentIds.map(async (documentId) => {
-      const documentInfo = await redis.hgetall(DOCUMENT_KEY(documentId));
+    referenceIds.map(async (referenceId) => {
+      const referenceInfo = await redis.hgetall(REFERENCE_KEY(referenceId));
       return {
-        id: documentId,
-        ...documentInfo,
-      } as Document;
+        id: referenceId,
+        ...referenceInfo,
+      } as Reference;
     })
   );
 
@@ -42,7 +47,7 @@ export default async function FilesPage() {
     return null;
   }
 
-  const documents = await getDocuments(userId);
+  const references = await getReferences(userId);
 
   return (
     <div className="container px-4 pb-8">
@@ -50,29 +55,35 @@ export default async function FilesPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FileText className="h-4 w-4 text-muted-foreground" />
-            <h2 className="text-sm font-medium tracking-wide">My Documents</h2>
+            <h2 className="text-sm font-medium tracking-wide">My References</h2>
           </div>
-          <FileUploadUploadThing />
+          <AddReference />
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {documents.map((document) => (
+          {references.map((reference) => (
             <a
-              key={document.id}
-              href={document.url}
+              key={reference.id}
+              href={reference.url}
               target="_blank"
               rel="noopener noreferrer"
               className="group flex flex-col rounded-lg border bg-card p-4 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
             >
-              <div className="inline-flex w-fit items-center rounded-md border border-border/40 bg-background/40 px-2 py-0.5 text-xs font-medium text-foreground/80">
-                {document.chunks} chunks
-              </div>
+              {reference.processed ? (
+                <div className="inline-flex w-fit items-center rounded-md border border-border/40 bg-background/40 px-2 py-0.5 text-xs font-medium text-foreground/80">
+                  {reference.chunksCount} chunks
+                </div>
+              ) : (
+                <div className="inline-flex w-fit items-center rounded-md border border-border/40 bg-background/40 px-2 py-0.5 text-xs font-medium text-foreground/80">
+                  Processing...
+                </div>
+              )}
               <h3 className="mb-2 mt-2 text-base font-medium transition-colors group-hover:text-primary">
-                {document.name}
+                {reference.name}
               </h3>
               <div className="mt-auto flex items-center justify-between pt-3 text-sm text-muted-foreground">
                 <span>
-                  {new Date(document.uploadedAt).toLocaleDateString()}
+                  {new Date(reference.uploadedAt).toLocaleDateString()}
                 </span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </div>
@@ -80,18 +91,18 @@ export default async function FilesPage() {
           ))}
         </div>
 
-        {documents.length === 0 && (
+        {references.length === 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>No Documents Yet</CardTitle>
+              <CardTitle>No References Yet</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Upload your first document to get started. We support various
+                Upload your first reference to get started. We support various
                 file formats including PDF, DOCX, and more.
               </p>
               <div className="mt-4">
-                <FileUploadUploadThing />
+                <AddReference />
               </div>
             </CardContent>
           </Card>

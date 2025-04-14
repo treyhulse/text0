@@ -1,26 +1,31 @@
 "use server";
 
-import { redis, NOTE_KEY, USER_NOTES_KEY, type Note } from "@/lib/redis";
+import {
+  redis,
+  DOCUMENT_KEY,
+  USER_DOCUMENTS_KEY,
+  type Document,
+} from "@/lib/redis";
 import { auth } from "@clerk/nextjs/server";
 import { nanoid } from "@/lib/nanoid";
 import type { ActionState } from "@/lib/utils";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
-export type CreateNoteActionState = ActionState<
+export type CreateDocumentActionState = ActionState<
   { name: string },
-  { noteId: string }
+  { documentId: string }
 >;
 
-export type UpdateNoteNameActionState = ActionState<{
+export type UpdateDocumentNameActionState = ActionState<{
   name: string;
-  noteId: string;
+  documentId: string;
 }>;
 
-export async function createNote(
-  prevState: CreateNoteActionState | undefined,
+export async function createDocument(
+  prevState: CreateDocumentActionState | undefined,
   formData: FormData
-): Promise<CreateNoteActionState> {
+): Promise<CreateDocumentActionState> {
   const rawFormData = Object.fromEntries(formData.entries()) as {
     name: string;
   };
@@ -32,7 +37,7 @@ export async function createNote(
     }
 
     const form = z.object({
-      name: z.string().min(1, "Note name is required"),
+      name: z.string().min(1, "Document name is required"),
     });
 
     const parsed = form.safeParse(rawFormData);
@@ -42,7 +47,7 @@ export async function createNote(
     }
 
     const id = nanoid();
-    const note: Note = {
+    const document: Document = {
       id,
       userId: user.userId,
       name: parsed.data.name,
@@ -50,16 +55,16 @@ export async function createNote(
       createdAt: new Date().toISOString(),
     };
 
-    // Store the note
-    await redis.hset(NOTE_KEY(id), note);
+    // Store the document
+    await redis.hset(DOCUMENT_KEY(id), document);
 
-    // Add note ID to user's notes list
-    await redis.zadd(USER_NOTES_KEY(user.userId), {
+    // Add document ID to user's documents list
+    await redis.zadd(USER_DOCUMENTS_KEY(user.userId), {
       score: Date.now(),
       member: id,
     });
 
-    return { success: true, data: { noteId: id } };
+    return { success: true, data: { documentId: id } };
   } catch (error) {
     console.error(error);
     return {
@@ -70,13 +75,13 @@ export async function createNote(
   }
 }
 
-export async function updateNoteName(
-  prevState: UpdateNoteNameActionState | undefined,
+export async function updateDocumentName(
+  prevState: UpdateDocumentNameActionState | undefined,
   formData: FormData
-): Promise<UpdateNoteNameActionState> {
+): Promise<UpdateDocumentNameActionState> {
   const rawFormData = Object.fromEntries(formData.entries()) as {
     name: string;
-    noteId: string;
+    documentId: string;
   };
 
   try {
@@ -86,8 +91,8 @@ export async function updateNoteName(
     }
 
     const form = z.object({
-      name: z.string().min(1, "Note name is required"),
-      noteId: z.string().min(1, "Note ID is required"),
+      name: z.string().min(1, "Document name is required"),
+      documentId: z.string().min(1, "Document ID is required"),
     });
 
     const parsed = form.safeParse(rawFormData);
@@ -96,19 +101,19 @@ export async function updateNoteName(
       return { success: false, error: parsed.error.message };
     }
 
-    // Verify the note belongs to the user
-    const note = await redis.hgetall(NOTE_KEY(parsed.data.noteId));
-    if (!note || note.userId !== user.userId) {
-      throw new Error("Note not found or unauthorized");
+    // Verify the document belongs to the user
+    const document = await redis.hgetall(DOCUMENT_KEY(parsed.data.documentId));
+    if (!document || document.userId !== user.userId) {
+      throw new Error("Document not found or unauthorized");
     }
 
-    // Update the note name
-    await redis.hset(NOTE_KEY(parsed.data.noteId), {
-      ...note,
+    // Update the document name
+    await redis.hset(DOCUMENT_KEY(parsed.data.documentId), {
+      ...document,
       name: parsed.data.name,
     });
 
-    revalidatePath(`/notes/${parsed.data.noteId}`);
+    revalidatePath(`/docs/${parsed.data.documentId}`);
 
     return { success: true };
   } catch (error) {

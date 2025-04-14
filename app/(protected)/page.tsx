@@ -1,34 +1,36 @@
-import { FileText, Search, ArrowRight } from "lucide-react";
+import { FileText, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-import { Input } from "@/components/ui/input";
-import { NewNoteButton } from "@/components/new-notebutton";
+import { NewDocumentButton } from "@/components/new-document-button";
 import {
-  NOTE_KEY,
-  type Note,
+  DOCUMENT_KEY,
+  type Document,
+  USER_REFERENCES_KEY,
   USER_DOCUMENTS_KEY,
-  USER_NOTES_KEY,
   redis,
 } from "@/lib/redis";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { FileUploadUploadThing } from "@/components/file-upload-uploadthing";
+import { AddReference } from "@/components/add-reference";
+
 export default async function HomePage() {
   const user = await currentUser();
   if (!user) {
     redirect("/sign-in");
   }
-  const notesWithIds = await redis.zrange<string[]>(
-    USER_NOTES_KEY(user.id),
+  const documentsWithIds = await redis.zrange<string[]>(
+    USER_DOCUMENTS_KEY(user.id),
     0,
     -1
   );
-  const _notes = await Promise.all(
-    notesWithIds.map((noteId) => redis.hgetall<Note>(NOTE_KEY(noteId)))
+  const _documents = await Promise.all(
+    documentsWithIds.map((documentId) =>
+      redis.hgetall<Document>(DOCUMENT_KEY(documentId))
+    )
   );
-  const notes = _notes.map((note) => note as Note);
+  const documents = _documents.map((document) => document as Document);
 
-  const documentsCount = await redis.scard(USER_DOCUMENTS_KEY(user.id));
+  const referencesCount = await redis.scard(USER_REFERENCES_KEY(user.id));
 
   return (
     <div className="relative min-h-screen bg-background">
@@ -37,10 +39,10 @@ export default async function HomePage() {
         <div className="container px-4">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="mb-3 text-2xl font-semibold tracking-tight">
-              Welcome{documentsCount > 0 && " back"}, {user?.fullName}!
+              Welcome{referencesCount > 0 && " back"}, {user?.fullName}!
             </h1>
             <p className="text-base text-muted-foreground">
-              {documentsCount > 0
+              {referencesCount > 0
                 ? "Continue where you left off or create something new"
                 : "Add some references to text0 and experience an absurdly smart writing"}
             </p>
@@ -70,40 +72,42 @@ export default async function HomePage() {
       <div className="container px-4 pb-8">
         <div className="mx-auto max-w-5xl space-y-8">
           {/* Documents Section */}
-          {documentsCount === 0 && (
+          {referencesCount === 0 && (
             <div>
               <div className="mb-4 flex w-full flex-col items-center justify-center">
-                <FileUploadUploadThing />
+                <AddReference />
               </div>
             </div>
           )}
-          {/* Notes Section */}
-          {notes.length > 0 ? (
+          {/* Documents Section */}
+          {documents.length > 0 ? (
             <div>
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <h2 className="text-sm font-medium tracking-wide">
-                    My notes
+                    My documents
                   </h2>
                 </div>
-                <NewNoteButton />
+                <NewDocumentButton />
               </div>
               <div className="grid gap-3 md:grid-cols-2">
-                {notes.map((note) => (
+                {documents.map((document) => (
                   <Link
-                    key={note.id}
-                    href={`/notes/${note.id}`}
+                    key={document.id}
+                    href={`/docs/${document.id}`}
                     className="group flex flex-col rounded-lg border bg-card p-4 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
                   >
                     <h3 className="mb-2 text-base font-medium transition-colors group-hover:text-primary">
-                      {note.name}
+                      {document.name}
                     </h3>
                     <p className="line-clamp-2 text-sm text-muted-foreground">
-                      {note.content}
+                      {document.content}
                     </p>
                     <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 text-sm text-muted-foreground">
-                      <span>{note.createdAt}</span>
+                      <span>
+                        {new Date(document.createdAt).toLocaleDateString()}
+                      </span>
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </div>
                   </Link>
@@ -113,9 +117,9 @@ export default async function HomePage() {
           ) : (
             <div className="flex flex-col items-center justify-center">
               <p className="text-muted-foreground text-xs">
-                Create your first note!
+                Create your first doc!
               </p>
-              <NewNoteButton />
+              <NewDocumentButton />
             </div>
           )}
         </div>

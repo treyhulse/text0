@@ -8,19 +8,19 @@ import { Button } from "@/components/ui/button";
 import { Maximize2, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useModel } from "@/hooks/use-model";
-import { AIChatSidebar } from "@/app/(protected)/notes/[note_id]/text-editor/ai-chat-sidebar";
+import { AIChatSidebar } from "./ai-chat-sidebar";
 import { TextSelectionMenu } from "@/components/text-selection-menu";
 import { InlineDiffView } from "@/components/inline-diff-view";
-import { EditableNoteName } from "@/components/editable-note-name";
+import { EditableDocumentName } from "@/components/editable-document-name";
 import useDebouncedCallback from "@/hooks/use-debounced-callback";
 
 export function TextEditor({
   initialContent,
-  noteId,
+  documentId,
   initialName,
 }: Readonly<{
   initialContent: string;
-  noteId: string;
+  documentId: string;
   initialName: string;
 }>) {
   const [model] = useModel();
@@ -52,8 +52,8 @@ export function TextEditor({
   const [pendingUpdate, setPendingUpdate] = React.useState<string | null>(null);
 
   const debouncedUpdateContent = useDebouncedCallback(
-    (noteId: string, content: string) => {
-      fetch(`/api/notes/${noteId}`, {
+    (documentId: string, content: string) => {
+      fetch(`/api/docs/${documentId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
@@ -311,14 +311,17 @@ export function TextEditor({
       >
         <div className="flex h-full justify-center py-4">
           <div className={cn("w-full max-w-4xl h-full pt-8")}>
-            <EditableNoteName noteId={noteId} initialName={initialName} />
+            <EditableDocumentName
+              documentId={documentId}
+              initialName={initialName}
+            />
             <div className="relative w-full h-full flex-1">
               <textarea
                 ref={editorRef}
                 value={input}
                 onChange={(e) => {
                   handleInput(e);
-                  debouncedUpdateContent(noteId, e.target.value);
+                  debouncedUpdateContent(documentId, e.target.value);
                 }}
                 onKeyDown={handleKeyDown}
                 onSelect={handleSelectionChange}

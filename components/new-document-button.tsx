@@ -12,22 +12,22 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
-import { createNote } from "@/app/actions/notes";
+import { createDocument } from "@/actions/docs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export function NewNoteButton() {
+export function NewDocumentButton() {
   const [state, formAction, isPending] = React.useActionState(
-    createNote,
+    createDocument,
     undefined
   );
 
   const router = useRouter();
 
   useEffect(() => {
-    if (state?.success && state.data?.noteId) {
-      toast.success("Note created successfully");
-      router.push(`/notes/${state.data.noteId}`);
+    if (state?.success && state.data?.documentId) {
+      toast.success("Document created successfully");
+      router.push(`/docs/${state.data.documentId}`);
     }
   }, [state, router]);
 
@@ -46,17 +46,17 @@ export function NewNoteButton() {
           className="flex items-center gap-2 text-sm"
         >
           <Plus className="h-4 w-4" />
-          New Note
+          New Document
         </Button>
       </DialogTrigger>
-      <DialogContent title="Create New Note">
+      <DialogContent title="Create New Document">
         <DialogHeader>
-          <DialogTitle>Create New Note</DialogTitle>
+          <DialogTitle>Create New Document</DialogTitle>
         </DialogHeader>
         <form action={formAction} className="space-y-4">
-          <Input name="name" placeholder="Note name" required />
+          <Input name="name" placeholder="Document name" required />
           <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending ? "Creating..." : "Create Note"}
+            {isPending ? "Creating..." : "Create Document"}
           </Button>
         </form>
       </DialogContent>

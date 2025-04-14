@@ -1,6 +1,6 @@
 import { Redis } from "@upstash/redis";
 import { auth } from "@clerk/nextjs/server";
-import { type Note, NOTE_KEY } from "@/lib/redis";
+import { type Document, DOCUMENT_KEY } from "@/lib/redis";
 import { TextEditor } from "./text-editor";
 if (
   !process.env.UPSTASH_REDIS_REST_URL ||
@@ -14,28 +14,28 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-export default async function NotePage({
+export default async function DocumentPage({
   params,
 }: Readonly<{
-  params: Promise<{ note_id: string }>;
+  params: Promise<{ doc_id: string }>;
 }>) {
-  const { note_id } = await params;
+  const { doc_id } = await params;
   const user = await auth();
-  const note: Note | null = await redis.hgetall(NOTE_KEY(note_id));
+  const document: Document | null = await redis.hgetall(DOCUMENT_KEY(doc_id));
 
-  if (!note) {
-    return <div>Note not found</div>;
+  if (!document) {
+    return <div>Document not found</div>;
   }
 
-  if (user.userId !== note.userId) {
-    return <div>Note not found</div>;
+  if (user.userId !== document.userId) {
+    return <div>Document not found</div>;
   }
 
   return (
     <TextEditor
-      initialContent={note.content}
-      noteId={note.id}
-      initialName={note.name}
+      initialContent={document.content}
+      documentId={document.id}
+      initialName={document.name}
     />
   );
 }

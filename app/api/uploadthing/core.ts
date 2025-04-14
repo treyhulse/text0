@@ -1,8 +1,15 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { auth } from "@clerk/nextjs/server";
-import type { processDocumentTask } from "@/trigger/process-document";
 import { tasks } from "@trigger.dev/sdk/v3";
+import type { processReferenceTask } from "@/trigger/process-document";
+import { nanoid } from "@/lib/nanoid";
+import {
+  REFERENCE_KEY,
+  type Reference,
+  USER_REFERENCES_KEY,
+  redis,
+} from "@/lib/redis";
 
 const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
@@ -51,18 +58,29 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("Upload complete", { metadata, file });
-      // Trigger the document processing task
-      await tasks.trigger<typeof processDocumentTask>("process-document", {
+      const referenceId = nanoid();
+
+      await redis.sadd(USER_REFERENCES_KEY(metadata.userId), referenceId);
+      await redis.hset(REFERENCE_KEY(referenceId), {
+        id: referenceId,
         userId: metadata.userId,
-        fileUrl: file.ufsUrl,
-        fileName: file.name,
+        url: file.ufsUrl,
+        name: file.name,
+        uploadedAt: new Date().toISOString(),
+        chunksCount: 0,
+        processed: false,
+        filename: file.name,
+      } satisfies Reference);
+      // Trigger the document processing task
+      await tasks.trigger<typeof processReferenceTask>("process-reference", {
+        userId: metadata.userId,
+        referenceId,
       });
 
       // Return immediately to the client
       return {
         uploadedBy: metadata.userId,
-        fileUrl: file.ufsUrl,
-        fileName: file.name,
+        referenceId,
       };
     }),
 } satisfies FileRouter;

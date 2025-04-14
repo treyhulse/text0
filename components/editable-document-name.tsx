@@ -3,21 +3,21 @@
 import { useEffect, useRef } from "react";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
-import { updateNoteName } from "@/app/actions/notes";
+import { updateDocumentName } from "@/actions/docs";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 
-interface EditableNoteNameProps {
-  noteId: string;
+interface EditableDocumentNameProps {
+  documentId: string;
   initialName: string;
 }
 
-export function EditableNoteName({
-  noteId,
+export function EditableDocumentName({
+  documentId,
   initialName,
-}: Readonly<EditableNoteNameProps>) {
+}: Readonly<EditableDocumentNameProps>) {
   const [state, formAction, isPending] = React.useActionState(
-    updateNoteName,
+    updateDocumentName,
     undefined
   );
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,7 +25,7 @@ export function EditableNoteName({
 
   useEffect(() => {
     if (state?.success) {
-      toast.success("Note name updated");
+      toast.success("Document name updated");
       if (inputRef.current) {
         inputRef.current.blur();
       }
@@ -47,7 +47,7 @@ export function EditableNoteName({
 
   return (
     <form action={formAction} className="px-8 mb-4">
-      <input type="hidden" name="noteId" value={noteId} />
+      <input type="hidden" name="documentId" value={documentId} />
       <Input
         ref={inputRef}
         name="name"
