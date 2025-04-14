@@ -18,6 +18,8 @@ export async function POST(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const _model = searchParams.get("model");
 
+    console.log(body);
+
     const user = await auth();
 
     let model: LanguageModelV1;
@@ -42,14 +44,16 @@ export async function POST(request: NextRequest) {
       model = openai("gpt-4o-mini");
     }
 
+    const filter = `userId = '${
+      user.userId
+    }' AND referenceId IN ('${body.references.join("','")}')`;
+
     const context = await vector.query({
       data: body.prompt,
       topK: 5,
       includeData: true,
-      filter: `userId = '${user.userId}'`,
+      filter,
     });
-
-    console.log(context);
 
     const contextData = context.map((c) => c.data).join("\n");
 
