@@ -6,7 +6,6 @@ import { Check, X } from "lucide-react";
 interface InlineDiffViewProps {
 	originalText: string;
 	newText: string;
-	streamingText?: string;
 	isLoading?: boolean;
 	className?: string;
 	onAccept: () => void;
@@ -22,7 +21,7 @@ export function InlineDiffView({
 	onAccept,
 	onReject,
 	isZenMode,
-}: InlineDiffViewProps) {
+}: Readonly<InlineDiffViewProps>) {
 	// Use streaming text while loading, otherwise use final newText
 	const diff = diffWords(originalText, newText);
 

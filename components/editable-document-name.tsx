@@ -60,7 +60,6 @@ export function EditableDocumentName({
 				disabled={isPending}
 				className="!text-2xl h-8 border-none bg-transparent p-0 font-semibold focus-visible:ring-0"
 				aria-label="Document name"
-				role="textbox"
 				aria-disabled={isPending}
 			/>
 			<Button
