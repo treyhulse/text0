@@ -13,53 +13,53 @@ import type { NextRequest } from "next/server";
 export const maxDuration = 30;
 
 export async function POST(request: NextRequest) {
-	try {
-		const body = await request.json();
-		const searchParams = request.nextUrl.searchParams;
-		const _model = searchParams.get("model");
+  try {
+    const body = await request.json();
+    const searchParams = request.nextUrl.searchParams;
+    const _model = searchParams.get("model");
 
-		console.log(body);
+    console.log(body);
 
-		const session = await getSecureSession();
+    const session = await getSecureSession();
 
-		let model: LanguageModelV1;
+    let model: LanguageModelV1;
 
-		if (_model === "gpt-4o-mini") {
-			model = openai("gpt-4o-mini");
-		} else if (_model === "grok-3-fast-beta") {
-			model = xai("grok-3-fast-beta");
-		} else if (_model === "claude-3-5-sonnet-latest") {
-			model = anthropic("claude-3-5-sonnet-latest");
-		} else if (_model === "claude-3-5-haiku-latest") {
-			model = anthropic("claude-3-5-haiku-latest");
-		} else if (_model === "llama-3.1-8b-instant") {
-			model = groq("llama-3.1-8b-instant");
-		} else if (_model === "llama-3.3-70b-versatile") {
-			model = groq("llama-3.3-70b-versatile");
-		} else if (_model === "gemini-2.0-flash-001") {
-			model = google("gemini-2.0-flash-001");
-		} else if (_model === "gemini-2.0-flash-lite-preview-02-05") {
-			model = google("gemini-2.0-flash-lite-preview-02-05");
-		} else {
-			model = openai("gpt-4o-mini");
-		}
+    if (_model === "gpt-4o-mini") {
+      model = openai("gpt-4o-mini");
+    } else if (_model === "grok-3-fast-beta") {
+      model = xai("grok-3-fast-beta");
+    } else if (_model === "claude-3-5-sonnet-latest") {
+      model = anthropic("claude-3-5-sonnet-latest");
+    } else if (_model === "claude-3-5-haiku-latest") {
+      model = anthropic("claude-3-5-haiku-latest");
+    } else if (_model === "llama-3.1-8b-instant") {
+      model = groq("llama-3.1-8b-instant");
+    } else if (_model === "llama-3.3-70b-versatile") {
+      model = groq("llama-3.3-70b-versatile");
+    } else if (_model === "gemini-2.0-flash-001") {
+      model = google("gemini-2.0-flash-001");
+    } else if (_model === "gemini-2.0-flash-lite-preview-02-05") {
+      model = google("gemini-2.0-flash-lite-preview-02-05");
+    } else {
+      model = openai("gpt-4o-mini");
+    }
 
-		const filter = `userId = '${
-			session.userId
-		}' AND referenceId IN ('${body.references.join("','")}')`;
+    const filter = `userId = '${
+      session.userId
+    }' AND referenceId IN ('${body.references.join("','")}')`;
 
-		const context = await vector.query({
-			data: body.prompt,
-			topK: 5,
-			includeData: true,
-			filter,
-		});
+    const context = await vector.query({
+      data: body.prompt,
+      topK: 5,
+      includeData: true,
+      filter,
+    });
 
-		const contextData = context.map((c) => c.data).join("\n");
+    const contextData = context.map((c) => c.data).join("\n");
 
-		const result = streamText({
-			model,
-			prompt: `
+    const result = streamText({
+      model,
+      prompt: `
       <task>
       You are an autocompletion system that suggests text completions.
       Your name is text0.
@@ -89,12 +89,12 @@ export async function POST(request: NextRequest) {
 
       Your completion:
     `,
-			temperature: 0.75,
-			maxTokens: 50,
-		});
+      temperature: 0.75,
+      maxTokens: 50,
+    });
 
-		return result.toDataStreamResponse();
-	} catch (error) {
-		return new Response("Internal Server Error", { status: 500 });
-	}
+    return result.toDataStreamResponse();
+  } catch (error) {
+    return new Response("Internal Server Error", { status: 500 });
+  }
 }

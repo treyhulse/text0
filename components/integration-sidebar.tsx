@@ -68,7 +68,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
   const [newDocName, setNewDocName] = useState("");
   const [state, formAction, isPending] = React.useActionState(
     createDocument,
-    undefined
+    undefined,
   );
 
   useEffect(() => {
@@ -128,10 +128,10 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
     <TooltipProvider delayDuration={0}>
       <Sidebar
         collapsible="icon"
-        className="bg-background text-foreground border-r border-border transition-all duration-300 ease-in-out relative flex flex-col"
+        className="relative flex flex-col border-border border-r bg-background text-foreground transition-all duration-300 ease-in-out"
       >
         {/* Header with User Name */}
-        <SidebarHeader className="px-3 py-2 flex-none">
+        <SidebarHeader className="flex-none px-3 py-2">
           <div className="flex items-center gap-2">
             <SignedOut>
               <div className="flex gap-2 group-data-[collapsible=icon]:hidden">
@@ -143,7 +143,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
               <UserButton />
             </SignedIn>
             {user.user && (
-              <span className="text-xs font-medium truncate group-data-[collapsible=icon]:hidden">
+              <span className="truncate font-medium text-xs group-data-[collapsible=icon]:hidden">
                 {user.user.fullName}
               </span>
             )}
@@ -154,12 +154,12 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
           {/* Command Menu */}
           <SidebarGroup>
             <div className="relative w-full">
-              <div className="group-data-[collapsible=icon]:hidden w-full">
+              <div className="w-full group-data-[collapsible=icon]:hidden">
                 <CommandMenu
                   documents={documents}
                   onCreateDocument={() => {
                     const newDocButton = document.querySelector(
-                      "[data-new-doc-trigger]"
+                      "[data-new-doc-trigger]",
                     );
                     if (newDocButton instanceof HTMLElement) {
                       newDocButton.click();
@@ -172,7 +172,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                   documents={documents}
                   onCreateDocument={() => {
                     const newDocButton = document.querySelector(
-                      "[data-new-doc-trigger]"
+                      "[data-new-doc-trigger]",
                     );
                     if (newDocButton instanceof HTMLElement) {
                       newDocButton.click();
@@ -191,13 +191,13 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                 <SidebarMenuButton
                   asChild
                   tooltip="Home"
-                  className="w-full flex items-center justify-start gap-2 group-data-[collapsible=icon]:justify-center py-1.5 px-2 text-sm"
+                  className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm group-data-[collapsible=icon]:justify-center"
                 >
                   <Link
                     href="/"
-                    className="w-full flex items-center gap-2 group-data-[collapsible=icon]:justify-center"
+                    className="flex w-full items-center gap-2 group-data-[collapsible=icon]:justify-center"
                   >
-                    <LayoutGrid className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground" />
                     <span className="truncate group-data-[collapsible=icon]:hidden">
                       Home
                     </span>
@@ -211,13 +211,13 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
                       tooltip="My Documents"
-                      className="w-full flex items-center gap-2 group-data-[collapsible=icon]:justify-center py-1.5 px-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                      className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-muted hover:text-foreground group-data-[collapsible=icon]:justify-center"
                     >
-                      <FolderOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <FolderOpen className="h-4 w-4 shrink-0 text-muted-foreground" />
                       <span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
                         My Documents
                       </span>
-                      <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
+                      <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform group-data-[collapsible=icon]:hidden group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -225,12 +225,12 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                       {documents.map((doc) => (
                         <div
                           key={doc.id}
-                          className="px-2 ml-4 border-l border-dashed border-border group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:ml-0"
+                          className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0"
                         >
                           <SidebarMenuButton
                             asChild
                             tooltip={doc.name}
-                            className="flex w-full items-center gap-2 rounded-lg py-1.5 px-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
+                            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
                           >
                             <Link href={`/docs/${doc.id}`}>
                               <FileText className="h-4 w-4 shrink-0" />
@@ -297,7 +297,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                             variant="outline"
                             size="sm"
                             tooltip="New Document"
-                            className="w-full h-9 dark:bg-muted group-data-[collapsible=icon]:size-8 flex items-center justify-start gap-2 pl-2 border border-dashed border-foreground/20 text-sm group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0 group-data-[collapsible=icon]:pr-0"
+                            className="flex h-9 w-full items-center justify-start gap-2 border border-foreground/20 border-dashed pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0 dark:bg-muted"
                             onClick={() => setIsCreatingDoc(true)}
                           >
                             <Plus className="h-4 w-4 shrink-0" />
@@ -317,13 +317,13 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
                       tooltip="Integrations"
-                      className="w-full flex items-center gap-2 group-data-[collapsible=icon]:justify-center py-1.5 px-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                      className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-muted hover:text-foreground group-data-[collapsible=icon]:justify-center"
                     >
-                      <Settings className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <Settings className="h-4 w-4 shrink-0 text-muted-foreground" />
                       <span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
                         Integrations
                       </span>
-                      <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
+                      <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform group-data-[collapsible=icon]:hidden group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -332,7 +332,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                         <div
                           key={integration.name}
                           className={cn("px-1", {
-                            "opacity-50 cursor-not-allowed":
+                            "cursor-not-allowed opacity-50":
                               integration.disabled,
                           })}
                         >
@@ -340,7 +340,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                             <SidebarMenuButton
                               asChild
                               tooltip={integration.name}
-                              className="flex w-full items-center gap-2 rounded-lg py-1.5 px-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
+                              className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
                             >
                               <Link href={integration.link}>
                                 <integration.icon className="h-4 w-4 shrink-0" />
@@ -356,7 +356,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
                         <SidebarMenuButton
                           asChild
                           tooltip="View all integrations"
-                          className="flex w-full items-center gap-2 rounded-lg py-1.5 px-2 text-sm font-medium text-primary hover:bg-muted group-data-[collapsible=icon]:justify-center"
+                          className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 font-medium text-primary text-sm hover:bg-muted group-data-[collapsible=icon]:justify-center"
                         >
                           <Link href="/integrations">
                             <span className="truncate group-data-[collapsible=icon]:hidden">

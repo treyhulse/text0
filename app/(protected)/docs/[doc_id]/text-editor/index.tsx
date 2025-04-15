@@ -1,30 +1,20 @@
 "use client";
 
+import { AddReference } from "@/components/add-reference";
 import { EditableDocumentName } from "@/components/editable-document-name";
 import { InlineDiffView } from "@/components/inline-diff-view";
 import { TextSelectionMenu } from "@/components/text-selection-menu";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import useDebouncedCallback from "@/hooks/use-debounced-callback";
 import { useModel } from "@/hooks/use-model";
 import { useSelectedReferences } from "@/hooks/use-selected-references";
-import { UploadDropzone } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 import { useCompletion } from "@ai-sdk/react";
-import { FileText, Maximize2, MessageSquare, Upload } from "lucide-react";
+import { Maximize2, MessageSquare } from "lucide-react";
 import React, { useState } from "react";
-import { toast } from "sonner";
 import { AIChatSidebar } from "./ai-chat-sidebar";
-import { AddReference } from "@/components/add-reference";
 // Add these types at the top
 interface TextEditorProps {
   initialContent: string;
@@ -76,7 +66,7 @@ export function TextEditor({
   const [loadingProgress, setLoadingProgress] = useState(0);
 
   const [lastManualInput, setLastManualInput] = React.useState<string | null>(
-    null
+    null,
   );
 
   const { complete } = useCompletion({
@@ -106,7 +96,7 @@ export function TextEditor({
         body: JSON.stringify({ content }),
       });
     },
-    3000
+    3000,
   );
 
   React.useEffect(() => {
@@ -223,7 +213,7 @@ export function TextEditor({
         // Get selection coordinates and full text
         const startCoords = getCaretCoordinates(
           editorRef.current,
-          editorRef.current.selectionStart
+          editorRef.current.selectionStart,
         );
         const fullText = editorRef.current.value;
 
@@ -419,19 +409,19 @@ export function TextEditor({
   const displayedCompletion = parseCompletion(completion, input);
 
   return (
-    <div className="relative w-full h-full bg-background flex">
+    <div className="relative flex h-full w-full bg-background">
       <div
         className={cn(
-          "flex-1 flex flex-col relative",
+          "relative flex flex-1 flex-col",
           !isAIChatOpen && "pr-0",
-          isZenMode && "bg-background/95 fixed inset-0 z-50"
+          isZenMode && "fixed inset-0 z-50 bg-background/95",
         )}
       >
         {/* Decorative gradients - only show when modifying */}
         {isModifying && (
           <>
             <div
-              className="pointer-events-none absolute left-[15%] top-1/4 h-[400px] w-[400px] animate-float-slow"
+              className="pointer-events-none absolute top-1/4 left-[15%] h-[400px] w-[400px] animate-float-slow"
               style={{
                 background:
                   "radial-gradient(circle at center,var(--primary) 0%, transparent 70%)",
@@ -440,7 +430,7 @@ export function TextEditor({
               }}
             />
             <div
-              className="pointer-events-none absolute bottom-1/3 right-[15%] h-[350px] w-[350px] animate-float"
+              className="pointer-events-none absolute right-[15%] bottom-1/3 h-[350px] w-[350px] animate-float"
               style={{
                 background:
                   "radial-gradient(circle at center, var(--primary) 0%, transparent 70%)",
@@ -452,13 +442,13 @@ export function TextEditor({
         )}
 
         <div className="flex h-full justify-center py-4">
-          <div className={cn("w-full max-w-4xl h-full pt-8")}>
+          <div className={cn("h-full w-full max-w-4xl pt-8")}>
             {/* Add EditableDocumentName component */}
             <EditableDocumentName
               documentId={documentId}
               initialName={initialName}
             />
-            <div className="relative w-full h-[calc(100%-2rem)] flex-1">
+            <div className="relative h-[calc(100%-2rem)] w-full flex-1">
               <textarea
                 ref={editorRef}
                 value={input}
@@ -468,11 +458,11 @@ export function TextEditor({
                 onMouseUp={handleSelectionChange}
                 placeholder="Start writing..."
                 className={cn(
-                  "w-full h-full flex-1 outline-none whitespace-pre-wrap font-serif text-base bg-transparent resize-none placeholder:text-muted-foreground/50 px-8",
-                  isZenMode && "leading-relaxed px-4",
+                  "h-full w-full flex-1 resize-none whitespace-pre-wrap bg-transparent px-8 font-serif text-base outline-none placeholder:text-muted-foreground/50",
+                  isZenMode && "px-4 leading-relaxed",
                   pendingUpdate && "opacity-0",
                   isTextLoading && "selection:bg-primary/20",
-                  isModifying && "opacity-70"
+                  isModifying && "opacity-70",
                 )}
                 style={{
                   caretColor: "var(--primary)",
@@ -488,12 +478,12 @@ export function TextEditor({
                   <div
                     aria-hidden="true"
                     className={cn(
-                      "absolute flex-1 h-full w-full top-0 left-0 right-0 font-serif pointer-events-none whitespace-pre-wrap",
+                      "pointer-events-none absolute top-0 right-0 left-0 h-full w-full flex-1 whitespace-pre-wrap font-serif",
                       isZenMode
-                        ? "leading-relaxed opacity-30 px-4"
-                        : "text-base w-full opacity-50 px-8",
+                        ? "px-4 leading-relaxed opacity-30"
+                        : "w-full px-8 text-base opacity-50",
                       isModifying &&
-                        "after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent after:animate-shine"
+                        "after:absolute after:inset-0 after:animate-shine after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent",
                     )}
                   >
                     <span className="whitespace-pre-wrap">
@@ -501,7 +491,7 @@ export function TextEditor({
                       <span
                         className={cn(
                           "text-muted-foreground",
-                          isModifying && "animate-pulse"
+                          isModifying && "animate-pulse",
                         )}
                       >
                         {displayedCompletion}
@@ -514,24 +504,24 @@ export function TextEditor({
                 <div className="absolute inset-0 flex flex-col">
                   <div
                     className={cn(
-                      "absolute flex-1 h-full w-full top-0 left-0 right-0 font-serif",
+                      "absolute top-0 right-0 left-0 h-full w-full flex-1 font-serif",
                       isZenMode
-                        ? "text-xl leading-relaxed px-4"
-                        : "text-lg px-8"
+                        ? "px-4 text-xl leading-relaxed"
+                        : "px-8 text-lg",
                     )}
                   >
                     <div className="whitespace-pre-wrap">
                       <span>
                         {input.substring(
                           0,
-                          editorRef.current?.selectionStart ?? 0
+                          editorRef.current?.selectionStart ?? 0,
                         )}
                       </span>
 
                       <InlineDiffView
                         originalText={selectedText}
                         newText={pendingUpdate}
-                        className="inline relative"
+                        className="relative inline"
                         onAccept={() => {
                           if (editorRef.current) {
                             const start = editorRef.current.selectionStart;
@@ -583,8 +573,8 @@ export function TextEditor({
 
         {/* Floating Bottom Bar - Only show when not in Zen mode */}
         {!isZenMode && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-center z-10 w-full max-w-[38rem] px-4">
-            <div className="flex items-center space-x-4 bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg border shadow-sm w-full justify-center">
+          <div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex w-full max-w-[38rem] items-center justify-center px-4">
+            <div className="flex w-full items-center justify-center space-x-4 rounded-lg border bg-background/80 px-4 py-2 shadow-sm backdrop-blur-sm">
               <div className="flex items-center space-x-2">
                 <Switch
                   id="autocomplete"
@@ -607,7 +597,7 @@ export function TextEditor({
                       .catch((err) => {
                         console.log(
                           "Error attempting to enable full-screen mode:",
-                          err
+                          err,
                         );
                       });
                   } else if (document.fullscreenElement) {
@@ -615,7 +605,7 @@ export function TextEditor({
                     document.exitFullscreen().catch((err) => {
                       console.log(
                         "Error attempting to exit full-screen mode:",
-                        err
+                        err,
                       );
                     });
                   }
@@ -623,7 +613,7 @@ export function TextEditor({
               >
                 <Maximize2 className="h-4 w-4" />
                 <span>Zen Mode</span>
-                <kbd className="text-foreground inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-mono text-[0.625rem] font-medium ml-2">
+                <kbd className="ml-2 inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
                   ⌘J
                 </kbd>
               </Button>
@@ -636,7 +626,7 @@ export function TextEditor({
               >
                 <MessageSquare className="h-4 w-4" />
                 <span>AI Chat</span>
-                <kbd className="text-foreground inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-mono text-[0.625rem] font-medium ml-2">
+                <kbd className="ml-2 inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
                   ⌘O
                 </kbd>
               </Button>

@@ -14,49 +14,49 @@ const USER_REFERENCES_KEY = (userId: string) => `user:${userId}:references`;
 const REFERENCE_KEY = (referenceId: string) => `reference:${referenceId}`;
 
 export type AddWebsiteReferenceActionState = ActionState<
-	{ url: string },
-	{ referenceId: string }
+  { url: string },
+  { referenceId: string }
 >;
 
 export async function addWebsiteReference(
-	prevState: AddWebsiteReferenceActionState | undefined,
-	formData: FormData,
+  prevState: AddWebsiteReferenceActionState | undefined,
+  formData: FormData,
 ): Promise<AddWebsiteReferenceActionState> {
-	const session = await getSecureSession();
-	if (!session.userId) {
-		throw new Error("Unauthorized");
-	}
+  const session = await getSecureSession();
+  if (!session.userId) {
+    throw new Error("Unauthorized");
+  }
 
-	const url = formData.get("url") as string;
-	if (!url) {
-		throw new Error("URL is required");
-	}
+  const url = formData.get("url") as string;
+  if (!url) {
+    throw new Error("URL is required");
+  }
 
-	const urlSchema = z.string().url();
-	const result = urlSchema.safeParse(url);
-	if (!result.success) {
-		throw new Error("Invalid URL");
-	}
+  const urlSchema = z.string().url();
+  const result = urlSchema.safeParse(url);
+  if (!result.success) {
+    throw new Error("Invalid URL");
+  }
 
-	const referenceId = nanoid();
+  const referenceId = nanoid();
 
-	await redis.sadd(USER_REFERENCES_KEY(session.userId), referenceId);
-	await redis.hset(REFERENCE_KEY(referenceId), {
-		id: referenceId,
-		userId: session.userId,
-		url,
-		uploadedAt: new Date().toISOString(),
-		chunksCount: 0,
-		processed: false,
-	} satisfies Reference);
+  await redis.sadd(USER_REFERENCES_KEY(session.userId), referenceId);
+  await redis.hset(REFERENCE_KEY(referenceId), {
+    id: referenceId,
+    userId: session.userId,
+    url,
+    uploadedAt: new Date().toISOString(),
+    chunksCount: 0,
+    processed: false,
+  } satisfies Reference);
 
-	// Trigger the document processing task
-	await tasks.trigger<typeof processReferenceTask>("process-reference", {
-		userId: session.userId,
-		referenceId,
-	});
+  // Trigger the document processing task
+  await tasks.trigger<typeof processReferenceTask>("process-reference", {
+    userId: session.userId,
+    referenceId,
+  });
 
-	revalidatePath("/references");
+  revalidatePath("/references");
 
-	return { success: true };
+  return { success: true };
 }

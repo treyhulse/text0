@@ -5,21 +5,21 @@ import { NextResponse } from "next/server";
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-	try {
-		const { prompt, model } = await req.json();
+  try {
+    const { prompt, model } = await req.json();
 
-		if (!prompt || !model) {
-			return new NextResponse(
-				JSON.stringify({
-					error: "Missing required fields: prompt or model",
-				}),
-				{ status: 400 },
-			);
-		}
+    if (!prompt || !model) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "Missing required fields: prompt or model",
+        }),
+        { status: 400 },
+      );
+    }
 
-		const result = streamText({
-			model: openai(model),
-			system: `You are a highly skilled writing assistant focused on precise text modifications. Follow these guidelines strictly:
+    const result = streamText({
+      model: openai(model),
+      system: `You are a highly skilled writing assistant focused on precise text modifications. Follow these guidelines strictly:
 
 1. ONLY return the modified text - no explanations, no prefixes, no comments
 2. Maintain the original meaning and intent while improving the text
@@ -38,19 +38,19 @@ export async function POST(req: Request) {
 8. Format output exactly as received (e.g., if input has line breaks, preserve them)
 
 Remember: Your output should contain ONLY the modified text, exactly as it should appear.`,
-			prompt,
-			temperature: 0.3, // Lower temperature for more precise output
-		});
+      prompt,
+      temperature: 0.3, // Lower temperature for more precise output
+    });
 
-		return result.toDataStreamResponse();
-	} catch (error) {
-		console.error("Error in text modification API:", error);
-		return new NextResponse(
-			JSON.stringify({
-				error:
-					"An error occurred while processing your request. Please try again.",
-			}),
-			{ status: 500 },
-		);
-	}
+    return result.toDataStreamResponse();
+  } catch (error) {
+    console.error("Error in text modification API:", error);
+    return new NextResponse(
+      JSON.stringify({
+        error:
+          "An error occurred while processing your request. Please try again.",
+      }),
+      { status: 500 },
+    );
+  }
 }
