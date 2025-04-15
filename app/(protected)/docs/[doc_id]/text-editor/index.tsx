@@ -746,7 +746,6 @@ export function TextEditor({
 					<AIChatSidebar
 						content={input}
 						isEnabled={isAutocompleteEnabled}
-						onEnableChange={setIsAutocompleteEnabled}
 						onPendingUpdate={setPendingUpdate}
 					/>
 				</div>
