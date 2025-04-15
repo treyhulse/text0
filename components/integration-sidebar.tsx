@@ -6,6 +6,9 @@ import {
 	Settings,
 	FileText,
 	FolderOpen,
+	Plus,
+	Check,
+	X,
 } from "lucide-react";
 import {
 	Sidebar,
@@ -32,6 +35,7 @@ import { LinearIcon } from "@/components/ui/icons/linear";
 import { GithubIcon } from "@/components/ui/icons/github";
 import Link from "next/link";
 import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 import {
 	SignInButton,
 	SignUpButton,
@@ -41,18 +45,50 @@ import {
 	useUser,
 } from "@clerk/nextjs";
 import { CommandMenu } from "./command-menu";
-import { NewDocumentButton } from "./new-document-button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createDocument } from "@/actions/docs";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
 interface Document {
 	id: string;
 	name: string;
 	content?: string;
 	createdAt?: string;
+	userId: string;
 }
 
 export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 	const user = useUser();
+	const router = useRouter();
+	const [isCreatingDoc, setIsCreatingDoc] = useState(false);
+	const [newDocName, setNewDocName] = useState("");
+	const [state, formAction, isPending] = React.useActionState(
+		createDocument,
+		undefined,
+	);
+
+	useEffect(() => {
+		if (state?.success && state.data?.documentId) {
+			toast.success("Document created successfully");
+			router.push(`/docs/${state.data.documentId}`);
+			setIsCreatingDoc(false);
+			setNewDocName("");
+		} else if (!state?.success && state?.error) {
+			toast.error(state.error);
+		}
+	}, [state, router]);
+
+	const handleCreateDocument = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!newDocName.trim()) return;
+
+		const formData = new FormData();
+		formData.append("name", newDocName);
+		formAction(formData);
+	};
 
 	const integrations = [
 		{ name: "GitHub", icon: GithubIcon, link: "/integrations/github" },
@@ -100,6 +136,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 		<Sidebar
 			collapsible="icon"
 			className="bg-background text-foreground border-r border-border"
+			variant="sidebar"
 		>
 			{/* Header with User Name */}
 			<SidebarHeader className="px-3 py-4">
@@ -180,7 +217,67 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 											</div>
 										))}
 										<div className="px-3">
-											<NewDocumentButton className="w-full justify-start pl-2" />
+											{isCreatingDoc ? (
+												<form
+													action={formAction}
+													className="flex items-center gap-1"
+												>
+													<Input
+														name="name"
+														placeholder="Document name"
+														value={newDocName}
+														onChange={(e) => setNewDocName(e.target.value)}
+														onKeyDown={(e) => {
+															if (e.key === "Escape") {
+																e.preventDefault();
+																setIsCreatingDoc(false);
+																setNewDocName("");
+															}
+														}}
+														className="h-8 text-sm"
+														autoFocus
+														disabled={isPending}
+													/>
+													<div className="flex gap-1">
+														<Button
+															type="submit"
+															size="icon"
+															variant="ghost"
+															className="h-8 w-8"
+															disabled={isPending || !newDocName.trim()}
+														>
+															{isPending ? (
+																<div className="h-4 w-4 animate-spin rounded-full border-2 border-foreground/20 border-t-foreground" />
+															) : (
+																<Check className="h-4 w-4" />
+															)}
+														</Button>
+														<Button
+															type="button"
+															size="icon"
+															variant="ghost"
+															className="h-8 w-8"
+															onClick={() => {
+																setIsCreatingDoc(false);
+																setNewDocName("");
+															}}
+															disabled={isPending}
+														>
+															<X className="h-4 w-4" />
+														</Button>
+													</div>
+												</form>
+											) : (
+												<Button
+													variant="ghost"
+													size="sm"
+													className="w-full justify-start pl-2 flex border border-dashed border-foreground/20 items-center gap-2 text-sm"
+													onClick={() => setIsCreatingDoc(true)}
+												>
+													<Plus className="h-4 w-4" />
+													New Document
+												</Button>
+											)}
 										</div>
 									</div>
 								</CollapsibleContent>

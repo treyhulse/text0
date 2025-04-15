@@ -12,6 +12,12 @@ import { useModel } from "@/hooks/use-model";
 import { ReferenceSelector } from "./reference-selector";
 import { useSelectedReferences } from "@/hooks/use-selected-references";
 import { useParams } from "next/navigation";
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarHeader,
+	SidebarGroup,
+} from "@/components/ui/sidebar";
 
 export interface AIChatSidebarProps {
 	content: string;
@@ -98,9 +104,14 @@ export function AIChatSidebar({
 	};
 
 	return (
-		<div className="h-full border-l border-border bg-background/95 flex flex-col max-h-full">
+		<Sidebar
+			collapsible="icon"
+			side="right"
+			className="bg-background text-foreground border-l border-border"
+			variant="sidebar"
+		>
 			{/* Header */}
-			<div className="shrink-0 px-4 h-12 border-b flex items-center justify-between bg-background">
+			<SidebarHeader className="px-4 border-b flex items-center justify-between bg-background">
 				<div className="flex items-center gap-2">
 					<h2 className="text-sm font-medium">AI Assistant</h2>
 					{status === "streaming" && (
@@ -148,84 +159,88 @@ export function AIChatSidebar({
 						<X className="h-4 w-4" />
 					</Button>
 				</div>
-			</div>
+			</SidebarHeader>
 
-			{/* Quick Actions */}
-			<div className="shrink-0 p-2 border-b bg-background">
-				<ModelSelector />
-				<ReferenceSelector />
-			</div>
+			<SidebarContent>
+				{/* Quick Actions */}
+				<SidebarGroup className="p-2 border-b bg-background">
+					<ModelSelector />
+					<ReferenceSelector />
+				</SidebarGroup>
 
-			{/* Chat Messages */}
-			<ScrollArea className="flex-1 min-h-0" ref={scrollAreaRef}>
-				<div className="flex flex-col gap-3 p-4">
-					{messages.map((message) => (
-						<div
-							key={message.id}
-							className={cn(
-								"text-sm px-3 py-2 leading-relaxed rounded-lg",
-								message.role === "user"
-									? "text-foreground bg-primary/10"
-									: "text-foreground/90 bg-muted/50",
-							)}
-						>
-							{message.content}
-						</div>
-					))}
-					{error && (
-						<div className="text-sm px-3 py-2 text-destructive bg-destructive/10 rounded-lg">
-							Error: {error.message}
-						</div>
-					)}
-				</div>
-			</ScrollArea>
-
-			{/* Input Area */}
-			<div className="shrink-0 p-2 border-t bg-background">
-				<form onSubmit={customSubmit} className="flex flex-col gap-2">
-					<div className="relative">
-						<Textarea
-							value={input}
-							onChange={handleInputChange}
-							onKeyDown={handleKeyDown}
-							placeholder="Ask me anything about your text..."
-							className="flex w-full min-w-0 shrink rounded-md border border-grep-4 bg-grep-0 px-3 py-1 text-sm transition-colors focus-visible:border-grep-12 focus-visible:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-grep-4 disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-grep-7 min-h-[44px] max-h-[400px] resize-none pr-24"
-							rows={1}
-							disabled={status === "streaming"}
-							spellCheck="false"
-							autoCapitalize="off"
-							autoComplete="off"
-							autoCorrect="off"
-							aria-label="Chat input"
-						/>
-						<div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
-							{status === "streaming" ? (
-								<Button
-									type="button"
-									size="icon"
-									variant="ghost"
-									className="h-6 w-6"
-									onClick={stop}
-									aria-label="Stop generating"
+				{/* Chat Messages */}
+				<SidebarGroup className="flex-1 min-h-0">
+					<ScrollArea className="flex-1 min-h-0" ref={scrollAreaRef}>
+						<div className="flex flex-col gap-3 p-4">
+							{messages.map((message) => (
+								<div
+									key={message.id}
+									className={cn(
+										"text-sm px-3 py-2 leading-relaxed rounded-lg",
+										message.role === "user"
+											? "text-foreground bg-primary/10"
+											: "text-foreground/90 bg-muted/50",
+									)}
 								>
-									<X className="h-3 w-3" />
-								</Button>
-							) : (
-								<Button
-									type="submit"
-									size="icon"
-									variant="ghost"
-									className="h-6 w-6"
-									disabled={!input.trim()}
-									aria-label="Send message"
-								>
-									<Send className="h-3 w-3" />
-								</Button>
+									{message.content}
+								</div>
+							))}
+							{error && (
+								<div className="text-sm px-3 py-2 text-destructive bg-destructive/10 rounded-lg">
+									Error: {error.message}
+								</div>
 							)}
 						</div>
-					</div>
-				</form>
-			</div>
-		</div>
+					</ScrollArea>
+				</SidebarGroup>
+
+				{/* Input Area */}
+				<SidebarGroup className="p-2 border-t bg-background">
+					<form onSubmit={customSubmit} className="flex flex-col gap-2">
+						<div className="relative">
+							<Textarea
+								value={input}
+								onChange={handleInputChange}
+								onKeyDown={handleKeyDown}
+								placeholder="Ask me anything"
+								className="flex w-full min-w-0 shrink bg-muted rounded-md border border-border px-3 py-1 text-sm focus-visible:border-primary focus-visible:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-muted-foreground min-h-[44px] max-h-[400px] pr-24"
+								rows={1}
+								disabled={status === "streaming"}
+								spellCheck="false"
+								autoCapitalize="off"
+								autoComplete="off"
+								autoCorrect="off"
+								aria-label="Chat input"
+							/>
+							<div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
+								{status === "streaming" ? (
+									<Button
+										type="button"
+										size="icon"
+										variant="ghost"
+										className="h-6 w-6"
+										onClick={stop}
+										aria-label="Stop generating"
+									>
+										<X className="h-3 w-3" />
+									</Button>
+								) : (
+									<Button
+										type="submit"
+										size="icon"
+										variant="ghost"
+										className="h-6 w-6"
+										disabled={!input.trim()}
+										aria-label="Send message"
+									>
+										<Send className="h-3 w-3" />
+									</Button>
+								)}
+							</div>
+						</div>
+					</form>
+				</SidebarGroup>
+			</SidebarContent>
+		</Sidebar>
 	);
 }

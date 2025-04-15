@@ -467,8 +467,8 @@ export function TextEditor({
 								onMouseUp={handleSelectionChange}
 								placeholder="Start writing..."
 								className={cn(
-									"w-full h-full flex-1 outline-none whitespace-pre-wrap font-serif text-lg bg-transparent resize-none placeholder:text-muted-foreground/50 px-8",
-									isZenMode && "text-xl leading-relaxed px-4",
+									"w-full h-full flex-1 outline-none whitespace-pre-wrap font-serif text-base bg-transparent resize-none placeholder:text-muted-foreground/50 px-8",
+									isZenMode && "leading-relaxed px-4",
 									pendingUpdate && "opacity-0",
 									isTextLoading && "selection:bg-primary/20",
 									isModifying && "opacity-70",
@@ -489,8 +489,8 @@ export function TextEditor({
 										className={cn(
 											"absolute flex-1 h-full w-full top-0 left-0 right-0 font-serif pointer-events-none whitespace-pre-wrap",
 											isZenMode
-												? "text-xl leading-relaxed opacity-30 px-4"
-												: "text-lg w-full opacity-50 px-8",
+												? "leading-relaxed opacity-30 px-4"
+												: "text-base w-full opacity-50 px-8",
 											isModifying &&
 												"after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent after:animate-shine",
 										)}
@@ -742,7 +742,7 @@ export function TextEditor({
 
 			{/* AI Chat Sidebar - Only show when not in Zen mode */}
 			{isAIChatOpen && !isZenMode && (
-				<div className="w-80">
+				<div className="group/sidebar-wrapper has-[data-side=right]:ml-0">
 					<AIChatSidebar
 						content={input}
 						isEnabled={isAutocompleteEnabled}
