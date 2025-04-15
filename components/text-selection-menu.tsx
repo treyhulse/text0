@@ -1,36 +1,36 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import {
 	Menubar,
 	MenubarContent,
 	MenubarItem,
 	MenubarMenu,
+	MenubarRadioGroup,
+	MenubarRadioItem,
 	MenubarSeparator,
-	MenubarTrigger,
+	MenubarShortcut,
 	MenubarSub,
 	MenubarSubContent,
 	MenubarSubTrigger,
-	MenubarShortcut,
-	MenubarRadioGroup,
-	MenubarRadioItem,
+	MenubarTrigger,
 } from "@/components/ui/menubar";
+import { cn } from "@/lib/utils";
 import {
-	Wand2,
-	Sparkles,
-	Check,
-	Minimize2,
-	Maximize2,
-	Languages,
-	MessageSquare,
-	Pencil,
-	Palette,
-	Type,
 	Baseline,
+	Check,
+	Languages,
 	Lightbulb,
 	Loader2,
+	Maximize2,
+	MessageSquare,
+	Minimize2,
+	Palette,
+	Pencil,
+	Sparkles,
+	Type,
+	Wand2,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 
 interface TextSelectionMenuProps {
 	selectedText: string;

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import type { Document, Reference } from "@/lib/redis";
+import { useState } from "react";
 import { FileCard } from "./file-card";
 
 interface FilesGridProps {

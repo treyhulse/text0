@@ -1,6 +1,6 @@
-import * as React from "react";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useCallback } from "react";
+import * as React from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export interface TextareaProps
 	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {

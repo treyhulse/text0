@@ -1,40 +1,40 @@
 "use client";
 
-import * as React from "react";
-import { useState } from "react";
 import {
 	Command,
 	CommandDialog,
-	CommandInput,
-	CommandList,
 	CommandEmpty,
 	CommandGroup,
+	CommandInput,
 	CommandItem,
+	CommandList,
 	CommandSeparator,
 } from "@/components/ui/command";
 import { DialogContent } from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
-import {
-	FileText,
-	Plus,
-	Settings,
-	Book,
-	ArrowUp,
-	LayoutGrid,
-	Users,
-	Copy,
-	Search,
-} from "lucide-react";
-import { SlackIcon } from "@/components/ui/icons/slack";
 import { DiscordIcon } from "@/components/ui/icons/discord";
-import { MsTeamsIcon } from "@/components/ui/icons/ms-teams";
+import { GithubIcon } from "@/components/ui/icons/github";
 import { GmailIcon } from "@/components/ui/icons/gmail";
 import { GoogleCalendarIcon } from "@/components/ui/icons/google-calendar";
 import { GoogleDocsIcon } from "@/components/ui/icons/google-docs";
-import { NotionIcon } from "@/components/ui/icons/notion";
 import { LinearIcon } from "@/components/ui/icons/linear";
-import { GithubIcon } from "@/components/ui/icons/github";
+import { MsTeamsIcon } from "@/components/ui/icons/ms-teams";
+import { NotionIcon } from "@/components/ui/icons/notion";
+import { SlackIcon } from "@/components/ui/icons/slack";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
+import {
+	ArrowUp,
+	Book,
+	Copy,
+	FileText,
+	LayoutGrid,
+	Plus,
+	Search,
+	Settings,
+	Users,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import * as React from "react";
+import { useState } from "react";
 
 interface Document {
 	id: string;

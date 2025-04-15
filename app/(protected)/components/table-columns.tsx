@@ -1,17 +1,17 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import type { Document } from "@/lib/redis";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
 	ArrowRight,
-	FileText,
 	CheckCircle2,
-	XCircle,
 	ExternalLink,
+	FileText,
+	XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import type { Document } from "@/lib/redis";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 
 // Document columns
 export const documentColumns: ColumnDef<Document>[] = [

@@ -1,9 +1,9 @@
 "use client";
 
+import { updateDocumentName } from "@/actions/docs";
+import { Input } from "@/components/ui/input";
 import { useEffect, useRef } from "react";
 import * as React from "react";
-import { Input } from "@/components/ui/input";
-import { updateDocumentName } from "@/actions/docs";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 

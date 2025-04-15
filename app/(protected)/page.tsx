@@ -1,25 +1,25 @@
 import {
-	FileText,
-	Plus,
-	Upload,
-	Search,
+	BrainIcon,
 	BugOffIcon,
 	ExternalLink,
-	BrainIcon,
+	FileText,
+	Plus,
+	Search,
+	Upload,
 } from "lucide-react";
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
+import { getSecureUser } from "@/lib/auth/server";
 import {
 	DOCUMENT_KEY,
 	type Document,
-	USER_REFERENCES_KEY,
-	USER_DOCUMENTS_KEY,
 	REFERENCE_KEY,
-	redis,
 	type Reference,
+	USER_DOCUMENTS_KEY,
+	USER_REFERENCES_KEY,
+	redis,
 } from "@/lib/redis";
-import { getSecureUser } from "@/lib/auth/server";
-import { Button } from "@/components/ui/button";
 
 export default async function HomePage() {
 	const user = await getSecureUser();

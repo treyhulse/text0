@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useSidebar } from "@/components/ui/sidebar";
+import { MessageSquare } from "lucide-react";
 
 export function AIChatTrigger() {
 	const { toggleSidebar } = useSidebar();

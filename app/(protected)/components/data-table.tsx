@@ -1,15 +1,14 @@
 "use client";
 
-import { useId, useState } from "react";
 import {
 	type ColumnDef,
+	type PaginationState,
+	type RowSelectionState,
+	type SortingState,
 	flexRender,
 	getCoreRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	type PaginationState,
-	type RowSelectionState,
-	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -20,8 +19,8 @@ import {
 	ChevronRightIcon,
 	ChevronUpIcon,
 } from "lucide-react";
+import { useId, useState } from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -44,6 +43,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData> {
 	data: TData[];

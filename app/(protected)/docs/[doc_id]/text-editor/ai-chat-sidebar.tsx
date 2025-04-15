@@ -1,27 +1,27 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
-import { useChat } from "@ai-sdk/react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
-import { Send, Loader2, PanelRight, X } from "lucide-react";
-import { ModelSelector } from "./model-selector";
-import { useModel } from "@/hooks/use-model";
-import { ReferenceSelector } from "./reference-selector";
-import { useSelectedReferences } from "@/hooks/use-selected-references";
-import { useParams } from "next/navigation";
 import {
 	Sidebar,
 	SidebarContent,
-	SidebarHeader,
 	SidebarGroup,
-	SidebarRail,
-	SidebarProvider,
+	SidebarHeader,
 	SidebarMenuButton,
+	SidebarProvider,
+	SidebarRail,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Textarea } from "@/components/ui/textarea";
+import { useModel } from "@/hooks/use-model";
+import { useSelectedReferences } from "@/hooks/use-selected-references";
+import { cn } from "@/lib/utils";
+import { useChat } from "@ai-sdk/react";
+import { Loader2, PanelRight, Send, X } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useCallback, useEffect, useRef } from "react";
+import { ModelSelector } from "./model-selector";
+import { ReferenceSelector } from "./reference-selector";
 
 export interface AIChatSidebarProps {
 	content: string;

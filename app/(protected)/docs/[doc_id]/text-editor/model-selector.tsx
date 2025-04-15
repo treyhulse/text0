@@ -1,22 +1,22 @@
 "use client";
 
+import { AnthropicLogo } from "@/components/ui/anthropic-logo";
+import { GoogleLogo } from "@/components/ui/google-logo";
+import { LlamaLogo } from "@/components/ui/llama-logo";
+import { OpenAILogo } from "@/components/ui/openai-logo";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 } from "@/components/ui/select";
-import { useModel } from "@/hooks/use-model";
-import { AnthropicLogo } from "@/components/ui/anthropic-logo";
-import { GoogleLogo } from "@/components/ui/google-logo";
-import { OpenAILogo } from "@/components/ui/openai-logo";
-import { XAILogo } from "@/components/ui/xai-logo";
-import { LlamaLogo } from "@/components/ui/llama-logo";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { XAILogo } from "@/components/ui/xai-logo";
+import { useModel } from "@/hooks/use-model";
 
 const models = [
 	{

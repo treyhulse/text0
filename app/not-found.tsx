@@ -1,5 +1,5 @@
+import { ArrowLeft, Rocket, Ship, Timer } from "lucide-react";
 import Link from "next/link";
-import { ArrowLeft, Rocket, Timer, Ship } from "lucide-react";
 
 export default function NotFound() {
 	return (

@@ -1,11 +1,11 @@
 "use client";
 
-import { FileText, ExternalLink, CheckCircle2, XCircle } from "lucide-react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Document, Reference } from "@/lib/redis";
+import { cn } from "@/lib/utils";
+import { CheckCircle2, ExternalLink, FileText, XCircle } from "lucide-react";
+import Link from "next/link";
 
 interface FileCardProps {
 	file: Document | Reference;

@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-import * as React from "react";
+import { createDocument } from "@/actions/docs";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -11,11 +10,12 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
-import { createDocument } from "@/actions/docs";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import * as React from "react";
+import { toast } from "sonner";
 
 interface NewDocumentButtonProps {
 	className?: string;

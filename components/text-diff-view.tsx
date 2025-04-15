@@ -1,9 +1,9 @@
-import React from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Change } from "diff";
 import { diffLines, diffWords } from "diff";
-import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React from "react";
 
 interface TextDiffViewProps {
 	originalText: string;

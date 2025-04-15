@@ -1,42 +1,37 @@
 "use client";
 
-import {
-	ChevronDown,
-	LayoutGrid,
-	Settings,
-	FileText,
-	FolderOpen,
-	Plus,
-	Check,
-	X,
-} from "lucide-react";
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarHeader,
-	SidebarGroup,
-	SidebarMenu,
-	SidebarMenuItem,
-	SidebarMenuButton,
-	SidebarRail,
-} from "@/components/ui/sidebar";
+import { createDocument } from "@/actions/docs";
 import {
 	Collapsible,
-	CollapsibleTrigger,
 	CollapsibleContent,
+	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { SlackIcon } from "@/components/ui/icons/slack";
 import { DiscordIcon } from "@/components/ui/icons/discord";
-import { MsTeamsIcon } from "@/components/ui/icons/ms-teams";
+import { GithubIcon } from "@/components/ui/icons/github";
 import { GmailIcon } from "@/components/ui/icons/gmail";
 import { GoogleCalendarIcon } from "@/components/ui/icons/google-calendar";
 import { GoogleDocsIcon } from "@/components/ui/icons/google-docs";
-import { NotionIcon } from "@/components/ui/icons/notion";
 import { LinearIcon } from "@/components/ui/icons/linear";
-import { GithubIcon } from "@/components/ui/icons/github";
-import Link from "next/link";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { MsTeamsIcon } from "@/components/ui/icons/ms-teams";
+import { NotionIcon } from "@/components/ui/icons/notion";
+import { SlackIcon } from "@/components/ui/icons/slack";
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarGroup,
+	SidebarHeader,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarRail,
+} from "@/components/ui/sidebar";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import {
 	SignInButton,
 	SignUpButton,
@@ -45,19 +40,24 @@ import {
 	UserButton,
 	useUser,
 } from "@clerk/nextjs";
-import { CommandMenu } from "./command-menu";
-import { useState, useEffect } from "react";
-import { createDocument } from "@/actions/docs";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import * as React from "react";
-import { cn } from "@/lib/utils";
 import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+	Check,
+	ChevronDown,
+	FileText,
+	FolderOpen,
+	LayoutGrid,
+	Plus,
+	Settings,
+	X,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import * as React from "react";
+import { toast } from "sonner";
+import { CommandMenu } from "./command-menu";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 interface Document {
 	id: string;
