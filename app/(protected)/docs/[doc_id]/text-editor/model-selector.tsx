@@ -12,6 +12,11 @@ import { GoogleLogo } from "@/components/ui/google-logo";
 import { OpenAILogo } from "@/components/ui/openai-logo";
 import { XAILogo } from "@/components/ui/xai-logo";
 import { LlamaLogo } from "@/components/ui/llama-logo";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const models = [
 	{
@@ -88,24 +93,44 @@ export function ModelSelector() {
 	const selectedModel = models.find((m) => m.id === model);
 
 	return (
-		<div className="w-[300px]">
+		<div className="w-full group-data-[collapsible=icon]:w-auto [&_[data-slot=select-trigger]>svg]:group-data-[collapsible=icon]:hidden">
 			<Select
 				value={model}
 				onValueChange={(value: string) => setModel(value)}
 				name="model-selector"
 			>
-				<SelectTrigger className="w-full" aria-label="Select AI model">
-					<div className="flex items-center gap-2">
-						{selectedModel && (
-							<>
-								<span aria-hidden={true}>
-									<ModelLogo model={selectedModel} />
-								</span>
-								<span className="font-medium">{selectedModel.name}</span>
-							</>
-						)}
-					</div>
-				</SelectTrigger>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<SelectTrigger
+							className="w-full group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
+							aria-label="Select AI model"
+						>
+							<div className="flex items-center gap-2 group-data-[collapsible=icon]:gap-0">
+								{selectedModel && (
+									<>
+										<span aria-hidden={true}>
+											<ModelLogo model={selectedModel} />
+										</span>
+										<span className="font-medium group-data-[collapsible=icon]:hidden">
+											{selectedModel.name}
+										</span>
+									</>
+								)}
+							</div>
+						</SelectTrigger>
+					</TooltipTrigger>
+					<TooltipContent
+						side="left"
+						className="group-data-[collapsible=icon]:block hidden"
+					>
+						<div className="flex flex-col gap-1">
+							<span className="font-medium">{selectedModel?.name}</span>
+							<span className="text-xs text-accent">
+								{selectedModel?.description}
+							</span>
+						</div>
+					</TooltipContent>
+				</Tooltip>
 				<SelectContent>
 					{models.map((model) => (
 						<SelectItem

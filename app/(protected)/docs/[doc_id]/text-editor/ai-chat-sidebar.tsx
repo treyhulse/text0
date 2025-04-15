@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Send, Plus, History, X, MoreHorizontal, Loader2 } from "lucide-react";
+import { Send, Loader2, PanelRight, X } from "lucide-react";
 import { ModelSelector } from "./model-selector";
 import { useModel } from "@/hooks/use-model";
 import { ReferenceSelector } from "./reference-selector";
@@ -17,19 +17,21 @@ import {
 	SidebarContent,
 	SidebarHeader,
 	SidebarGroup,
+	SidebarRail,
+	SidebarProvider,
+	SidebarMenuButton,
+	SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 export interface AIChatSidebarProps {
 	content: string;
 	isEnabled: boolean;
-	onEnableChange: (enabled: boolean) => void;
 	onPendingUpdate?: (update: string | null) => void;
 }
 
 export function AIChatSidebar({
 	content,
 	isEnabled,
-	onEnableChange,
 	onPendingUpdate,
 }: Readonly<AIChatSidebarProps>) {
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -77,7 +79,6 @@ export function AIChatSidebar({
 		}
 	};
 
-	// Memoize scrollToBottom to prevent unnecessary re-renders
 	const scrollToBottomMemo = useCallback(scrollToBottom, []);
 
 	useEffect(() => {
@@ -104,143 +105,134 @@ export function AIChatSidebar({
 	};
 
 	return (
-		<Sidebar
-			collapsible="icon"
-			side="right"
-			className="bg-background text-foreground border-l border-border"
-			variant="sidebar"
-		>
-			{/* Header */}
-			<SidebarHeader className="px-4 border-b flex items-center justify-between bg-background">
-				<div className="flex items-center gap-2">
-					<h2 className="text-sm font-medium">AI Assistant</h2>
-					{status === "streaming" && (
-						<Loader2 className="h-4 w-4 animate-spin" />
-					)}
-				</div>
-				<div className="flex items-center gap-1.5">
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-8 w-8"
-						onClick={() => {
-							setInput("");
-							onEnableChange(!isEnabled);
-						}}
-						aria-label="New chat"
+		<SidebarProvider>
+			<Sidebar
+				collapsible="icon"
+				side="right"
+				className="bg-background text-foreground border-l border-border transition-all duration-300 ease-in-out"
+				variant="sidebar"
+			>
+				<SidebarHeader className="px-4 border-b flex flex-row items-center justify-between bg-background group-data-[collapsible=icon]:px-2">
+					<div className="flex items-center gap-2 group-data-[collapsible=icon]:hidden">
+						<h2 className="text-sm font-medium">Text0 Assistant</h2>
+						{status === "streaming" && (
+							<Loader2 className="h-4 w-4 animate-spin" />
+						)}
+					</div>
+					<SidebarMenuButton
+						tooltip="Toggle AI Assistant"
+						className="h-8 w-8 -mr-2"
+						asChild
 					>
-						<Plus className="h-4 w-4" />
-					</Button>
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-8 w-8"
-						onClick={() => reloadChat()}
-						disabled={!messages.length || status === "streaming"}
-						aria-label="Reload chat"
-					>
-						<History className="h-4 w-4" />
-					</Button>
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-8 w-8"
-						aria-label="More options"
-					>
-						<MoreHorizontal className="h-4 w-4" />
-					</Button>
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-8 w-8"
-						onClick={() => onEnableChange(false)}
-						aria-label="Close chat"
-					>
-						<X className="h-4 w-4" />
-					</Button>
-				</div>
-			</SidebarHeader>
+						<SidebarTrigger>
+							<PanelRight className="h-4 w-4" />
+						</SidebarTrigger>
+					</SidebarMenuButton>
+				</SidebarHeader>
 
-			<SidebarContent>
-				{/* Quick Actions */}
-				<SidebarGroup className="p-2 border-b bg-background">
-					<ModelSelector />
-					<ReferenceSelector />
-				</SidebarGroup>
-
-				{/* Chat Messages */}
-				<SidebarGroup className="flex-1 min-h-0">
-					<ScrollArea className="flex-1 min-h-0" ref={scrollAreaRef}>
-						<div className="flex flex-col gap-3 p-4">
-							{messages.map((message) => (
-								<div
-									key={message.id}
-									className={cn(
-										"text-sm px-3 py-2 leading-relaxed rounded-lg",
-										message.role === "user"
-											? "text-foreground bg-primary/10"
-											: "text-foreground/90 bg-muted/50",
-									)}
-								>
-									{message.content}
+				<SidebarContent className="group-data-[collapsible=icon]:p-0">
+					{/* Quick Actions - Only show ModelSelector when collapsed */}
+					<SidebarGroup
+						className={cn(
+							"p-2 border-b bg-background",
+							"group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:p-1",
+						)}
+					>
+						<div className="space-y-2 group-data-[collapsible=icon]:space-y-1">
+							<div className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:gap-1">
+								<ModelSelector />
+								<div className="group-data-[collapsible=icon]:hidden mt-2">
+									<ReferenceSelector />
 								</div>
-							))}
-							{error && (
-								<div className="text-sm px-3 py-2 text-destructive bg-destructive/10 rounded-lg">
-									Error: {error.message}
-								</div>
-							)}
-						</div>
-					</ScrollArea>
-				</SidebarGroup>
-
-				{/* Input Area */}
-				<SidebarGroup className="p-2 border-t bg-background">
-					<form onSubmit={customSubmit} className="flex flex-col gap-2">
-						<div className="relative">
-							<Textarea
-								value={input}
-								onChange={handleInputChange}
-								onKeyDown={handleKeyDown}
-								placeholder="Ask me anything"
-								className="flex w-full min-w-0 shrink bg-muted rounded-md border border-border px-3 py-1 text-sm focus-visible:border-primary focus-visible:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-muted-foreground min-h-[44px] max-h-[400px] pr-24"
-								rows={1}
-								disabled={status === "streaming"}
-								spellCheck="false"
-								autoCapitalize="off"
-								autoComplete="off"
-								autoCorrect="off"
-								aria-label="Chat input"
-							/>
-							<div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
-								{status === "streaming" ? (
-									<Button
-										type="button"
-										size="icon"
-										variant="ghost"
-										className="h-6 w-6"
-										onClick={stop}
-										aria-label="Stop generating"
-									>
-										<X className="h-3 w-3" />
-									</Button>
-								) : (
-									<Button
-										type="submit"
-										size="icon"
-										variant="ghost"
-										className="h-6 w-6"
-										disabled={!input.trim()}
-										aria-label="Send message"
-									>
-										<Send className="h-3 w-3" />
-									</Button>
-								)}
 							</div>
 						</div>
-					</form>
-				</SidebarGroup>
-			</SidebarContent>
-		</Sidebar>
+					</SidebarGroup>
+
+					{/* Chat Messages - Hide when collapsed */}
+					<SidebarGroup className="flex-1 min-h-0 group-data-[collapsible=icon]:hidden">
+						<ScrollArea className="flex-1 min-h-0" ref={scrollAreaRef}>
+							<div className="flex flex-col gap-3 p-4">
+								{messages.map((message) => (
+									<div
+										key={message.id}
+										className={cn(
+											"text-sm px-3 py-2 leading-relaxed rounded-lg break-words",
+											message.role === "user"
+												? "text-foreground bg-primary/10"
+												: "text-foreground/90 bg-muted/50",
+										)}
+									>
+										{message.content}
+									</div>
+								))}
+								{error && (
+									<div className="text-sm px-3 py-2 text-destructive bg-destructive/10 rounded-lg">
+										Error: {error.message}
+									</div>
+								)}
+							</div>
+						</ScrollArea>
+					</SidebarGroup>
+
+					{/* Input Area - Hide when collapsed */}
+					<SidebarGroup className="p-2 border-t bg-background group-data-[collapsible=icon]:hidden">
+						<form onSubmit={customSubmit} className="flex flex-col gap-2">
+							<div className="relative">
+								<Textarea
+									value={input}
+									onChange={handleInputChange}
+									onKeyDown={handleKeyDown}
+									placeholder={
+										status === "streaming" ? "Generating..." : "Ask me anything"
+									}
+									className={cn(
+										"flex w-full min-w-0 shrink px-3 py-1 text-sm",
+										"disabled:cursor-not-allowed disabled:opacity-50",
+										"placeholder:text-muted-foreground",
+										"min-h-[44px] max-h-[400px]",
+										"pr-24",
+										"resize-none",
+									)}
+									rows={1}
+									disabled={status === "streaming"}
+									spellCheck="false"
+									autoCapitalize="off"
+									autoComplete="off"
+									autoCorrect="off"
+									aria-label="Chat input"
+								/>
+								<div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
+									{status === "streaming" ? (
+										<Button
+											type="button"
+											size="icon"
+											variant="ghost"
+											className="h-6 w-6"
+											onClick={stop}
+											aria-label="Stop generating"
+										>
+											<X className="h-3 w-3" />
+										</Button>
+									) : (
+										<Button
+											type="submit"
+											size="icon"
+											variant="ghost"
+											className="h-6 w-6"
+											disabled={!input.trim()}
+											aria-label="Send message"
+										>
+											<Send className="h-3 w-3" />
+										</Button>
+									)}
+								</div>
+							</div>
+						</form>
+					</SidebarGroup>
+				</SidebarContent>
+
+				<SidebarRail />
+			</Sidebar>
+		</SidebarProvider>
 	);
 }

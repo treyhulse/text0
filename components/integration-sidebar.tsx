@@ -9,6 +9,7 @@ import {
 	Plus,
 	Check,
 	X,
+	Search,
 } from "lucide-react";
 import {
 	Sidebar,
@@ -18,6 +19,7 @@ import {
 	SidebarMenu,
 	SidebarMenuItem,
 	SidebarMenuButton,
+	SidebarRail,
 } from "@/components/ui/sidebar";
 import {
 	Collapsible,
@@ -51,6 +53,12 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Document {
 	id: string;
@@ -132,221 +140,281 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 		},
 	];
 
+	const triggerCommandMenu = () => {
+		const commandInput = document.querySelector("[cmdk-input]");
+		if (commandInput instanceof HTMLElement) {
+			commandInput.focus();
+		}
+	};
+
 	return (
-		<Sidebar
-			collapsible="icon"
-			className="bg-background text-foreground border-r border-border"
-			variant="sidebar"
-		>
-			{/* Header with User Name */}
-			<SidebarHeader className="px-3 py-4">
-				<div className="flex items-center space-x-2 group-data-[collapsible=icon]:justify-center">
-					<SignedOut>
-						<SignInButton />
-						<SignUpButton />
-					</SignedOut>
-					<SignedIn>
-						<UserButton />
-					</SignedIn>
-					{user.user && (
-						<span className="text-xs font-medium group-data-[collapsible=icon]:hidden">
-							{user.user.fullName}
-						</span>
-					)}
-				</div>
-			</SidebarHeader>
+		<TooltipProvider delayDuration={0}>
+			<Sidebar
+				collapsible="icon"
+				className="bg-background text-foreground border-r border-border transition-all duration-300 ease-in-out relative flex flex-col"
+			>
+				{/* Header with User Name */}
+				<SidebarHeader className="px-3 py-2 flex-none">
+					<div className="flex items-center gap-2">
+						<SignedOut>
+							<div className="flex gap-2 group-data-[collapsible=icon]:hidden">
+								<SignInButton />
+								<SignUpButton />
+							</div>
+						</SignedOut>
+						<SignedIn>
+							<UserButton />
+						</SignedIn>
+						{user.user && (
+							<span className="text-xs font-medium truncate group-data-[collapsible=icon]:hidden">
+								{user.user.fullName}
+							</span>
+						)}
+					</div>
+				</SidebarHeader>
 
-			<SidebarContent>
-				{/* Command Menu */}
-				<SidebarGroup className="px-3">
-					<CommandMenu
-						documents={documents}
-						onCreateDocument={() => {
-							const newDocButton = document.querySelector(
-								"[data-new-doc-trigger]",
-							);
-							if (newDocButton instanceof HTMLElement) {
-								newDocButton.click();
-							}
-						}}
-					/>
-				</SidebarGroup>
+				<SidebarContent className="flex-1">
+					{/* Command Menu */}
+					<SidebarGroup>
+						<div className="relative w-full">
+							<div className="group-data-[collapsible=icon]:hidden w-full">
+								<CommandMenu
+									documents={documents}
+									onCreateDocument={() => {
+										const newDocButton = document.querySelector(
+											"[data-new-doc-trigger]",
+										);
+										if (newDocButton instanceof HTMLElement) {
+											newDocButton.click();
+										}
+									}}
+								/>
+							</div>
+							<div className="hidden group-data-[collapsible=icon]:block">
+								<CommandMenu
+									documents={documents}
+									onCreateDocument={() => {
+										const newDocButton = document.querySelector(
+											"[data-new-doc-trigger]",
+										);
+										if (newDocButton instanceof HTMLElement) {
+											newDocButton.click();
+										}
+									}}
+									variant="icon"
+								/>
+							</div>
+						</div>
+					</SidebarGroup>
 
-				{/* Main Navigation */}
-				<SidebarGroup>
-					<SidebarMenu>
-						<SidebarMenuItem>
-							<SidebarMenuButton
-								asChild
-								className="w-full justify-start space-x-2 group-data-[collapsible=icon]:justify-center py-1.5 px-3"
-							>
-								<Link href="/">
-									<LayoutGrid className="h-3 w-3 text-muted-foreground" />
-									<span className="text-sm group-data-[collapsible=icon]:hidden">
-										Home
-									</span>
-								</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-
-						{/* Documents Section */}
-						<SidebarMenuItem>
-							<Collapsible defaultOpen={true} className="w-full">
-								<CollapsibleTrigger asChild>
-									<SidebarMenuButton className="w-full space-x-2 group-data-[collapsible=icon]:justify-center py-1.5 px-3 text-muted-foreground hover:bg-muted hover:text-foreground">
-										<FolderOpen className="h-3 w-3 text-muted-foreground" />
-										<span className="text-sm font-medium tracking-wide group-data-[collapsible=icon]:hidden">
-											My Documents
+					{/* Main Navigation */}
+					<SidebarGroup className="flex-1">
+						<SidebarMenu>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									asChild
+									tooltip="Home"
+									className="w-full flex items-center justify-start gap-2 group-data-[collapsible=icon]:justify-center py-1.5 px-2 text-sm"
+								>
+									<Link
+										href="/"
+										className="w-full flex items-center gap-2 group-data-[collapsible=icon]:justify-center"
+									>
+										<LayoutGrid className="h-4 w-4 text-muted-foreground shrink-0" />
+										<span className="truncate group-data-[collapsible=icon]:hidden">
+											Home
 										</span>
-										<ChevronDown className="ml-auto h-3 w-3 transition-transform group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
-									</SidebarMenuButton>
-								</CollapsibleTrigger>
-								<CollapsibleContent>
-									<div className="space-y-1 py-1">
-										{documents.map((doc) => (
-											<div key={doc.id} className="px-3">
-												<Link
-													href={`/docs/${doc.id}`}
-													className="flex w-full px-2 items-center gap-2 rounded-lg py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-												>
-													<FileText className="h-3 w-3 mr-1" />
-													<span className="group-data-[collapsible=icon]:hidden truncate">
-														{doc.name}
-													</span>
-												</Link>
-											</div>
-										))}
-										<div className="px-3">
-											{isCreatingDoc ? (
-												<form
-													action={formAction}
-													className="flex items-center gap-1"
-												>
-													<Input
-														name="name"
-														placeholder="Document name"
-														value={newDocName}
-														onChange={(e) => setNewDocName(e.target.value)}
-														onKeyDown={(e) => {
-															if (e.key === "Escape") {
-																e.preventDefault();
-																setIsCreatingDoc(false);
-																setNewDocName("");
-															}
-														}}
-														className="h-8 text-sm"
-														autoFocus
-														disabled={isPending}
-													/>
-													<div className="flex gap-1">
-														<Button
-															type="submit"
-															size="icon"
-															variant="ghost"
-															className="h-8 w-8"
-															disabled={isPending || !newDocName.trim()}
-														>
-															{isPending ? (
-																<div className="h-4 w-4 animate-spin rounded-full border-2 border-foreground/20 border-t-foreground" />
-															) : (
-																<Check className="h-4 w-4" />
-															)}
-														</Button>
-														<Button
-															type="button"
-															size="icon"
-															variant="ghost"
-															className="h-8 w-8"
-															onClick={() => {
-																setIsCreatingDoc(false);
-																setNewDocName("");
-															}}
-															disabled={isPending}
-														>
-															<X className="h-4 w-4" />
-														</Button>
-													</div>
-												</form>
-											) : (
-												<Button
-													variant="ghost"
-													size="sm"
-													className="w-full justify-start pl-2 flex border border-dashed border-foreground/20 items-center gap-2 text-sm"
-													onClick={() => setIsCreatingDoc(true)}
-												>
-													<Plus className="h-4 w-4" />
-													New Document
-												</Button>
-											)}
-										</div>
-									</div>
-								</CollapsibleContent>
-							</Collapsible>
-						</SidebarMenuItem>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
 
-						<SidebarMenuItem>
-							<SidebarMenuButton
-								asChild
-								className="w-full justify-start space-x-2 group-data-[collapsible=icon]:justify-center py-1.5 px-3"
-							>
-								<Link href="/references">
-									<FileText className="h-3 w-3 text-muted-foreground" />
-									<span className="text-sm group-data-[collapsible=icon]:hidden">
-										References
-									</span>
-								</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-						<SidebarMenuItem>
-							<Collapsible defaultOpen={false} className="w-full">
-								<CollapsibleTrigger asChild>
-									<SidebarMenuButton className="w-full space-x-2 group-data-[collapsible=icon]:justify-center py-1.5 px-3 text-muted-foreground hover:bg-muted hover:text-foreground">
-										<Settings className="h-3 w-3 text-muted-foreground" />
-										<span className="text-sm font-medium tracking-wide group-data-[collapsible=icon]:hidden">
-											Integrations
-										</span>
-										<ChevronDown className="ml-auto h-3 w-3 transition-transform group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
-									</SidebarMenuButton>
-								</CollapsibleTrigger>
-								<CollapsibleContent>
-									<div className="space-y-1 py-1">
-										{integrations.map((integration) => (
-											<div
-												key={integration.name}
-												className={`px-3 ${
-													integration.disabled
-														? "opacity-50 cursor-not-allowed"
-														: ""
-												}`}
-											>
-												{!integration.disabled && (
-													<Link
-														href={integration.link}
-														className="flex w-full px-2 items-center gap-2 rounded-lg py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+							{/* Documents Section */}
+							<SidebarMenuItem>
+								<Collapsible defaultOpen={true} className="w-full">
+									<CollapsibleTrigger asChild>
+										<SidebarMenuButton
+											tooltip="My Documents"
+											className="w-full flex items-center gap-2 group-data-[collapsible=icon]:justify-center py-1.5 px-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+										>
+											<FolderOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+											<span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
+												My Documents
+											</span>
+											<ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
+										</SidebarMenuButton>
+									</CollapsibleTrigger>
+									<CollapsibleContent>
+										<div className="space-y-1 py-1">
+											{documents.map((doc) => (
+												<div
+													key={doc.id}
+													className="px-1 group-data-[collapsible=icon]:px-0"
+												>
+													<SidebarMenuButton
+														asChild
+														tooltip={doc.name}
+														className="flex w-full items-center gap-2 rounded-lg py-1.5 px-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
 													>
-														<integration.icon className="h-3 w-3 mr-1" />
+														<Link href={`/docs/${doc.id}`}>
+															<FileText className="h-4 w-4 shrink-0" />
+															<span className="truncate group-data-[collapsible=icon]:hidden">
+																{doc.name}
+															</span>
+														</Link>
+													</SidebarMenuButton>
+												</div>
+											))}
+											<div className="px-1 group-data-[collapsible=icon]:px-0">
+												{isCreatingDoc ? (
+													<form
+														action={formAction}
+														className="flex items-center gap-1 group-data-[collapsible=icon]:hidden"
+													>
+														<Input
+															name="name"
+															placeholder="Document name"
+															value={newDocName}
+															onChange={(e) => setNewDocName(e.target.value)}
+															onKeyDown={(e) => {
+																if (e.key === "Escape") {
+																	e.preventDefault();
+																	setIsCreatingDoc(false);
+																	setNewDocName("");
+																}
+															}}
+															className="h-9 text-sm dark:bg-muted"
+															autoFocus
+															disabled={isPending}
+														/>
+														<div className="flex gap-1">
+															<SidebarMenuButton
+																type="submit"
+																size="sm"
+																tooltip="Create document"
+																className="h-8 w-8"
+																disabled={isPending || !newDocName.trim()}
+															>
+																{isPending ? (
+																	<div className="h-4 w-4 animate-spin rounded-full border-2 border-foreground/20 border-t-foreground" />
+																) : (
+																	<Check className="h-4 w-4" />
+																)}
+															</SidebarMenuButton>
+															<SidebarMenuButton
+																type="button"
+																size="sm"
+																tooltip="Cancel"
+																className="h-8 w-8"
+																onClick={() => {
+																	setIsCreatingDoc(false);
+																	setNewDocName("");
+																}}
+																disabled={isPending}
+															>
+																<X className="h-4 w-4" />
+															</SidebarMenuButton>
+														</div>
+													</form>
+												) : (
+													<SidebarMenuButton
+														variant="outline"
+														size="sm"
+														tooltip="New Document"
+														className="w-full h-9 dark:bg-muted group-data-[collapsible=icon]:size-8 flex items-center justify-start gap-2 pl-2 border border-dashed border-foreground/20 text-sm group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0 group-data-[collapsible=icon]:pr-0"
+														onClick={() => setIsCreatingDoc(true)}
+													>
+														<Plus className="h-4 w-4 shrink-0" />
 														<span className="group-data-[collapsible=icon]:hidden">
-															{integration.name}
+															New Document
 														</span>
-													</Link>
+													</SidebarMenuButton>
 												)}
 											</div>
-										))}
-										<div className="px-3">
-											<Link
-												href="/integrations"
-												className="flex w-full items-center gap-2 rounded-lg py-1.5 text-sm font-medium text-primary hover:bg-muted"
-											>
-												View all integrations
-											</Link>
 										</div>
-									</div>
-								</CollapsibleContent>
-							</Collapsible>
-						</SidebarMenuItem>
-					</SidebarMenu>
-				</SidebarGroup>
-			</SidebarContent>
-		</Sidebar>
+									</CollapsibleContent>
+								</Collapsible>
+							</SidebarMenuItem>
+
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									asChild
+									tooltip="References"
+									className="w-full flex items-center justify-start gap-2 group-data-[collapsible=icon]:justify-center py-1.5 px-2 text-sm"
+								>
+									<Link
+										href="/references"
+										className="w-full flex items-center gap-2 group-data-[collapsible=icon]:justify-center"
+									>
+										<FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+										<span className="truncate group-data-[collapsible=icon]:hidden">
+											References
+										</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+
+							<SidebarMenuItem>
+								<Collapsible defaultOpen={false} className="w-full">
+									<CollapsibleTrigger asChild>
+										<SidebarMenuButton
+											tooltip="Integrations"
+											className="w-full flex items-center gap-2 group-data-[collapsible=icon]:justify-center py-1.5 px-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+										>
+											<Settings className="h-4 w-4 text-muted-foreground shrink-0" />
+											<span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
+												Integrations
+											</span>
+											<ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
+										</SidebarMenuButton>
+									</CollapsibleTrigger>
+									<CollapsibleContent>
+										<div className="space-y-1 py-1">
+											{integrations.map((integration) => (
+												<div
+													key={integration.name}
+													className={cn("px-1", {
+														"opacity-50 cursor-not-allowed":
+															integration.disabled,
+													})}
+												>
+													{!integration.disabled && (
+														<SidebarMenuButton
+															asChild
+															tooltip={integration.name}
+															className="flex w-full items-center gap-2 rounded-lg py-1.5 px-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
+														>
+															<Link href={integration.link}>
+																<integration.icon className="h-4 w-4 shrink-0" />
+																<span className="truncate group-data-[collapsible=icon]:hidden">
+																	{integration.name}
+																</span>
+															</Link>
+														</SidebarMenuButton>
+													)}
+												</div>
+											))}
+											<div className="px-1">
+												<SidebarMenuButton
+													asChild
+													tooltip="View all integrations"
+													className="flex w-full items-center gap-2 rounded-lg py-1.5 px-2 text-sm font-medium text-primary hover:bg-muted group-data-[collapsible=icon]:justify-center"
+												>
+													<Link href="/integrations">
+														<span className="truncate group-data-[collapsible=icon]:hidden">
+															View all integrations
+														</span>
+													</Link>
+												</SidebarMenuButton>
+											</div>
+										</div>
+									</CollapsibleContent>
+								</Collapsible>
+							</SidebarMenuItem>
+						</SidebarMenu>
+					</SidebarGroup>
+				</SidebarContent>
+				<SidebarRail />
+			</Sidebar>
+		</TooltipProvider>
 	);
 }

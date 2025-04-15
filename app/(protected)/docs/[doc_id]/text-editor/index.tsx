@@ -160,7 +160,7 @@ export function TextEditor({
 	// Handle AI Chat toggle with keyboard shortcut
 	React.useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
-			if (e.key === "a" && (e.metaKey || e.ctrlKey)) {
+			if (e.key === "o" && (e.metaKey || e.ctrlKey)) {
 				e.preventDefault();
 				setIsAIChatOpen((prev) => !prev);
 			}
@@ -457,7 +457,7 @@ export function TextEditor({
 							documentId={documentId}
 							initialName={initialName}
 						/>
-						<div className="relative w-full h-full flex-1">
+						<div className="relative w-full h-[calc(100%-2rem)] flex-1">
 							<textarea
 								ref={editorRef}
 								value={input}
@@ -467,7 +467,7 @@ export function TextEditor({
 								onMouseUp={handleSelectionChange}
 								placeholder="Start writing..."
 								className={cn(
-									"w-full h-full flex-1 outline-none whitespace-pre-wrap font-serif text-base bg-transparent resize-none placeholder:text-muted-foreground/50 px-8",
+									"w-full [h-full flex-1 outline-none whitespace-pre-wrap font-serif text-base bg-transparent resize-none placeholder:text-muted-foreground/50 px-8",
 									isZenMode && "leading-relaxed px-4",
 									pendingUpdate && "opacity-0",
 									isTextLoading && "selection:bg-primary/20",
@@ -636,7 +636,7 @@ export function TextEditor({
 								<MessageSquare className="h-4 w-4" />
 								<span>AI Chat</span>
 								<kbd className="text-foreground inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-mono text-[0.625rem] font-medium ml-2">
-									⌘A
+									⌘O
 								</kbd>
 							</Button>
 

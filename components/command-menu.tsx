@@ -23,6 +23,7 @@ import {
 	LayoutGrid,
 	Users,
 	Copy,
+	Search,
 } from "lucide-react";
 import { SlackIcon } from "@/components/ui/icons/slack";
 import { DiscordIcon } from "@/components/ui/icons/discord";
@@ -33,7 +34,7 @@ import { GoogleDocsIcon } from "@/components/ui/icons/google-docs";
 import { NotionIcon } from "@/components/ui/icons/notion";
 import { LinearIcon } from "@/components/ui/icons/linear";
 import { GithubIcon } from "@/components/ui/icons/github";
-import { Button } from "./ui/button";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 
 interface Document {
 	id: string;
@@ -45,11 +46,13 @@ interface Document {
 interface CommandMenuProps {
 	documents?: Document[];
 	onCreateDocument?: () => void;
+	variant?: "default" | "icon";
 }
 
 export function CommandMenu({
 	documents = [],
 	onCreateDocument,
+	variant = "default",
 }: CommandMenuProps) {
 	const [open, setOpen] = useState(false);
 	const router = useRouter();
@@ -109,19 +112,36 @@ export function CommandMenu({
 
 	return (
 		<>
-			<Button
-				variant="outline"
-				size="sm"
-				onClick={() => setOpen(true)}
-				className="relative w-full flex items-center text-sm text-muted-foreground justify-between"
-			>
-				<span className="inline-flex w-full justify-between items-center">
-					Search or press
-					<kbd className="pointer-events-none ml-auto h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-foreground sm:flex">
-						<span className="text-xs">⌘</span>K
-					</kbd>
-				</span>
-			</Button>
+			{variant === "default" ? (
+				<SidebarMenuButton
+					variant="outline"
+					tooltip="Search documents and navigation"
+					size="default"
+					onClick={() => setOpen(true)}
+					className="relative border border-border px-2 !h-9 dark:bg-muted w-full flex items-center text-sm text-muted-foreground justify-between"
+				>
+					<span className="inline-flex w-full justify-between items-center">
+						<span className="flex items-center gap-2">
+							<Search className="h-4 w-4" />
+							Search or press
+						</span>
+						<kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-foreground sm:flex">
+							<span className="text-xs">⌘</span>K
+						</kbd>
+					</span>
+				</SidebarMenuButton>
+			) : (
+				<SidebarMenuButton
+					variant="outline"
+					size="sm"
+					tooltip="Search"
+					onClick={() => setOpen(true)}
+					className="h-8 w-8 p-0 dark:bg-muted border border-border"
+				>
+					<Search className="h-4 w-4 text-muted-foreground" />
+					<span className="sr-only">Search</span>
+				</SidebarMenuButton>
+			)}
 
 			<CommandDialog open={open} onOpenChange={setOpen}>
 				<DialogContent
