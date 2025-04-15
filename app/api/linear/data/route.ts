@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { createClerkClient, type OauthAccessToken } from "@clerk/backend";
 import { ClerkAPIResponseError } from "@clerk/shared";
 import { LinearClient } from "@linear/sdk";
+import { getSecureSession } from "@/lib/auth/server";
 
 export async function GET() {
   try {
-    const { userId } = await auth();
-    if (!userId) {
+    const session = await getSecureSession();
+    if (!session.userId) {
       return NextResponse.json(
         { error: "Unauthorized: No user ID found" },
         { status: 401 }
@@ -21,7 +21,10 @@ export async function GET() {
     let oauthTokens: OauthAccessToken[] | undefined;
     try {
       const oauthTokensResponse =
-        await clerkClient.users.getUserOauthAccessToken(userId, "linear");
+        await clerkClient.users.getUserOauthAccessToken(
+          session.userId,
+          "linear"
+        );
       oauthTokens = oauthTokensResponse.data;
     } catch (error) {
       if (error instanceof ClerkAPIResponseError) {

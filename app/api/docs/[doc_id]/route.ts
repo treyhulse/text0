@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { redis, DOCUMENT_KEY } from "@/lib/redis";
 import { z } from "zod";
+import { getSecureSession } from "@/lib/auth/server";
 
 const updateDocumentSchema = z.object({
   content: z.string(),
@@ -12,9 +12,9 @@ export async function PATCH(
   { params }: { params: Promise<{ doc_id: string }> }
 ) {
   try {
-    const user = await auth();
+    const session = await getSecureSession();
     const { doc_id } = await params;
-    if (!user.userId) {
+    if (!session.userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -27,7 +27,7 @@ export async function PATCH(
 
     // Verify the document belongs to the user
     const document = await redis.hgetall(DOCUMENT_KEY(doc_id));
-    if (!document || document.userId !== user.userId) {
+    if (!document || document.userId !== session.userId) {
       return new NextResponse("Document not found or unauthorized", {
         status: 404,
       });
