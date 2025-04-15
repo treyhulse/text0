@@ -9,7 +9,6 @@ import {
 	Plus,
 	Check,
 	X,
-	Search,
 } from "lucide-react";
 import {
 	Sidebar,
@@ -248,7 +247,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 											{documents.map((doc) => (
 												<div
 													key={doc.id}
-													className="px-1 group-data-[collapsible=icon]:px-0"
+													className="px-2 ml-4 border-l border-dashed border-border group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:ml-0"
 												>
 													<SidebarMenuButton
 														asChild
