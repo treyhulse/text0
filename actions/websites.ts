@@ -4,11 +4,11 @@ import { nanoid } from "nanoid";
 import { redis } from "@/lib/redis";
 import { tasks } from "@trigger.dev/sdk/v3";
 import type { processReferenceTask } from "@/trigger/process-document";
-import { auth } from "@clerk/nextjs/server";
 import type { Reference } from "@/lib/redis";
 import type { ActionState } from "@/lib/utils";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { getSecureSession } from "@/lib/auth/server";
 
 const USER_REFERENCES_KEY = (userId: string) => `user:${userId}:references`;
 const REFERENCE_KEY = (referenceId: string) => `reference:${referenceId}`;
@@ -22,8 +22,8 @@ export async function addWebsiteReference(
   prevState: AddWebsiteReferenceActionState | undefined,
   formData: FormData
 ): Promise<AddWebsiteReferenceActionState> {
-  const session = await auth();
-  if (!session?.userId) {
+  const session = await getSecureSession();
+  if (!session.userId) {
     throw new Error("Unauthorized");
   }
 

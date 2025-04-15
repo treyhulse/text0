@@ -4,13 +4,13 @@ import {
   REFERENCE_KEY,
   type Reference,
 } from "@/lib/redis";
-import { auth } from "@clerk/nextjs/server";
+import { getSecureSession } from "@/lib/auth/server";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.userId) {
+    const session = await getSecureSession();
+    if (!session.userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 

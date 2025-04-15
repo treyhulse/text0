@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
 import { FileText, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -8,6 +7,7 @@ import {
   type Reference,
 } from "@/lib/redis";
 import { AddReference } from "@/components/add-reference";
+import { getSecureSession } from "@/lib/auth/server";
 
 interface Document {
   id: string;
@@ -42,12 +42,12 @@ async function getReferences(userId: string): Promise<Reference[]> {
 }
 
 export default async function FilesPage() {
-  const { userId } = await auth();
-  if (!userId) {
+  const session = await getSecureSession();
+  if (!session.userId) {
     return null;
   }
 
-  const references = await getReferences(userId);
+  const references = await getReferences(session.userId);
 
   return (
     <div className="container px-4 pb-8">

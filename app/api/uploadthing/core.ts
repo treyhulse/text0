@@ -1,6 +1,5 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { auth } from "@clerk/nextjs/server";
 import { tasks } from "@trigger.dev/sdk/v3";
 import type { processReferenceTask } from "@/trigger/process-document";
 import { nanoid } from "@/lib/nanoid";
@@ -10,6 +9,7 @@ import {
   USER_REFERENCES_KEY,
   redis,
 } from "@/lib/redis";
+import { getSecureSession } from "@/lib/auth/server";
 
 const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
@@ -48,13 +48,13 @@ export const ourFileRouter = {
   })
     .middleware(async () => {
       // This code runs on your server before upload
-      const { userId } = await auth();
+      const session = await getSecureSession();
 
       // If you throw, the user will not be able to upload
-      if (!userId) throw new UploadThingError("Unauthorized");
+      if (!session.userId) throw new UploadThingError("Unauthorized");
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId };
+      return { userId: session.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("Upload complete", { metadata, file });

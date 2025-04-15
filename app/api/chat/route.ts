@@ -11,7 +11,7 @@ import {
 } from "ai";
 import { NextResponse } from "next/server";
 import { vector } from "@/lib/vector";
-import { auth } from "@clerk/nextjs/server";
+import { getSecureSession } from "@/lib/auth/server";
 
 // Set the runtime to edge for better performance
 export const runtime = "edge";
@@ -38,10 +38,10 @@ export async function POST(req: Request) {
   try {
     const { messages, model, references } = await req.json();
 
-    const user = await auth();
+    const session = await getSecureSession();
 
     const filter = `userId = '${
-      user.userId
+      session.userId
     }' AND referenceId IN ('${references.join("','")}')`;
 
     const closestReferences = await vector.query({

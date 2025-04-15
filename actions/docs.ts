@@ -6,11 +6,11 @@ import {
   USER_DOCUMENTS_KEY,
   type Document,
 } from "@/lib/redis";
-import { auth } from "@clerk/nextjs/server";
 import { nanoid } from "@/lib/nanoid";
 import type { ActionState } from "@/lib/utils";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { getSecureSession } from "@/lib/auth/server";
 
 export type CreateDocumentActionState = ActionState<
   { name: string },
@@ -31,8 +31,8 @@ export async function createDocument(
   };
 
   try {
-    const user = await auth();
-    if (!user.userId) {
+    const session = await getSecureSession();
+    if (!session.userId) {
       throw new Error("Unauthorized");
     }
 
@@ -49,7 +49,7 @@ export async function createDocument(
     const id = nanoid();
     const document: Document = {
       id,
-      userId: user.userId,
+      userId: session.userId,
       name: parsed.data.name,
       content: "",
       createdAt: new Date().toISOString(),
@@ -59,7 +59,7 @@ export async function createDocument(
     await redis.hset(DOCUMENT_KEY(id), document);
 
     // Add document ID to user's documents list
-    await redis.zadd(USER_DOCUMENTS_KEY(user.userId), {
+    await redis.zadd(USER_DOCUMENTS_KEY(session.userId), {
       score: Date.now(),
       member: id,
     });
@@ -85,8 +85,8 @@ export async function updateDocumentName(
   };
 
   try {
-    const user = await auth();
-    if (!user.userId) {
+    const session = await getSecureSession();
+    if (!session.userId) {
       throw new Error("Unauthorized");
     }
 
@@ -103,7 +103,7 @@ export async function updateDocumentName(
 
     // Verify the document belongs to the user
     const document = await redis.hgetall(DOCUMENT_KEY(parsed.data.documentId));
-    if (!document || document.userId !== user.userId) {
+    if (!document || document.userId !== session.userId) {
       throw new Error("Document not found or unauthorized");
     }
 

@@ -8,7 +8,7 @@ import { google } from "@ai-sdk/google";
 import { anthropic } from "@ai-sdk/anthropic";
 
 import type { NextRequest } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { getSecureSession } from "@/lib/auth/server";
 
 export const maxDuration = 30;
 
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     console.log(body);
 
-    const user = await auth();
+    const session = await getSecureSession();
 
     let model: LanguageModelV1;
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     const filter = `userId = '${
-      user.userId
+      session.userId
     }' AND referenceId IN ('${body.references.join("','")}')`;
 
     const context = await vector.query({
