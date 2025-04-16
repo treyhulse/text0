@@ -1,18 +1,19 @@
 "use client";
 
 import Keyboard from "@/components/t0-keyboard";
-import { useAnimation } from "framer-motion";
-import { useEffect, useState } from "react";
-import { GithubIcon } from "@/components/ui/icons/github";
-import { XIcon } from "@/components/ui/icons/x-icon";
-import { VercelIcon } from "@/components/ui/icons/vercel";
 import { TextScramble } from "@/components/text-scramble";
-import { motion } from "framer-motion";
+import { GithubIcon } from "@/components/ui/icons/github";
+import { VercelIcon } from "@/components/ui/icons/vercel";
+import { XIcon } from "@/components/ui/icons/x-icon";
+import { motion, useAnimation } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function LandingPage() {
 	const arrowControls = useAnimation();
 	const [hasPressed, setHasPressed] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
+	const router = useRouter();
 
 	useEffect(() => {
 		const checkMobile = () => {
@@ -41,37 +42,38 @@ export default function LandingPage() {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key.toLowerCase() === "t") {
 				setHasPressed(true);
+				router.push("/home");
 			}
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [arrowControls]);
+	}, [arrowControls, router]);
 
 	return (
-		<div className="flex h-screen flex-col bg-background text-foreground relative overflow-hidden">
+		<div className="relative flex h-screen flex-col overflow-hidden bg-background text-foreground">
 			{/* Gradient Background Effects */}
 			<div className="pointer-events-none absolute inset-0 z-0">
 				{/* Primary gradient */}
 				<div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/5 to-transparent" />
 				{/* Accent gradients */}
-				<div className="absolute -left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[100px] opacity-50" />
-				<div className="absolute -right-1/4 bottom-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[100px] opacity-50" />
+				<div className="-left-1/4 absolute top-0 h-[500px] w-[500px] rounded-full bg-primary/5 opacity-50 blur-[100px]" />
+				<div className="-right-1/4 absolute bottom-0 h-[500px] w-[500px] rounded-full bg-primary/5 opacity-50 blur-[100px]" />
 			</div>
 
 			{/* Main Content */}
 			<main className="relative z-10 flex h-full flex-1 items-center justify-center overflow-auto">
 				<div className="container mx-auto my-auto flex h-full max-w-2xl flex-col items-center justify-center">
 					{/* Hackathon Badge */}
-					<div className="mb-8 flex items-center gap-2 px-3 py-1.5 bg-background/50 backdrop-blur-sm border border-border/50 rounded-full">
+					<div className="mb-8 flex items-center gap-2 rounded-full border border-border/50 bg-background/50 px-3 py-1.5 backdrop-blur-sm">
 						<VercelIcon size={16} className="text-foreground" />
-						<span className="text-sm text-muted-foreground">
+						<span className="text-muted-foreground text-sm">
 							Built for Vercel Hackathon
 						</span>
 					</div>
 
 					{/* App Title */}
-					<div className="mb-8 px-4 flex text-center items-center justify-center gap-4">
+					<div className="mb-8 flex items-center justify-center gap-4 px-4 text-center">
 						<div className="flex flex-col gap-1">
 							<TextScramble
 								as="h1"
@@ -92,7 +94,7 @@ export default function LandingPage() {
 							>
 								text0
 							</TextScramble>
-							<p className="uppercase font-mono text-muted-foreground text-base">
+							<p className="font-mono text-base text-muted-foreground uppercase">
 								Your AI-native personal text editor
 							</p>
 						</div>
@@ -111,7 +113,7 @@ export default function LandingPage() {
 							) : (
 								<>
 									Press{" "}
-									<kbd className="inline-flex justify-center size-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
+									<kbd className="inline-flex size-5 max-h-full items-center justify-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
 										T
 									</kbd>{" "}
 									to get started

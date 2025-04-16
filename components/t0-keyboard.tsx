@@ -1,6 +1,6 @@
 import { T0Logo } from "@/components/ui/icons/t0-logo";
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface KeyProps {
 	char: string;
@@ -38,7 +38,7 @@ const Key: React.FC<KeyProps> = ({
 		>
 			<div className="side" />
 			<div className="top" />
-			<T0Logo className="char w-10 h-10" />
+			<T0Logo className="char h-10 w-10" />
 		</div>
 	);
 };

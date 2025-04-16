@@ -49,7 +49,6 @@ export default async function HomePage() {
 	);
 
 	// Combine and sort by date
-	console.log(validDocuments);
 	const allFiles = [
 		...validDocuments.map((doc) => ({ ...doc, type: "document" as const })),
 		...validReferences.map((ref) => ({ ...ref, type: "reference" as const })),
@@ -116,26 +115,26 @@ export default async function HomePage() {
 									<Link
 										href={`/docs/${file.id}`}
 										key={file.id}
-										className="flex items-center gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
+										className="relative flex items-start gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
 									>
-										<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-blue-500/5 text-blue-500">
+										<div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-blue-500/5 text-blue-500">
 											<FileText className="h-4 w-4" />
 										</div>
-										<div className="flex min-w-0 flex-1 flex-col justify-between">
-											<div>
+										<div className="flex grow justify-between">
+											<div className="grow pr-16">
 												<h3 className="truncate font-medium text-[15px]">
 													{file.name}
 												</h3>
+												<p className="text-muted-foreground text-xs ">
+													{file.content.slice(0, 200)}
+												</p>
 											</div>
-											<div className="flex flex-col gap-0.5">
+											<div className="absolute right-4 bottom-4">
 												<p className="text-muted-foreground text-xs">
 													{new Date(file.createdAt).toLocaleDateString()}
 												</p>
 											</div>
 										</div>
-										<p className="max-w-[200px] truncate text-muted-foreground text-xs">
-											{file.content}
-										</p>
 									</Link>
 								) : (
 									<a
@@ -143,28 +142,23 @@ export default async function HomePage() {
 										target="_blank"
 										rel="noopener noreferrer"
 										key={file.id}
-										className="flex items-center gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
+										className="items-top relative flex gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
 									>
-										<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-purple-500/5 text-purple-500">
+										<div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-purple-500/5 text-purple-500">
 											<BrainIcon className="h-4 w-4" />
 										</div>
-										<div className="flex min-w-0 flex-1 flex-col justify-between">
-											<div>
-												<h3 className="truncate font-medium text-[15px]">
-													{file.name || file.filename || "Untitled"}
+										<div className="flex grow justify-between">
+											<div className="grow pr-16">
+												<h3 className="text-balance font-medium text-[15px]">
+													{file.name ?? file.filename ?? "Untitled"}
+													<ExternalLink className="ml-1 inline-block h-3 w-3" />
 												</h3>
 											</div>
-											<div className="flex flex-col gap-0.5">
+											<div className="absolute right-4 bottom-4">
 												<p className="text-muted-foreground text-xs">
 													{new Date(file.uploadedAt).toLocaleDateString()}
 												</p>
 											</div>
-										</div>
-										<div className="flex items-center gap-1 text-muted-foreground text-xs">
-											<span className="max-w-[180px] truncate">
-												{file.url?.replace(/^https?:\/\//, "").split("/")[0]}
-											</span>
-											<ExternalLink className="h-3 w-3" />
 										</div>
 									</a>
 								),

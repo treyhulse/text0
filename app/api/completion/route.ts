@@ -18,8 +18,6 @@ export async function POST(request: NextRequest) {
 		const searchParams = request.nextUrl.searchParams;
 		const _model = searchParams.get("model");
 
-		console.log(body);
-
 		const session = await getSecureSession();
 
 		let model: LanguageModelV1;

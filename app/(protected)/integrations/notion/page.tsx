@@ -124,7 +124,6 @@ export default function NotionIntegrationPage() {
 				}
 
 				const data = await response.json();
-				console.log({ data });
 
 				// Map user data
 				const botUser = data.user;

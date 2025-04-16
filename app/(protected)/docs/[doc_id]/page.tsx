@@ -22,7 +22,6 @@ export default async function DocumentPage({
 }>) {
 	const { doc_id } = await params;
 	const session = await getSecureSession();
-	console.log(session);
 	const document: Document | null = await redis.hgetall(DOCUMENT_KEY(doc_id));
 
 	if (!document) {
