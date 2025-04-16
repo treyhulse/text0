@@ -1,4 +1,5 @@
 import { MinimalIntegrationSidebar } from "@/components/integration-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { getSecureUser } from "@/lib/auth/server";
 import {
 	DOCUMENT_KEY,
@@ -27,9 +28,11 @@ export default async function ProtectedLayout({
 	const documents = _documents.map((document) => document as Document);
 
 	return (
-		<div className="flex h-screen w-full">
-			<MinimalIntegrationSidebar documents={documents} />
-			<main className="w-full flex-1 overflow-auto">{children}</main>
-		</div>
+		<SidebarProvider defaultOpen={true}>
+			<div className="flex h-screen w-full">
+				<MinimalIntegrationSidebar documents={documents} />
+				<main className="w-full flex-1 overflow-auto">{children}</main>
+			</div>
+		</SidebarProvider>
 	);
 }

@@ -48,6 +48,19 @@
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
+
+	--font-sans: var(--font-sans);
+	--font-mono: var(--font-mono);
+	--font-serif: var(--font-serif);
+
+	--shadow-2xs: var(--shadow-2xs);
+	--shadow-xs: var(--shadow-xs);
+	--shadow-sm: var(--shadow-sm);
+	--shadow: var(--shadow);
+	--shadow-md: var(--shadow-md);
+	--shadow-lg: var(--shadow-lg);
+	--shadow-xl: var(--shadow-xl);
+	--shadow-2xl: var(--shadow-2xl);
 }
 
 :root {
@@ -101,6 +114,20 @@
 	--shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px
 		hsl(0 0% 0% / 0.1);
 	--shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+
+	/* Keyboard dark theme colors - Vercel Dark Theme */
+	--keyboard-bg: oklch(0.15 0 0);
+	--keyboard-base: oklch(0.2 0 0);
+	--keyboard-highlight: oklch(0.25 0 0);
+	--keyboard-shadow: oklch(0.61 0.001 286);
+	--keyboard-text: oklch(0.98 0 0);
+	--keyboard-text-shadow: oklch(0.85 0 0);
+	--keyboard-text-shadow-dark: oklch(0.2 0 0);
+	--keyboard-key-bg: oklch(0.2 0 0);
+	--keyboard-key-highlight: oklch(0.25 0 0);
+	--keyboard-key-shadow: oklch(0.1 0 0);
+	--keyboard-inset-highlight: oklch(0.3 0 0);
+	--keyboard-inset-shadow: oklch(0.05 0 0);
 }
 
 .dark {
@@ -154,59 +181,20 @@
 	--shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px
 		hsl(0 0% 0% / 0.1);
 	--shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
-}
 
-@theme inline {
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-card: var(--card);
-	--color-card-foreground: var(--card-foreground);
-	--color-popover: var(--popover);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-muted: var(--muted);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-destructive: var(--destructive);
-	--color-destructive-foreground: var(--destructive-foreground);
-	--color-border: var(--border);
-	--color-input: var(--input);
-	--color-ring: var(--ring);
-	--color-chart-1: var(--chart-1);
-	--color-chart-2: var(--chart-2);
-	--color-chart-3: var(--chart-3);
-	--color-chart-4: var(--chart-4);
-	--color-chart-5: var(--chart-5);
-	--color-sidebar: var(--sidebar);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-ring: var(--sidebar-ring);
-
-	--font-sans: var(--font-sans);
-	--font-mono: var(--font-mono);
-	--font-serif: var(--font-serif);
-
-	--radius-sm: calc(var(--radius) - 4px);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) + 4px);
-
-	--shadow-2xs: var(--shadow-2xs);
-	--shadow-xs: var(--shadow-xs);
-	--shadow-sm: var(--shadow-sm);
-	--shadow: var(--shadow);
-	--shadow-md: var(--shadow-md);
-	--shadow-lg: var(--shadow-lg);
-	--shadow-xl: var(--shadow-xl);
-	--shadow-2xl: var(--shadow-2xl);
+	/* Keyboard theme colors - Vercel Light Theme */
+	--keyboard-bg: oklch(1 0 0); /* Pure white background for the keyboard */
+	--keyboard-base: oklch(0.98 0 0); /* Near-white for subtle depth */
+	--keyboard-highlight: oklch(0.99 0.005 270); /* Slightly purple-tinted white for vibrant highlights */
+	--keyboard-shadow: oklch(0.6 0.02 260); /* Bolder gray-blue shadow for stronger contrast */
+	--keyboard-text: oklch(0.2 0 0); /* Dark charcoal for high-contrast text */
+	--keyboard-text-shadow: oklch(0.7 0.015 260); /* Slightly darker gray for text shadow */
+	--keyboard-text-shadow-dark: oklch(0.35 0.02 260); /* Stronger gray for text shadow depth */
+	--keyboard-key-bg: oklch(0.99 0 0); /* Off-white key background for contrast */
+	--keyboard-key-highlight: oklch(0.99 0.005 270); /* Matching purple-tinted highlight for keys */
+	--keyboard-key-shadow: oklch(0.78 0.02 260); /* More pronounced gray-blue for key shadows */
+	--keyboard-inset-highlight: oklch(0.88 0.005 270); /* Subtle purple-tinted inset highlight */
+	--keyboard-inset-shadow: oklch(0.8 0.02 260); /* Bolder gray-blue for inset shadows */
 }
 
 @layer base {
@@ -225,4 +213,159 @@
 		margin-right: 0px !important;
 		overflow-y: auto !important;
 	}
+}
+
+/* 3D Keyboard Styles */
+.keyboard {
+	transform: rotateX(60deg) rotateZ(45deg);
+	transform-style: preserve-3d;
+	background: var(--keyboard-bg);
+	border-radius: 2rem;
+	padding: 2rem;
+	box-shadow: inset 1rem 1rem 0 0.4rem var(--keyboard-highlight);
+	display: flex;
+	gap: 0 2rem;
+	position: relative;
+}
+
+.keyboard .shade {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 90%;
+	height: 5rem;
+	background-image: linear-gradient(
+		90deg,
+		var(--keyboard-shadow) 50%,
+		var(--keyboard-highlight)
+	);
+	transform: rotateX(90deg) rotateX(14deg) translateX(10rem) translateY(-6rem)
+		translateZ(-39rem);
+	filter: blur(0.5rem);
+}
+
+.keyboard .cover {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: transparent;
+	border-radius: 2rem;
+	box-shadow:
+		inset -0.3rem -0.3rem 0.1rem 0.2rem var(--keyboard-highlight),
+		inset -1rem -1rem 0 0.4rem var(--keyboard-inset-shadow),
+		inset -2rem -2rem 2rem -0.6rem var(--keyboard-base),
+		0 0 var(--keyboard-base),
+		0.3rem 0.3rem var(--keyboard-base),
+		0.6rem 0.6rem var(--keyboard-base),
+		0.9rem 0.9rem var(--keyboard-base),
+		1.2rem 1.2rem var(--keyboard-base),
+		1.5rem 1.5rem var(--keyboard-base),
+		1.8rem 1.8rem var(--keyboard-base),
+		2.1rem 2.1rem var(--keyboard-base),
+		2.4rem 2.4rem var(--keyboard-base),
+		2.7rem 2.7rem var(--keyboard-base),
+		3rem 3rem var(--keyboard-base),
+		3.3rem 3.3rem var(--keyboard-base),
+		3.6rem 3.6rem var(--keyboard-base),
+		3.9rem 3.9rem var(--keyboard-base),
+		4.2rem 4.2rem var(--keyboard-base),
+		4.5rem 4.5rem var(--keyboard-base),
+		4.8rem 4.8rem var(--keyboard-base),
+		5.1rem 5.1rem var(--keyboard-base),
+		5.4rem 5.4rem var(--keyboard-base),
+		5.7rem 5.7rem var(--keyboard-base),
+		6rem 6rem var(--keyboard-base),
+		6.3rem 6.3rem var(--keyboard-base),
+		6.6rem 6.6rem var(--keyboard-base),
+		6.6rem 6.6rem var(--keyboard-base),
+		8rem 8rem 1.5rem var(--keyboard-shadow);
+}
+
+.key {
+	position: relative;
+	width: 6rem;
+	height: 6rem;
+	transform: translateX(-3rem) translateY(-3rem);
+	transform-style: preserve-3d;
+	user-select: none;
+	transition: transform 0.1s ease-out;
+}
+
+.key.active {
+	transform: translateX(-1rem) translateY(-1rem);
+}
+
+.key .char {
+	position: absolute;
+	font-size: 4rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	color: var(--keyboard-text);
+	text-shadow:
+		0.05rem 0rem 0 var(--keyboard-text-shadow),
+		0.05rem 0.1rem 0 var(--keyboard-text-shadow-dark),
+		0.1rem 0.05rem 0 var(--keyboard-text-shadow),
+		0.1rem 0.15rem 0 var(--keyboard-text-shadow-dark),
+		0.15rem 0.1rem 0 var(--keyboard-text-shadow),
+		0.15rem 0.2rem 0 var(--keyboard-text-shadow-dark),
+		0.2rem 0.15rem 0 var(--keyboard-text-shadow),
+		0.2rem 0.25rem 0 var(--keyboard-text-shadow-dark),
+		0.25rem 0.2rem 0 var(--keyboard-text-shadow),
+		0.25rem 0.3rem 0 var(--keyboard-text-shadow-dark);
+}
+
+.key .side {
+	position: absolute;
+	width: 250%;
+	height: 140%;
+	background-image: linear-gradient(
+		var(--keyboard-key-highlight) 45%,
+		var(--keyboard-key-shadow) 55%
+	);
+	border-radius: 1rem;
+	transform: rotateZ(45deg) translate(19%, 28%);
+}
+
+.key .top {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.key .top::before {
+	content: "";
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: var(--keyboard-key-bg);
+	border-radius: 0.8em;
+	filter: blur(0.3rem);
+	transform: translate(10%, 10%);
+}
+
+.key .top::after {
+	content: "";
+	position: absolute;
+	width: 105%;
+	height: 105%;
+	background-image: linear-gradient(
+		-45deg,
+		transparent 45%,
+		var(--keyboard-key-highlight) 55%
+	);
+	border-radius: 0.8rem;
+	box-shadow: inset -0.2rem -0.2rem 0.5rem -0.2rem var(--keyboard-inset-shadow),
+		0.2rem 0.2rem 0.5rem -0.2rem var(--keyboard-inset-highlight);
+}
+
+/* Add perspective to the body */
+html,
+body {
+	perspective: 300rem;
+	background: var(--background);
 }

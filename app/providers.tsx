@@ -1,5 +1,4 @@
 "use client";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
@@ -17,7 +16,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 						disableTransitionOnChange
 						defaultTheme="system"
 					>
-						<SidebarProvider defaultOpen={true}>{children}</SidebarProvider>
+						{children}
 					</ThemeProvider>
 				</QueryClientProvider>
 			</ClerkProvider>
