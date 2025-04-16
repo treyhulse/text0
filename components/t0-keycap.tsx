@@ -1,9 +1,10 @@
 "use client";
 
 import { T0Logo } from "@/components/ui/icons/t0-logo";
+import { SpinnerIcon } from "@/components/ui/icons/spinner";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 interface KeyProps {
 	char: string;
@@ -28,6 +29,7 @@ const Key: React.FC<KeyProps> = ({
 	onKeyUp,
 	tabIndex = 0,
 }) => {
+	console.log({ active });
 	return (
 		<div
 			className={`key ${span ? "span" : ""} ${active ? "active" : ""}`}
@@ -40,7 +42,11 @@ const Key: React.FC<KeyProps> = ({
 		>
 			<div className="side" />
 			<div className="top" />
-			<T0Logo className="char h-10 w-10" />
+			{active ? (
+				<SpinnerIcon className="char h-10 w-10 animate-spin" />
+			) : (
+				<T0Logo className="char h-10 w-10 transition-transform" />
+			)}
 		</div>
 	);
 };
@@ -103,10 +109,16 @@ export const T0Keycap: React.FC = () => {
 	const router = useRouter();
 	const { add, remove, has } = useSetState([]);
 	const { play, stop } = useSound("/keytype.mp3");
+	const [isNavigating, setIsNavigating] = useState(false);
+
+	const handleNavigation = useCallback(() => {
+		setIsNavigating(true);
+		router.push("/home");
+	}, [router]);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key.toLowerCase() === "t") {
+			if (e.key.toLowerCase() === "t" && !isNavigating) {
 				add(e.key);
 				stop();
 				play();
@@ -114,9 +126,9 @@ export const T0Keycap: React.FC = () => {
 		};
 
 		const handleKeyUp = (e: KeyboardEvent) => {
-			if (e.key.toLowerCase() === "t") {
+			if (e.key.toLowerCase() === "t" && !isNavigating) {
 				remove(e.key);
-				router.push("/home");
+				handleNavigation();
 			}
 		};
 
@@ -127,32 +139,36 @@ export const T0Keycap: React.FC = () => {
 			document.removeEventListener("keydown", handleKeyDown);
 			document.removeEventListener("keyup", handleKeyUp);
 		};
-	}, [add, remove, play, stop, router]);
+	}, [add, remove, play, stop, isNavigating, handleNavigation]);
 
 	const handleClick = (char: string) => {
+		if (isNavigating) return;
 		add(char);
 		stop();
 		play();
 		setTimeout(() => {
 			remove(char);
-			router.push("/home");
+			handleNavigation();
 		}, 100);
 	};
 
 	const handleMouseDown = (char: string) => {
+		if (isNavigating) return;
 		add(char);
 		stop();
 		play();
 	};
 
 	const handleMouseUp = (char: string) => {
+		if (isNavigating) return;
 		remove(char);
-		router.push("/home");
+		handleNavigation();
 	};
 
 	const handleKeyDown = (char: string, e: React.KeyboardEvent) => {
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
+			if (isNavigating) return;
 			add(char);
 			stop();
 			play();
@@ -162,8 +178,9 @@ export const T0Keycap: React.FC = () => {
 	const handleKeyUp = (char: string, e: React.KeyboardEvent) => {
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
+			if (isNavigating) return;
 			remove(char);
-			router.push("/home");
+			handleNavigation();
 		}
 	};
 
@@ -173,7 +190,7 @@ export const T0Keycap: React.FC = () => {
 				key={char}
 				char={char}
 				span={spans[i] || false}
-				active={has(char)}
+				active={has(char) || isNavigating}
 				onClick={() => handleClick(char)}
 				onMouseDown={() => handleMouseDown(char)}
 				onMouseUp={() => handleMouseUp(char)}
