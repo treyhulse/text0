@@ -1,4 +1,7 @@
+"use client";
+
 import { T0Logo } from "@/components/ui/icons/t0-logo";
+import { useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -31,7 +34,6 @@ const Key: React.FC<KeyProps> = ({
 			onClick={onClick}
 			onMouseDown={onMouseDown}
 			onMouseUp={onMouseUp}
-			onMouseLeave={onMouseUp}
 			onKeyDown={onKeyDown}
 			onKeyUp={onKeyUp}
 			tabIndex={tabIndex}
@@ -97,24 +99,25 @@ const useSound = (url: string) => {
 	};
 };
 
-interface T0KeycapProps {
-	onRelease: () => void;
-}
-
-export const T0Keycap: React.FC<T0KeycapProps> = ({ onRelease }) => {
+export const T0Keycap: React.FC = () => {
+	const router = useRouter();
 	const { add, remove, has } = useSetState([]);
 	const { play, stop } = useSound("/keytype.mp3");
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			add(e.key);
-			stop();
-			play();
+			if (e.key.toLowerCase() === "t") {
+				add(e.key);
+				stop();
+				play();
+			}
 		};
 
 		const handleKeyUp = (e: KeyboardEvent) => {
-			remove(e.key);
-			onRelease();
+			if (e.key.toLowerCase() === "t") {
+				remove(e.key);
+				router.push("/home");
+			}
 		};
 
 		document.addEventListener("keydown", handleKeyDown);
@@ -124,13 +127,16 @@ export const T0Keycap: React.FC<T0KeycapProps> = ({ onRelease }) => {
 			document.removeEventListener("keydown", handleKeyDown);
 			document.removeEventListener("keyup", handleKeyUp);
 		};
-	}, [add, remove, play, stop, onRelease]);
+	}, [add, remove, play, stop, router]);
 
 	const handleClick = (char: string) => {
 		add(char);
 		stop();
 		play();
-		setTimeout(() => remove(char), 100);
+		setTimeout(() => {
+			remove(char);
+			router.push("/home");
+		}, 100);
 	};
 
 	const handleMouseDown = (char: string) => {
@@ -141,7 +147,7 @@ export const T0Keycap: React.FC<T0KeycapProps> = ({ onRelease }) => {
 
 	const handleMouseUp = (char: string) => {
 		remove(char);
-		onRelease();
+		router.push("/home");
 	};
 
 	const handleKeyDown = (char: string, e: React.KeyboardEvent) => {
@@ -150,7 +156,14 @@ export const T0Keycap: React.FC<T0KeycapProps> = ({ onRelease }) => {
 			add(char);
 			stop();
 			play();
-			onRelease();
+		}
+	};
+
+	const handleKeyUp = (char: string, e: React.KeyboardEvent) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			remove(char);
+			router.push("/home");
 		}
 	};
 
@@ -165,6 +178,7 @@ export const T0Keycap: React.FC<T0KeycapProps> = ({ onRelease }) => {
 				onMouseDown={() => handleMouseDown(char)}
 				onMouseUp={() => handleMouseUp(char)}
 				onKeyDown={(e) => handleKeyDown(char, e)}
+				onKeyUp={(e) => handleKeyUp(char, e)}
 			/>
 		));
 

@@ -1,29 +1,11 @@
-"use client";
-
 import { T0Keycap } from "@/components/t0-keycap";
 import { TextScramble } from "@/components/text-scramble";
 import { GithubIcon } from "@/components/ui/icons/github";
 import { VercelIcon } from "@/components/ui/icons/vercel";
 import { XIcon } from "@/components/ui/icons/x-icon";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { AnimatedPrompt } from "@/components/animated-prompt";
 
-export default function LandingPage() {
-	const [isMobile, setIsMobile] = useState(false);
-	const router = useRouter();
-
-	useEffect(() => {
-		const checkMobile = () => {
-			setIsMobile(window.innerWidth < 768);
-		};
-
-		checkMobile();
-		window.addEventListener("resize", checkMobile);
-
-		return () => window.removeEventListener("resize", checkMobile);
-	}, []);
-
+export default async function LandingPage() {
 	return (
 		<div className="relative flex h-screen flex-col overflow-hidden bg-background text-foreground">
 			{/* Gradient Background Effects */}
@@ -75,34 +57,11 @@ export default function LandingPage() {
 					</div>
 
 					{/* Press T to Start Prompt */}
-					<motion.div
-						className="mb-8 text-center"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5 }}
-					>
-						<p className="text-lg text-muted-foreground">
-							{isMobile ? (
-								"Press the button to get started"
-							) : (
-								<>
-									Press{" "}
-									<kbd className="inline-flex size-5 max-h-full items-center justify-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
-										T
-									</kbd>{" "}
-									to get started
-								</>
-							)}
-						</p>
-					</motion.div>
+					<AnimatedPrompt />
 
 					{/* Keyboard */}
 					<div className="size-40">
-						<T0Keycap
-							onRelease={() => {
-								router.push("/home");
-							}}
-						/>
+						<T0Keycap />
 					</div>
 				</div>
 			</main>
@@ -129,14 +88,14 @@ export default function LandingPage() {
 						</a>
 					</div>
 					<div className="text-muted-foreground text-xs">
-						text0 • Built by{" "}
+						Built by{" "}
 						<a
 							href="https://github.com/Railly"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="hover:text-foreground"
 						>
-							Railly Hugo
+							Railly
 						</a>{" "}
 						&{" "}
 						<a
@@ -145,7 +104,7 @@ export default function LandingPage() {
 							rel="noopener noreferrer"
 							className="hover:text-foreground"
 						>
-							Anthony Cueva
+							Cueva
 						</a>
 					</div>
 				</div>
