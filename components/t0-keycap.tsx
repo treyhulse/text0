@@ -97,7 +97,11 @@ const useSound = (url: string) => {
 	};
 };
 
-export const Keyboard: React.FC = () => {
+interface T0KeycapProps {
+	onRelease: () => void;
+}
+
+export const T0Keycap: React.FC<T0KeycapProps> = ({ onRelease }) => {
 	const { add, remove, has } = useSetState([]);
 	const { play, stop } = useSound("/keytype.mp3");
 
@@ -110,6 +114,7 @@ export const Keyboard: React.FC = () => {
 
 		const handleKeyUp = (e: KeyboardEvent) => {
 			remove(e.key);
+			onRelease();
 		};
 
 		document.addEventListener("keydown", handleKeyDown);
@@ -119,13 +124,13 @@ export const Keyboard: React.FC = () => {
 			document.removeEventListener("keydown", handleKeyDown);
 			document.removeEventListener("keyup", handleKeyUp);
 		};
-	}, [add, remove, play, stop]);
+	}, [add, remove, play, stop, onRelease]);
 
 	const handleClick = (char: string) => {
 		add(char);
 		stop();
 		play();
-		setTimeout(() => remove(char), 100); // Remove after 100ms to show animation
+		setTimeout(() => remove(char), 100);
 	};
 
 	const handleMouseDown = (char: string) => {
@@ -136,6 +141,7 @@ export const Keyboard: React.FC = () => {
 
 	const handleMouseUp = (char: string) => {
 		remove(char);
+		onRelease();
 	};
 
 	const handleKeyDown = (char: string, e: React.KeyboardEvent) => {
@@ -144,13 +150,7 @@ export const Keyboard: React.FC = () => {
 			add(char);
 			stop();
 			play();
-		}
-	};
-
-	const handleKeyUp = (char: string, e: React.KeyboardEvent) => {
-		if (e.key === "Enter" || e.key === " ") {
-			e.preventDefault();
-			remove(char);
+			onRelease();
 		}
 	};
 
@@ -165,7 +165,6 @@ export const Keyboard: React.FC = () => {
 				onMouseDown={() => handleMouseDown(char)}
 				onMouseUp={() => handleMouseUp(char)}
 				onKeyDown={(e) => handleKeyDown(char, e)}
-				onKeyUp={(e) => handleKeyUp(char, e)}
 			/>
 		));
 
@@ -178,5 +177,3 @@ export const Keyboard: React.FC = () => {
 		</div>
 	);
 };
-
-export default Keyboard;

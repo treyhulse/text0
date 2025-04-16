@@ -1,17 +1,15 @@
 "use client";
 
-import Keyboard from "@/components/t0-keyboard";
+import { T0Keycap } from "@/components/t0-keycap";
 import { TextScramble } from "@/components/text-scramble";
 import { GithubIcon } from "@/components/ui/icons/github";
 import { VercelIcon } from "@/components/ui/icons/vercel";
 import { XIcon } from "@/components/ui/icons/x-icon";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LandingPage() {
-	const arrowControls = useAnimation();
-	const [hasPressed, setHasPressed] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
 	const router = useRouter();
 
@@ -25,30 +23,6 @@ export default function LandingPage() {
 
 		return () => window.removeEventListener("resize", checkMobile);
 	}, []);
-
-	useEffect(() => {
-		arrowControls.start({
-			pathLength: [0, 1],
-			opacity: [0, 1],
-			transition: {
-				duration: 1.5,
-				ease: "easeInOut",
-				repeat: Number.POSITIVE_INFINITY,
-				repeatType: "loop",
-				repeatDelay: 0.5,
-			},
-		});
-
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key.toLowerCase() === "t") {
-				setHasPressed(true);
-				router.push("/home");
-			}
-		};
-
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [arrowControls, router]);
 
 	return (
 		<div className="relative flex h-screen flex-col overflow-hidden bg-background text-foreground">
@@ -104,7 +78,7 @@ export default function LandingPage() {
 					<motion.div
 						className="mb-8 text-center"
 						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: hasPressed ? 0 : 1, y: hasPressed ? -20 : 0 }}
+						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.5 }}
 					>
 						<p className="text-lg text-muted-foreground">
@@ -124,7 +98,11 @@ export default function LandingPage() {
 
 					{/* Keyboard */}
 					<div className="size-40">
-						<Keyboard />
+						<T0Keycap
+							onRelease={() => {
+								router.push("/home");
+							}}
+						/>
 					</div>
 				</div>
 			</main>
