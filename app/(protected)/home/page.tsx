@@ -126,7 +126,7 @@ export default async function HomePage() {
 													{file.name}
 												</h3>
 												<p className="text-muted-foreground text-xs ">
-													{file.content.slice(0, 200)}
+													{file.content.slice(0, 200)}...
 												</p>
 											</div>
 											<div className="absolute right-4 bottom-4">
