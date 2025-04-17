@@ -43,7 +43,7 @@ export function QuickActionButton({
 	// Variant styles
 	const variantStyles = {
 		default:
-			"border-border bg-background hover:bg-muted/50 hover:border-primary/50",
+			"border-border bg-muted dark:bg-card hover:bg-muted/50 hover:border-primary/50",
 		primary:
 			"border-primary/20 bg-primary/10 hover:bg-primary/20 hover:border-primary",
 		secondary:

@@ -1,4 +1,3 @@
-import { createDocument } from "@/actions/docs";
 import { AppHeader } from "@/components/home/app-header";
 import { QuickActionButton } from "@/components/home/quick-action-button";
 import { RecentFilesCard } from "@/components/home/recent-files-card";
@@ -13,8 +12,8 @@ import {
 	USER_REFERENCES_KEY,
 	redis,
 } from "@/lib/redis";
-import React from "react";
 import { NewDoc } from "./new-doc";
+import { SearchCommand } from "./search-command";
 
 export default async function HomePage() {
 	const user = await getSecureUser();
@@ -72,7 +71,7 @@ export default async function HomePage() {
 					<div className="mb-8 grid grid-cols-3 gap-3">
 						<NewDoc />
 						<QuickActionButton iconName="Brain" label="New Memory" />
-						<QuickActionButton iconName="Search" label="Search" />
+						<SearchCommand documents={validDocuments} />
 					</div>
 
 					<RecentFilesCard files={allFiles} />
