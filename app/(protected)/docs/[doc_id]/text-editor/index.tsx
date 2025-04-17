@@ -20,12 +20,14 @@ interface TextEditorProps {
 	initialContent: string;
 	documentId: string;
 	initialName: string;
+	updatedAt: string;
 }
 
 export function TextEditor({
 	initialContent,
 	documentId,
 	initialName,
+	updatedAt: initialUpdatedAt,
 }: Readonly<TextEditorProps>) {
 	const editorRef = React.useRef<HTMLTextAreaElement>(null);
 	const [cursorPosition, setCursorPosition] = React.useState(0);
@@ -33,6 +35,8 @@ export function TextEditor({
 		React.useState(true);
 	const [isAIChatOpen, setIsAIChatOpen] = React.useState(true);
 	const [isZenMode, setIsZenMode] = React.useState(false);
+
+	const [updatedAt, setUpdatedAt] = React.useState(initialUpdatedAt);
 
 	const [model] = useModel();
 	const { getSelectedReferences } = useSelectedReferences(documentId);
@@ -89,6 +93,8 @@ export function TextEditor({
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ content }),
+			}).then(() => {
+				setUpdatedAt(new Date().toISOString());
 			});
 		},
 		3000,
@@ -429,12 +435,16 @@ export function TextEditor({
 				)}
 
 				<div className="flex h-full justify-center py-4">
-					<div className={cn("h-full w-full max-w-4xl pt-8")}>
+					<div className={cn("h-full w-full max-w-4xl")}>
 						{/* Add EditableDocumentName component */}
 						<EditableDocumentName
 							documentId={documentId}
 							initialName={initialName}
+							setUpdatedAt={setUpdatedAt}
 						/>
+						<div className="mb-2 px-8 text-muted-foreground text-xs">
+							Updated at: {new Date(updatedAt).toLocaleString()}
+						</div>
 						<div className="relative h-[calc(100%-2rem)] w-full flex-1">
 							<textarea
 								ref={editorRef}

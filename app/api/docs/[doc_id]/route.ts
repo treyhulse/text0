@@ -1,5 +1,6 @@
 import { getSecureSession } from "@/lib/auth/server";
-import { DOCUMENT_KEY, redis } from "@/lib/redis";
+import { DOCUMENT_KEY, redis, type Document } from "@/lib/redis";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -26,7 +27,7 @@ export async function PATCH(
 		}
 
 		// Verify the document belongs to the user
-		const document = await redis.hgetall(DOCUMENT_KEY(doc_id));
+		const document = await redis.hgetall<Document>(DOCUMENT_KEY(doc_id));
 		if (!document || document.userId !== session.userId) {
 			return new NextResponse("Document not found or unauthorized", {
 				status: 404,
@@ -37,7 +38,10 @@ export async function PATCH(
 		await redis.hset(DOCUMENT_KEY(doc_id), {
 			...document,
 			content: parsed.data.content,
-		});
+			updatedAt: new Date().toISOString(),
+		} satisfies Document);
+
+		revalidatePath(`/docs/${doc_id}`, "page");
 
 		return NextResponse.json({ success: true });
 	} catch (error) {

@@ -10,11 +10,13 @@ import { Button } from "./ui/button";
 interface EditableDocumentNameProps {
 	documentId: string;
 	initialName: string;
+	setUpdatedAt: (val: string) => void;
 }
 
 export function EditableDocumentName({
 	documentId,
 	initialName,
+	setUpdatedAt,
 }: Readonly<EditableDocumentNameProps>) {
 	const [state, formAction, isPending] = React.useActionState(
 		updateDocumentName,
@@ -29,8 +31,9 @@ export function EditableDocumentName({
 			if (inputRef.current) {
 				inputRef.current.blur();
 			}
+			setUpdatedAt(new Date().toISOString());
 		}
-	}, [state]);
+	}, [state, setUpdatedAt]);
 
 	useEffect(() => {
 		if (!state?.success && state?.error) {
@@ -48,7 +51,7 @@ export function EditableDocumentName({
 	return (
 		<form
 			action={formAction}
-			className="mb-4 px-8"
+			className="mb-2 px-8"
 			aria-label="Edit document name"
 		>
 			<input type="hidden" name="documentId" value={documentId} />

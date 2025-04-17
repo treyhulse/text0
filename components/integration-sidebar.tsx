@@ -49,6 +49,7 @@ import * as React from "react";
 import { toast } from "sonner";
 import { CommandMenu } from "./command-menu";
 import { Input } from "./ui/input";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface Document {
 	id: string;
@@ -223,100 +224,104 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 										</SidebarMenuButton>
 									</CollapsibleTrigger>
 									<CollapsibleContent>
-										<div className="space-y-1 py-1">
-											{documents.map((doc) => (
-												<div
-													key={doc.id}
-													className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0"
-												>
-													<SidebarMenuButton
-														asChild
-														tooltip={doc.name}
-														data-active={pathname.split("/").at(-1) === doc.id}
-														className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
+										<ScrollArea className="h-96">
+											<div className="space-y-1 py-1">
+												{documents.map((doc) => (
+													<div
+														key={doc.id}
+														className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0"
 													>
-														<Link href={`/docs/${doc.id}`}>
-															<FileText className="h-4 w-4 shrink-0" />
-															<span className="truncate group-data-[collapsible=icon]:hidden">
-																{doc.name}
-															</span>
-														</Link>
-													</SidebarMenuButton>
-												</div>
-											))}
-											<div className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0">
-												{isCreatingDoc ? (
-													<form
-														action={formAction}
-														className="flex items-center gap-1 group-data-[collapsible=icon]:hidden"
-													>
-														<input
-															type="hidden"
-															name="pathname"
-															defaultValue={pathname}
-														/>
-														<Input
-															name="name"
-															placeholder="Document name"
-															value={newDocName}
-															onChange={(e) => setNewDocName(e.target.value)}
-															onKeyDown={(e) => {
-																if (e.key === "Escape") {
-																	e.preventDefault();
-																	setIsCreatingDoc(false);
-																	setNewDocName("");
-																}
-															}}
-															className="h-8 text-sm dark:bg-muted"
-															autoFocus
-															disabled={isPending}
-														/>
-														<div className="flex gap-1">
-															<SidebarMenuButton
-																type="submit"
-																size="sm"
-																tooltip="Create document"
-																className="h-8 w-8"
-																disabled={isPending || !newDocName.trim()}
-															>
-																{isPending ? (
-																	<div className="h-4 w-4 animate-spin rounded-full border-2 border-foreground/20 border-t-foreground" />
-																) : (
-																	<Check className="h-4 w-4" />
-																)}
-															</SidebarMenuButton>
-															<SidebarMenuButton
-																type="button"
-																size="sm"
-																tooltip="Cancel"
-																className="h-8 w-8"
-																onClick={() => {
-																	setIsCreatingDoc(false);
-																	setNewDocName("");
+														<SidebarMenuButton
+															asChild
+															tooltip={doc.name}
+															data-active={
+																pathname.split("/").at(-1) === doc.id
+															}
+															className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
+														>
+															<Link href={`/docs/${doc.id}`}>
+																<FileText className="h-4 w-4 shrink-0" />
+																<span className="truncate group-data-[collapsible=icon]:hidden">
+																	{doc.name}
+																</span>
+															</Link>
+														</SidebarMenuButton>
+													</div>
+												))}
+												<div className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0">
+													{isCreatingDoc ? (
+														<form
+															action={formAction}
+															className="flex items-center gap-1 group-data-[collapsible=icon]:hidden"
+														>
+															<input
+																type="hidden"
+																name="pathname"
+																defaultValue={pathname}
+															/>
+															<Input
+																name="name"
+																placeholder="Document name"
+																value={newDocName}
+																onChange={(e) => setNewDocName(e.target.value)}
+																onKeyDown={(e) => {
+																	if (e.key === "Escape") {
+																		e.preventDefault();
+																		setIsCreatingDoc(false);
+																		setNewDocName("");
+																	}
 																}}
+																className="h-8 text-sm dark:bg-muted"
+																autoFocus
 																disabled={isPending}
-															>
-																<X className="h-4 w-4" />
-															</SidebarMenuButton>
-														</div>
-													</form>
-												) : (
-													<SidebarMenuButton
-														variant="outline"
-														size="sm"
-														tooltip="New Document"
-														className="flex h-8 w-full items-center justify-start gap-2 pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0"
-														onClick={() => setIsCreatingDoc(true)}
-														data-new-doc-trigger
-													>
-														<Plus className="h-4 w-4 shrink-0" />
-														<span className="group-data-[collapsible=icon]:hidden">
-															New Document
-														</span>
-													</SidebarMenuButton>
-												)}
+															/>
+															<div className="flex gap-1">
+																<SidebarMenuButton
+																	type="submit"
+																	size="sm"
+																	tooltip="Create document"
+																	className="h-8 w-8"
+																	disabled={isPending || !newDocName.trim()}
+																>
+																	{isPending ? (
+																		<div className="h-4 w-4 animate-spin rounded-full border-2 border-foreground/20 border-t-foreground" />
+																	) : (
+																		<Check className="h-4 w-4" />
+																	)}
+																</SidebarMenuButton>
+																<SidebarMenuButton
+																	type="button"
+																	size="sm"
+																	tooltip="Cancel"
+																	className="h-8 w-8"
+																	onClick={() => {
+																		setIsCreatingDoc(false);
+																		setNewDocName("");
+																	}}
+																	disabled={isPending}
+																>
+																	<X className="h-4 w-4" />
+																</SidebarMenuButton>
+															</div>
+														</form>
+													) : (
+														<SidebarMenuButton
+															variant="outline"
+															size="sm"
+															tooltip="New Document"
+															className="flex h-8 w-full items-center justify-start gap-2 pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0"
+															onClick={() => setIsCreatingDoc(true)}
+															data-new-doc-trigger
+														>
+															<Plus className="h-4 w-4 shrink-0" />
+															<span className="group-data-[collapsible=icon]:hidden">
+																New Document
+															</span>
+														</SidebarMenuButton>
+													)}
+												</div>
 											</div>
-										</div>
+										</ScrollArea>
 									</CollapsibleContent>
 								</Collapsible>
 							</SidebarMenuItem>

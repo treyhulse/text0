@@ -55,6 +55,7 @@ export async function createDocument(
 			name: parsed.data.name,
 			content: "",
 			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
 		};
 
 		// Store the document
@@ -105,7 +106,9 @@ export async function updateDocumentName(
 		}
 
 		// Verify the document belongs to the user
-		const document = await redis.hgetall(DOCUMENT_KEY(parsed.data.documentId));
+		const document = await redis.hgetall<Document>(
+			DOCUMENT_KEY(parsed.data.documentId),
+		);
 		if (!document || document.userId !== session.userId) {
 			throw new Error("Document not found or unauthorized");
 		}
@@ -114,7 +117,8 @@ export async function updateDocumentName(
 		await redis.hset(DOCUMENT_KEY(parsed.data.documentId), {
 			...document,
 			name: parsed.data.name,
-		});
+			updatedAt: new Date().toISOString(),
+		} satisfies Document);
 
 		revalidatePath(`/docs/${parsed.data.documentId}`);
 

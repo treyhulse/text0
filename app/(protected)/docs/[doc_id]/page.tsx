@@ -37,6 +37,7 @@ export default async function DocumentPage({
 			initialContent={document.content}
 			documentId={document.id}
 			initialName={document.name}
+			updatedAt={document.updatedAt}
 		/>
 	);
 }
