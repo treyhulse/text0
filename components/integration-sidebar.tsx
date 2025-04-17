@@ -42,6 +42,7 @@ import {
 	FileText,
 	FolderOpen,
 	LayoutGrid,
+	LogIn,
 	PanelRight,
 	Plus,
 	Settings,
@@ -404,14 +405,17 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									<SidebarMenuButton
 										tooltip="User Profile"
 										className="flex w-full items-center justify-start gap-2 !p-0 group-data-[collapsible=icon]:!p-0 text-sm text-foreground hover:bg-muted/50 transition-colors"
+										asChild
 									>
 										<UserButton
 											showName={true}
 											appearance={{
 												elements: {
+													rootBox: "!w-full",
 													userButtonAvatarBox: "h-5 w-5",
 													userButtonAvatarImage: "h-5 w-5",
-													userButtonTrigger: "!p-0 w-full flex items-center",
+													userButtonTrigger:
+														"!h-10 !p-0 !w-full flex !justify-start hover:!bg-sidebar-accent !px-2 transition-colors",
 													userButtonBox:
 														"!text-foreground !flex-row-reverse !gap-2 items-center",
 													userButtonOuterIdentifier:
@@ -425,32 +429,16 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									<SignInButton mode="modal">
 										<SidebarMenuButton
 											className={cn(
-												"flex w-full items-center justify-start gap-1.5 px-2 py-1 rounded-sm text-xs font-medium transition-colors duration-150",
-												"bg-primary/10 text-foreground hover:bg-primary/20",
-												"border border-primary/10 hover:border-primary/30",
-												"focus:ring-1 focus:ring-primary focus:ring-offset-1 focus:ring-offset-background",
+												"h-10 flex w-full items-center justify-center gap-1.5 px-2 py-1 rounded-sm text-base font-medium transition-colors duration-150",
+												"bg-sidebar-accent text-foreground hover:bg-sidebar-accent/80 hover:text-foreground active:!bg-sidebar-accent/60 active:!text-foreground",
 												"group-data-[collapsible=icon]:p-1 group-data-[collapsible=icon]:text-[10px] group-data-[collapsible=icon]:justify-center",
 												"aria-label:Sign in to your account",
 											)}
 										>
+											<LogIn className="h-6 w-6 shrink-0" />
 											<span className="group-data-[collapsible=icon]:hidden">
 												Sign In
 											</span>
-											<svg
-												className="h-3 w-3 group-data-[collapsible=icon]:h-2.5 group-data-[collapsible=icon]:w-2.5"
-												fill="none"
-												stroke="currentColor"
-												viewBox="0 0 24 24"
-												xmlns="http://www.w3.org/2000/svg"
-												aria-hidden="true"
-											>
-												<path
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													strokeWidth={2}
-													d="M11 16l-4-4m0 0l4-4m-4 4h14"
-												/>
-											</svg>
 										</SidebarMenuButton>
 									</SignInButton>
 								</SignedOut>
