@@ -263,6 +263,11 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 														action={formAction}
 														className="flex items-center gap-1 group-data-[collapsible=icon]:hidden"
 													>
+														<input
+															type="hidden"
+															name="pathname"
+															defaultValue={pathname}
+														/>
 														<Input
 															name="name"
 															placeholder="Document name"

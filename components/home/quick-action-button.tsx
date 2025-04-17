@@ -27,7 +27,7 @@ export function QuickActionButton({
 	disabled = false,
 	loading = false,
 	className,
-}: QuickActionButtonProps) {
+}: Readonly<QuickActionButtonProps>) {
 	const [isHovered, setIsHovered] = useState(false);
 
 	// Dynamically resolve the icon component
