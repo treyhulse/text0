@@ -32,7 +32,7 @@ export function ReferenceSelector() {
 			{references?.map((reference: Reference) => (
 				<div
 					key={reference.id}
-					className="group flex items-center gap-1 rounded-md px-2 py-1 hover:bg-accent"
+					className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent"
 				>
 					<Checkbox
 						id={reference.id}
@@ -41,30 +41,30 @@ export function ReferenceSelector() {
 					/>
 					<label
 						htmlFor={reference.id}
-						className="flex-1 text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+						className="group flex-1 text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 					>
 						{reference.name ?? reference.filename}
-					</label>
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-						asChild
-						aria-label={`Open ${
-							reference.name ?? reference.filename
-						} in new tab`}
-					>
-						<a
-							href={reference.url}
-							target="_blank"
-							rel="noopener noreferrer"
+						<Button
+							variant="ghost"
+							size="icon"
+							className="ml-1 size-4 opacity-0 transition-opacity group-hover:opacity-100"
+							asChild
 							aria-label={`Open ${
 								reference.name ?? reference.filename
 							} in new tab`}
 						>
-							<ExternalLink className="h-4 w-4" />
-						</a>
-					</Button>
+							<a
+								href={reference.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label={`Open ${
+									reference.name ?? reference.filename
+								} in new tab`}
+							>
+								<ExternalLink className="h-4 w-4" />
+							</a>
+						</Button>
+					</label>
 				</div>
 			))}
 			{references?.length === 0 && (
