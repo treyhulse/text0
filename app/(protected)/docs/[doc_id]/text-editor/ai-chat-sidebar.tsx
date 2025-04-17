@@ -246,7 +246,6 @@ export function AIChatSidebar({
 					>
 						<div className="space-y-2 group-data-[collapsible=icon]:space-y-1">
 							<div className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:gap-1">
-								<ModelSelector />
 								<div className="mt-2 group-data-[collapsible=icon]:hidden">
 									<div className="flex items-center justify-between">
 										<span className="font-medium text-sm">References</span>
@@ -256,7 +255,7 @@ export function AIChatSidebar({
 										>
 											<DialogTrigger asChild>
 												<Button variant="outline" size="sm" className="ml-auto">
-													<Upload className="h-3.5 w-3.5 mr-1" />
+													<Upload className="mr-1 h-3.5 w-3.5" />
 													Add Reference
 												</Button>
 											</DialogTrigger>

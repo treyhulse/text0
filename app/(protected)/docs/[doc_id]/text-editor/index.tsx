@@ -12,7 +12,7 @@ import { useModel } from "@/hooks/use-model";
 import { useSelectedReferences } from "@/hooks/use-selected-references";
 import { cn } from "@/lib/utils";
 import { useCompletion } from "@ai-sdk/react";
-import { Maximize2, MessageSquare } from "lucide-react";
+import { Maximize2, MessageSquare, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import { AIChatSidebar } from "./ai-chat-sidebar";
 import {
@@ -20,6 +20,8 @@ import {
 	TooltipTrigger,
 	Tooltip,
 } from "@/components/ui/tooltip";
+import { Toggle } from "@/components/ui/toggle";
+import { ModelSelector } from "./model-selector";
 
 interface TextEditorProps {
 	initialContent: string;
@@ -573,22 +575,33 @@ export function TextEditor({
 
 				{/* Floating Bottom Bar - Only show when not in Zen mode */}
 				{!isZenMode && (
-					<div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex w-full max-w-[38rem] items-center justify-center px-4">
+					<div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex w-full max-w-[18rem] items-center justify-center px-4">
 						<div className="flex w-full items-center justify-center gap-x-4 rounded-lg border bg-background/80 px-4 py-2 shadow-sm backdrop-blur-sm">
-							<div className="flex items-center space-x-2">
-								<Switch
-									id="autocomplete"
-									checked={isAutocompleteEnabled}
-									onCheckedChange={setIsAutocompleteEnabled}
-								/>
-								<Label htmlFor="autocomplete">Enable AI</Label>
-							</div>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div>
+										<Toggle
+											id="autocomplete"
+											variant="outline"
+											className="size-8"
+											key={isAutocompleteEnabled ? "true" : "false"}
+											pressed={isAutocompleteEnabled}
+											onPressedChange={setIsAutocompleteEnabled}
+										>
+											<Sparkles className="size-3.5" />
+										</Toggle>
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>Toggle AI Autocomplete</p>
+								</TooltipContent>
+							</Tooltip>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<Button
 										variant="outline"
-										size="sm"
-										className="flex items-center gap-2"
+										size="icon"
+										className="flex size-8 items-center"
 										onClick={() => {
 											setIsZenMode((prev) => !prev);
 											if (!isZenMode) {
@@ -613,7 +626,7 @@ export function TextEditor({
 											}
 										}}
 									>
-										<Maximize2 className="h-4 w-4" />
+										<Maximize2 className="size-4" />
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent>
@@ -630,11 +643,11 @@ export function TextEditor({
 								<TooltipTrigger asChild>
 									<Button
 										variant="outline"
-										size="sm"
-										className="flex items-center gap-2"
+										size="icon"
+										className="flex size-8 items-center"
 										onClick={() => setIsAIChatOpen((prev) => !prev)}
 									>
-										<MessageSquare className="h-4 w-4" />
+										<MessageSquare className="size-4" />
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent>
@@ -646,8 +659,7 @@ export function TextEditor({
 									</p>
 								</TooltipContent>
 							</Tooltip>
-
-							<AddReference />
+							<ModelSelector />
 						</div>
 					</div>
 				)}

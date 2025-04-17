@@ -70,7 +70,7 @@ const models = [
 ];
 
 function ModelLogo({ model }: Readonly<{ model: (typeof models)[0] }>) {
-	const logoProps = { className: "h-5 w-5" };
+	const logoProps = { className: "size-4" };
 
 	switch (model.component) {
 		case "anthropic":
@@ -93,7 +93,7 @@ export function ModelSelector() {
 	const selectedModel = models.find((m) => m.id === model);
 
 	return (
-		<div className="w-full group-data-[collapsible=icon]:w-auto [&_[data-slot=select-trigger]>svg]:group-data-[collapsible=icon]:hidden">
+		<div className="group-data-[collapsible=icon]:w-auto [&_[data-slot=select-trigger]>svg]:group-data-[collapsible=icon]:hidden">
 			<Select
 				value={model}
 				onValueChange={(value: string) => setModel(value)}
@@ -102,21 +102,11 @@ export function ModelSelector() {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<SelectTrigger
-							className="w-full group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+							withoutIcon
+							className="!w-8 !h-8 flex items-center justify-center p-0"
 							aria-label="Select AI model"
 						>
-							<div className="flex items-center gap-2 group-data-[collapsible=icon]:gap-0">
-								{selectedModel && (
-									<>
-										<span aria-hidden={true}>
-											<ModelLogo model={selectedModel} />
-										</span>
-										<span className="font-medium group-data-[collapsible=icon]:hidden">
-											{selectedModel.name}
-										</span>
-									</>
-								)}
-							</div>
+							{selectedModel && <ModelLogo model={selectedModel} />}
 						</SelectTrigger>
 					</TooltipTrigger>
 					<TooltipContent

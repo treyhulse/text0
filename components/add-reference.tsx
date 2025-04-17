@@ -118,7 +118,7 @@ export function AddReference({
 				{children || (
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="outline" size="sm">
+							<Button variant="outline" size="sm" className="size-8">
 								<BrainIcon className="size-4" />
 							</Button>
 						</TooltipTrigger>
