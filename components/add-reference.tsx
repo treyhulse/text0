@@ -22,12 +22,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { uploadFiles } from "@/lib/uploadthing";
-import { Upload, X } from "lucide-react";
+import { BrainIcon, Upload, X } from "lucide-react";
 import * as React from "react";
 import { useActionState } from "react";
 import { toast } from "sonner";
 import { UploadThingError } from "uploadthing/server";
 import { addWebsiteReference } from "../actions/websites";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export function AddReference({
 	children,
@@ -114,7 +115,18 @@ export function AddReference({
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				{children || <Button variant="outline">Add Reference</Button>}
+				{children || (
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button variant="outline" size="sm">
+								<BrainIcon className="size-4" />
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>Add Reference</p>
+						</TooltipContent>
+					</Tooltip>
+				)}
 			</DialogTrigger>
 			<DialogContent title="Add Reference" className="sm:max-w-md">
 				<DialogHeader>

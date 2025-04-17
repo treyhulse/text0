@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
 	const queryClient = new QueryClient();
@@ -65,7 +66,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 						disableTransitionOnChange
 						defaultTheme="system"
 					>
-						{children}
+						<TooltipProvider delayDuration={0}>{children}</TooltipProvider>
 					</ThemeProvider>
 				</QueryClientProvider>
 			</ClerkProvider>

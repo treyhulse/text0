@@ -15,7 +15,12 @@ import { useCompletion } from "@ai-sdk/react";
 import { Maximize2, MessageSquare } from "lucide-react";
 import React, { useState } from "react";
 import { AIChatSidebar } from "./ai-chat-sidebar";
-// Add these types at the top
+import {
+	TooltipContent,
+	TooltipTrigger,
+	Tooltip,
+} from "@/components/ui/tooltip";
+
 interface TextEditorProps {
 	initialContent: string;
 	documentId: string;
@@ -569,7 +574,7 @@ export function TextEditor({
 				{/* Floating Bottom Bar - Only show when not in Zen mode */}
 				{!isZenMode && (
 					<div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex w-full max-w-[38rem] items-center justify-center px-4">
-						<div className="flex w-full items-center justify-center space-x-4 rounded-lg border bg-background/80 px-4 py-2 shadow-sm backdrop-blur-sm">
+						<div className="flex w-full items-center justify-center gap-x-4 rounded-lg border bg-background/80 px-4 py-2 shadow-sm backdrop-blur-sm">
 							<div className="flex items-center space-x-2">
 								<Switch
 									id="autocomplete"
@@ -578,53 +583,69 @@ export function TextEditor({
 								/>
 								<Label htmlFor="autocomplete">Enable AI</Label>
 							</div>
-							<Button
-								variant="outline"
-								size="sm"
-								className="flex items-center gap-2"
-								onClick={() => {
-									setIsZenMode((prev) => !prev);
-									if (!isZenMode) {
-										setIsAIChatOpen(false);
-										// Request full screen when clicking the button
-										document.documentElement
-											.requestFullscreen()
-											.catch((err) => {
-												console.log(
-													"Error attempting to enable full-screen mode:",
-													err,
-												);
-											});
-									} else if (document.fullscreenElement) {
-										// Exit full screen when leaving zen mode
-										document.exitFullscreen().catch((err) => {
-											console.log(
-												"Error attempting to exit full-screen mode:",
-												err,
-											);
-										});
-									}
-								}}
-							>
-								<Maximize2 className="h-4 w-4" />
-								<span>Zen Mode</span>
-								<kbd className="ml-2 inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
-									⌘J
-								</kbd>
-							</Button>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										variant="outline"
+										size="sm"
+										className="flex items-center gap-2"
+										onClick={() => {
+											setIsZenMode((prev) => !prev);
+											if (!isZenMode) {
+												setIsAIChatOpen(false);
+												// Request full screen when clicking the button
+												document.documentElement
+													.requestFullscreen()
+													.catch((err) => {
+														console.log(
+															"Error attempting to enable full-screen mode:",
+															err,
+														);
+													});
+											} else if (document.fullscreenElement) {
+												// Exit full screen when leaving zen mode
+												document.exitFullscreen().catch((err) => {
+													console.log(
+														"Error attempting to exit full-screen mode:",
+														err,
+													);
+												});
+											}
+										}}
+									>
+										<Maximize2 className="h-4 w-4" />
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>
+										<kbd className="inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
+											⌘J
+										</kbd>{" "}
+										Toggle Zen Mode
+									</p>
+								</TooltipContent>
+							</Tooltip>
 
-							<Button
-								variant="outline"
-								size="sm"
-								className="flex items-center gap-2"
-								onClick={() => setIsAIChatOpen((prev) => !prev)}
-							>
-								<MessageSquare className="h-4 w-4" />
-								<span>AI Chat</span>
-								<kbd className="ml-2 inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
-									⌘O
-								</kbd>
-							</Button>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										variant="outline"
+										size="sm"
+										className="flex items-center gap-2"
+										onClick={() => setIsAIChatOpen((prev) => !prev)}
+									>
+										<MessageSquare className="h-4 w-4" />
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>
+										<kbd className="inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
+											⌘O
+										</kbd>{" "}
+										Toggle AI Chat
+									</p>
+								</TooltipContent>
+							</Tooltip>
 
 							<AddReference />
 						</div>
