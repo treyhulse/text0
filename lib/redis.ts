@@ -33,4 +33,5 @@ export type Document = {
 	name: string;
 	content: string;
 	createdAt: string;
+	updatedAt: string;
 };
