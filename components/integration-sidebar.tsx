@@ -402,7 +402,8 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 								<SignedIn>
 									<SidebarMenuButton
 										tooltip="User Profile"
-										className="!p-0 group-data-[collapsible=icon]:!p-0 flex w-full items-center justify-start gap-2 text-foreground text-sm transition-colors hover:bg-muted/50"
+										className="flex w-full items-center justify-start gap-2 !p-0 group-data-[collapsible=icon]:!p-0 text-sm text-foreground hover:bg-muted/50 transition-colors"
+										asChild
 									>
 										<UserButton
 											showName={true}
@@ -426,11 +427,9 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									<SignInButton mode="modal">
 										<SidebarMenuButton
 											className={cn(
-												"flex w-full items-center justify-start gap-1.5 rounded-sm px-2 py-1 font-medium text-xs transition-colors duration-150",
-												"bg-primary/10 text-foreground hover:bg-primary/20",
-												"border border-primary/10 hover:border-primary/30",
-												"focus:ring-1 focus:ring-primary focus:ring-offset-1 focus:ring-offset-background",
-												"group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1 group-data-[collapsible=icon]:text-[10px]",
+												"h-10 flex w-full items-center justify-center gap-1.5 px-2 py-1 rounded-sm text-base font-medium transition-colors duration-150",
+												"bg-sidebar-accent text-foreground hover:bg-sidebar-accent/80 hover:text-foreground active:!bg-sidebar-accent/60 active:!text-foreground",
+												"group-data-[collapsible=icon]:p-1 group-data-[collapsible=icon]:text-[10px] group-data-[collapsible=icon]:justify-center",
 												"aria-label:Sign in to your account",
 											)}
 										>
