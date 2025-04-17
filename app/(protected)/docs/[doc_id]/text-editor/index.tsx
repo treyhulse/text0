@@ -12,7 +12,7 @@ import { useModel } from "@/hooks/use-model";
 import { useSelectedReferences } from "@/hooks/use-selected-references";
 import { cn } from "@/lib/utils";
 import { useCompletion } from "@ai-sdk/react";
-import { Maximize2, MessageSquare, Sparkles } from "lucide-react";
+import { Coffee, Maximize2, MessageSquare, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import { AIChatSidebar } from "./ai-chat-sidebar";
 import {
@@ -626,7 +626,7 @@ export function TextEditor({
 											}
 										}}
 									>
-										<Maximize2 className="size-4" />
+										<Coffee className="size-4" />
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent>
