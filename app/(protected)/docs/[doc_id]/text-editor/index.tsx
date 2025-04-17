@@ -107,13 +107,24 @@ export function TextEditor({
 
 	React.useEffect(() => {
 		// Only trigger autocomplete if the input change came from manual typing
-		if (isAutocompleteEnabled && input === lastManualInput) {
+		// and the cursor is at the end of the text
+		if (
+			isAutocompleteEnabled &&
+			input === lastManualInput &&
+			cursorPosition === input.length
+		) {
 			const timer = setTimeout(() => {
 				handleSubmit();
 			}, 300);
 			return () => clearTimeout(timer);
 		}
-	}, [handleSubmit, isAutocompleteEnabled, input, lastManualInput]);
+	}, [
+		handleSubmit,
+		isAutocompleteEnabled,
+		input,
+		lastManualInput,
+		cursorPosition,
+	]);
 
 	React.useEffect(() => {
 		if (editorRef.current && cursorPosition === -1) {
