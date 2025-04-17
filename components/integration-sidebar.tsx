@@ -386,27 +386,8 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 						<SidebarMenu>
 							<SidebarMenuItem>
 								<SignedIn>
-									<SidebarMenuButton
-										tooltip="User Profile"
-										className="flex w-full items-center justify-start gap-2 !p-0 group-data-[collapsible=icon]:!p-0 text-sm text-foreground hover:bg-muted/50 transition-colors"
-										asChild
-									>
-										<UserButton
-											showName={true}
-											appearance={{
-												elements: {
-													rootBox: "!w-full",
-													userButtonAvatarBox: "h-5 w-5",
-													userButtonAvatarImage: "h-5 w-5",
-													userButtonTrigger:
-														"!h-10 !p-0 !w-full flex !justify-start hover:!bg-sidebar-accent !px-2 transition-colors",
-													userButtonBox:
-														"!text-foreground !flex-row-reverse !gap-2 items-center",
-													userButtonOuterIdentifier:
-														"text-sm font-medium truncate group-data-[collapsible=icon]:!hidden",
-												},
-											}}
-										/>
+									<SidebarMenuButton tooltip="User Profile" asChild>
+										<UserButton showName={true} />
 									</SidebarMenuButton>
 								</SignedIn>
 								<SignedOut>

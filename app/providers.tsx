@@ -40,10 +40,21 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 						userPreviewMainIdentifier: "!text-foreground !font-medium",
 						userPreviewSecondaryIdentifier: "!text-muted-foreground !text-sm",
 						socialButtonsProviderIcon__github: "dark:invert",
-						userButtonBox: "!flex-row !gap-2",
-						userButtonOuterIdentifier: "!text-sm !font-medium",
-						userButtonAvatarBox: "!h-5 !w-5",
-						userButtonAvatarImage: "!h-5 !w-5",
+						rootBox: "!w-full",
+						userButtonAvatarBox: "h-5 w-5",
+						userButtonAvatarImage: "h-5 w-5",
+						userButtonTrigger:
+							"!h-10 !p-0 !w-full flex !justify-start !bg-muted !border !border-input hover:!bg-sidebar-accent !px-2 transition-colors",
+						userButtonBox:
+							"!text-foreground !flex-row-reverse !gap-2 items-center",
+						userButtonOuterIdentifier:
+							"text-sm font-medium truncate group-data-[collapsible=icon]:!hidden",
+						userButtonPopoverMain: "!bg-card !text-card-foreground",
+						userButtonPopoverCard: "!bg-card !text-card-foreground",
+						userButtonPopoverFooter: "!hidden",
+						userButtonPopoverActionButton:
+							"!bg-muted border-t !border-input !text-muted-foreground hover:!bg-foreground/10",
+						userButtonPopoverActions: "!border-t !border-input",
 					},
 				}}
 			>
