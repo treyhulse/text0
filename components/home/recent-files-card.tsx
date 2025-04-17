@@ -1,6 +1,6 @@
+import type { Document, Reference } from "@/lib/redis";
 import { BrainIcon, ExternalLink, FileText } from "lucide-react";
 import Link from "next/link";
-import type { Document, Reference } from "@/lib/redis";
 
 type FileItem =
 	| (Document & { type: "document" })

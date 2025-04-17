@@ -1,9 +1,9 @@
 // components/QuickActionButton.tsx
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, icons } from "lucide-react"; // Import icons dynamically
 import { useState } from "react";
 
@@ -27,7 +27,7 @@ export function QuickActionButton({
 	disabled = false,
 	loading = false,
 	className,
-}: QuickActionButtonProps) {
+}: Readonly<QuickActionButtonProps>) {
 	const [isHovered, setIsHovered] = useState(false);
 
 	// Dynamically resolve the icon component
@@ -77,7 +77,7 @@ export function QuickActionButton({
 			onMouseLeave={() => setIsHovered(false)}
 			className={cn(
 				"relative overflow-hidden rounded-md",
-				disabled && "opacity-50 cursor-not-allowed",
+				disabled && "cursor-not-allowed opacity-50",
 				className,
 			)}
 		>
@@ -86,7 +86,7 @@ export function QuickActionButton({
 				onClick={onClick}
 				disabled={disabled || loading}
 				className={cn(
-					"flex flex-col items-start justify-center w-full",
+					"flex w-full flex-col items-start justify-center",
 					sizeStyles[size],
 					variantStyles[variant],
 					"relative z-10 transition-all duration-300",

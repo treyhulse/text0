@@ -28,6 +28,7 @@ export async function createDocument(
 ): Promise<CreateDocumentActionState> {
 	const rawFormData = Object.fromEntries(formData.entries()) as {
 		name: string;
+		pathname: string;
 	};
 
 	try {
@@ -38,6 +39,7 @@ export async function createDocument(
 
 		const form = z.object({
 			name: z.string().min(1, "Document name is required"),
+			pathname: z.string(),
 		});
 
 		const parsed = form.safeParse(rawFormData);
@@ -63,6 +65,7 @@ export async function createDocument(
 			score: Date.now(),
 			member: id,
 		});
+		revalidatePath(parsed.data.pathname, "layout");
 
 		return { success: true, data: { documentId: id } };
 	} catch (error) {

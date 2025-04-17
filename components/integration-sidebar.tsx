@@ -29,13 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import {
-	SignInButton,
-	SignedIn,
-	SignedOut,
-	UserButton,
-	useUser,
-} from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import {
 	Check,
 	ChevronDown,
@@ -65,7 +59,6 @@ interface Document {
 }
 
 export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
-	const user = useUser();
 	const router = useRouter();
 	const [isCreatingDoc, setIsCreatingDoc] = useState(false);
 	const [newDocName, setNewDocName] = useState("");
@@ -138,7 +131,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 				className="relative flex flex-col border-border border-r bg-background text-foreground transition-all duration-300 ease-in-out"
 			>
 				{/* Header with Text0 Logo */}
-				<SidebarHeader className="flex flex-row w-full group-data-[collapsible=icon]:flex-col justify-between">
+				<SidebarHeader className="flex w-full flex-row justify-between group-data-[collapsible=icon]:flex-col">
 					<div className="flex items-center gap-2">
 						<Link
 							href="/"
@@ -148,7 +141,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 							)}
 							aria-label="Text0 Home"
 						>
-							<div className="flex items-center justify-center rounded-lg bg-foreground hover:bg-foreground/80 transition-colors duration-150 p-2">
+							<div className="flex items-center justify-center rounded-lg bg-foreground p-2 transition-colors duration-150 hover:bg-foreground/80">
 								<T0Logo
 									className={cn(
 										"h-4 w-4 text-primary",
@@ -156,14 +149,14 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									)}
 								/>
 							</div>
-							<span className="text-foreground font-semibold group-data-[collapsible=icon]:hidden">
+							<span className="font-semibold text-foreground group-data-[collapsible=icon]:hidden">
 								text0
 							</span>
 						</Link>
 					</div>
 					<SidebarMenuButton
 						tooltip="Toggle Sidebar"
-						className="h-8 w-8 flex items-center justify-center"
+						className="flex h-8 w-8 items-center justify-center"
 						asChild
 					>
 						<SidebarTrigger>
@@ -234,7 +227,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									<CollapsibleTrigger asChild>
 										<SidebarMenuButton
 											tooltip="My Documents"
-											className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-muted hover:text-foreground group-data-[collapsible=icon]:justify-center"
+											className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-foreground group-data-[collapsible=icon]:justify-center"
 										>
 											<FolderOpen className="h-4 w-4 shrink-0" />
 											<span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
@@ -271,6 +264,11 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 														action={formAction}
 														className="flex items-center gap-1 group-data-[collapsible=icon]:hidden"
 													>
+														<input
+															type="hidden"
+															name="pathname"
+															defaultValue={pathname}
+														/>
 														<Input
 															name="name"
 															placeholder="Document name"
@@ -321,7 +319,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 														variant="outline"
 														size="sm"
 														tooltip="New Document"
-														className="flex h-9 w-full items-center justify-start gap-2 border border-foreground/20 border-dashed pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0 dark:bg-muted"
+														className="flex h-8 w-full items-center justify-start gap-2 pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0"
 														onClick={() => setIsCreatingDoc(true)}
 														data-new-doc-trigger
 													>
@@ -404,8 +402,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 								<SignedIn>
 									<SidebarMenuButton
 										tooltip="User Profile"
-										className="flex w-full items-center justify-start gap-2 !p-0 group-data-[collapsible=icon]:!p-0 text-sm text-foreground hover:bg-muted/50 transition-colors"
-										asChild
+										className="!p-0 group-data-[collapsible=icon]:!p-0 flex w-full items-center justify-start gap-2 text-foreground text-sm transition-colors hover:bg-muted/50"
 									>
 										<UserButton
 											showName={true}
@@ -429,9 +426,11 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									<SignInButton mode="modal">
 										<SidebarMenuButton
 											className={cn(
-												"h-10 flex w-full items-center justify-center gap-1.5 px-2 py-1 rounded-sm text-base font-medium transition-colors duration-150",
-												"bg-sidebar-accent text-foreground hover:bg-sidebar-accent/80 hover:text-foreground active:!bg-sidebar-accent/60 active:!text-foreground",
-												"group-data-[collapsible=icon]:p-1 group-data-[collapsible=icon]:text-[10px] group-data-[collapsible=icon]:justify-center",
+												"flex w-full items-center justify-start gap-1.5 rounded-sm px-2 py-1 font-medium text-xs transition-colors duration-150",
+												"bg-primary/10 text-foreground hover:bg-primary/20",
+												"border border-primary/10 hover:border-primary/30",
+												"focus:ring-1 focus:ring-primary focus:ring-offset-1 focus:ring-offset-background",
+												"group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1 group-data-[collapsible=icon]:text-[10px]",
 												"aria-label:Sign in to your account",
 											)}
 										>

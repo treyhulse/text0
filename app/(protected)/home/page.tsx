@@ -1,3 +1,8 @@
+import { createDocument } from "@/actions/docs";
+import { AppHeader } from "@/components/home/app-header";
+import { QuickActionButton } from "@/components/home/quick-action-button";
+import { RecentFilesCard } from "@/components/home/recent-files-card";
+import { StatusBar } from "@/components/home/status-bar";
 import { getSecureUser } from "@/lib/auth/server";
 import {
 	DOCUMENT_KEY,
@@ -8,10 +13,8 @@ import {
 	USER_REFERENCES_KEY,
 	redis,
 } from "@/lib/redis";
-import { QuickActionButton } from "@/components/home/quick-action-button";
-import { RecentFilesCard } from "@/components/home/recent-files-card";
-import { StatusBar } from "@/components/home/status-bar";
-import { AppHeader } from "@/components/home/app-header";
+import React from "react";
+import { NewDoc } from "./new-doc";
 
 export default async function HomePage() {
 	const user = await getSecureUser();
@@ -67,7 +70,7 @@ export default async function HomePage() {
 
 					{/* Quick Actions */}
 					<div className="mb-8 grid grid-cols-3 gap-3">
-						<QuickActionButton iconName="FileText" label="New Document" />
+						<NewDoc />
 						<QuickActionButton iconName="Brain" label="New Memory" />
 						<QuickActionButton iconName="Search" label="Search" />
 					</div>

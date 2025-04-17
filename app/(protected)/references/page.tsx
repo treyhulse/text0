@@ -9,14 +9,6 @@ import {
 } from "@/lib/redis";
 import { ArrowRight, FileText } from "lucide-react";
 
-interface Document {
-	id: string;
-	name: string;
-	url: string;
-	uploadedAt: string;
-	chunks: number;
-}
-
 async function getReferences(userId: string): Promise<Reference[]> {
 	// Get all document IDs for the user
 	const referenceIds = await redis.smembers(USER_REFERENCES_KEY(userId));
