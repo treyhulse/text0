@@ -14,6 +14,7 @@ import {
 } from "@/lib/redis";
 import { NewDoc } from "./new-doc";
 import { SearchCommand } from "./search-command";
+import { AddReference } from "@/components/add-reference";
 
 export default async function HomePage() {
 	const user = await getSecureUser();
@@ -70,7 +71,9 @@ export default async function HomePage() {
 					{/* Quick Actions */}
 					<div className="mb-8 grid grid-cols-3 gap-3">
 						<NewDoc />
-						<QuickActionButton iconName="Brain" label="New Memory" />
+						<AddReference>
+							<QuickActionButton iconName="Brain" label="New Memory" />
+						</AddReference>
 						<SearchCommand documents={validDocuments} />
 					</div>
 

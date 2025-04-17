@@ -29,7 +29,11 @@ import { toast } from "sonner";
 import { UploadThingError } from "uploadthing/server";
 import { addWebsiteReference } from "../actions/websites";
 
-export function AddReference() {
+export function AddReference({
+	children,
+}: Readonly<{
+	children?: React.ReactNode;
+}>) {
 	const [isUploading, setIsUploading] = React.useState(false);
 	const [files, setFiles] = React.useState<File[]>([]);
 	const [open, setOpen] = React.useState(false);
@@ -110,7 +114,7 @@ export function AddReference() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button variant="outline">Add Reference</Button>
+				{children || <Button variant="outline">Add Reference</Button>}
 			</DialogTrigger>
 			<DialogContent title="Add Reference" className="sm:max-w-md">
 				<DialogHeader>
@@ -132,6 +136,9 @@ export function AddReference() {
 					<Button
 						type="submit"
 						disabled={!url || isPendingAddWebsiteReferenceAction || isUploading}
+						variant="outline"
+						size="sm"
+						className="w-full"
 					>
 						{isPendingAddWebsiteReferenceAction
 							? "Adding..."
