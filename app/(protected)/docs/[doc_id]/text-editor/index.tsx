@@ -33,7 +33,6 @@ export function TextEditor({
 		React.useState(true);
 	const [isAIChatOpen, setIsAIChatOpen] = React.useState(true);
 	const [isZenMode, setIsZenMode] = React.useState(false);
-	const [isAcceptingDiff, setIsAcceptingDiff] = React.useState(false);
 
 	const [model] = useModel();
 	const { getSelectedReferences } = useSelectedReferences(documentId);
@@ -62,8 +61,6 @@ export function TextEditor({
 	} | null>(null);
 
 	const [isModifying, setIsModifying] = useState(false);
-	const [streamingText, setStreamingText] = useState("");
-	const [loadingProgress, setLoadingProgress] = useState(0);
 
 	const [lastManualInput, setLastManualInput] = React.useState<string | null>(
 		null,
@@ -77,12 +74,10 @@ export function TextEditor({
 		},
 		onFinish: () => {
 			setIsModifying(false);
-			setStreamingText("");
 		},
 		onError: (error) => {
 			console.error("Error modifying text:", error);
 			setIsModifying(false);
-			setStreamingText("");
 			setPendingUpdate(null);
 		},
 	});
@@ -205,7 +200,6 @@ export function TextEditor({
 		setInput(newText);
 		setLastManualInput(newText); // Track that this was a manual input
 		setCursorPosition(newPosition);
-		setIsAcceptingDiff(false);
 		// Add debounced update
 		debouncedUpdateContent(documentId, newText);
 	};
@@ -385,19 +379,6 @@ export function TextEditor({
 
 	const handleModificationStart = async (instruction: string) => {
 		setIsModifying(true);
-		setStreamingText("");
-		setLoadingProgress(0);
-
-		const progressInterval = setInterval(() => {
-			setLoadingProgress((prev) => {
-				if (prev >= 100) {
-					clearInterval(progressInterval);
-					return 100;
-				}
-				const increment = Math.max(1, (100 - prev) * 0.1);
-				return Math.min(99, prev + increment);
-			});
-		}, 100);
 
 		try {
 			const stream = await complete(`${instruction}:\n\n${selectedText}`);
@@ -408,12 +389,7 @@ export function TextEditor({
 		} catch (error) {
 			console.error("Error in modification:", error);
 			setIsModifying(false);
-			setStreamingText("");
 			setPendingUpdate(null);
-		} finally {
-			clearInterval(progressInterval);
-			setLoadingProgress(100);
-			setTimeout(() => setLoadingProgress(0), 300);
 		}
 	};
 
@@ -547,7 +523,6 @@ export function TextEditor({
 														// Don't update lastManualInput here since this isn't manual input
 														setPendingUpdate(null);
 														setIsModifying(false);
-														setStreamingText("");
 														setCompletion("");
 														setSelectionPosition(null);
 														setSelectedText("");
@@ -567,7 +542,6 @@ export function TextEditor({
 												onReject={() => {
 													setPendingUpdate(null);
 													setIsModifying(false);
-													setStreamingText("");
 												}}
 											/>
 
