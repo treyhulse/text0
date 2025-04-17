@@ -107,13 +107,24 @@ export function TextEditor({
 
 	React.useEffect(() => {
 		// Only trigger autocomplete if the input change came from manual typing
-		if (isAutocompleteEnabled && input === lastManualInput) {
+		// and the cursor is at the end of the text
+		if (
+			isAutocompleteEnabled &&
+			input === lastManualInput &&
+			cursorPosition === input.length
+		) {
 			const timer = setTimeout(() => {
 				handleSubmit();
 			}, 300);
 			return () => clearTimeout(timer);
 		}
-	}, [handleSubmit, isAutocompleteEnabled, input, lastManualInput]);
+	}, [
+		handleSubmit,
+		isAutocompleteEnabled,
+		input,
+		lastManualInput,
+		cursorPosition,
+	]);
 
 	React.useEffect(() => {
 		if (editorRef.current && cursorPosition === -1) {
@@ -681,9 +692,29 @@ function parseCompletion(completion: string | undefined, input: string) {
 		const startIndex = startTag.length;
 		const endIndex = completion.indexOf(endTag);
 		let result = completion.substring(startIndex, endIndex);
+
+		// Handle space after input
 		if (input.endsWith(" ") && result.startsWith(" ")) {
 			result = result.trimStart();
 		}
+
+		// Remove spaces at the start of each new line
+		result = result
+			.split("\n")
+			.map((line) => {
+				// If line is only whitespace, return empty string
+				if (line.trim() === "") {
+					return "";
+				}
+				// If line starts with multiple spaces/tabs (likely code indentation), preserve it
+				if (RegExp(/^[\t ]{2,}/).exec(line)) {
+					return line;
+				}
+				// Otherwise remove leading whitespace
+				return line.trimStart();
+			})
+			.join("\n");
+
 		return result;
 	}
 	return "";
