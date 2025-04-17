@@ -170,33 +170,19 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 					{/* Command Menu */}
 					<SidebarGroup>
 						<div className="relative w-full">
-							<div className="w-full group-data-[collapsible=icon]:hidden">
-								<CommandMenu
-									documents={documents}
-									onCreateDocument={() => {
-										const newDocButton = document.querySelector(
-											"[data-new-doc-trigger]",
-										);
-										if (newDocButton instanceof HTMLElement) {
-											newDocButton.click();
-										}
-									}}
-								/>
-							</div>
-							<div className="hidden group-data-[collapsible=icon]:block">
-								<CommandMenu
-									documents={documents}
-									onCreateDocument={() => {
-										const newDocButton = document.querySelector(
-											"[data-new-doc-trigger]",
-										);
-										if (newDocButton instanceof HTMLElement) {
-											newDocButton.click();
-										}
-									}}
-									variant="icon"
-								/>
-							</div>
+							<CommandMenu
+								documents={documents}
+								onCreateDocument={() => {
+									const newDocButton = document.querySelector(
+										"[data-new-doc-trigger]",
+									);
+									if (newDocButton instanceof HTMLElement) {
+										newDocButton.click();
+									}
+								}}
+								variant="default"
+								className="w-full group-data-[collapsible=icon]:variant-icon"
+							/>
 						</div>
 					</SidebarGroup>
 

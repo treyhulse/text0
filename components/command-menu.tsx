@@ -32,6 +32,7 @@ import {
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface Document {
 	id: string;
@@ -44,12 +45,14 @@ interface CommandMenuProps {
 	documents?: Document[];
 	onCreateDocument?: () => void;
 	variant?: "default" | "icon";
+	className?: string;
 }
 
 export function CommandMenu({
 	documents = [],
 	onCreateDocument,
 	variant = "default",
+	className,
 }: CommandMenuProps) {
 	const [open, setOpen] = useState(false);
 	const router = useRouter();
@@ -109,36 +112,28 @@ export function CommandMenu({
 
 	return (
 		<>
-			{variant === "default" ? (
-				<SidebarMenuButton
-					variant="outline"
-					tooltip="Search documents and navigation"
-					size="default"
-					onClick={() => setOpen(true)}
-					className="!h-9 relative flex w-full items-center justify-between border border-border px-2 text-muted-foreground text-sm dark:bg-muted"
-				>
-					<span className="inline-flex w-full items-center justify-between">
-						<span className="flex items-center gap-2">
-							<Search className="h-4 w-4" />
+			<SidebarMenuButton
+				variant="outline"
+				tooltip="Search documents and navigation"
+				size="default"
+				onClick={() => setOpen(true)}
+				className={cn(
+					"!h-9 relative flex w-full items-center justify-between border border-border px-2 text-muted-foreground text-sm dark:bg-muted",
+					className,
+				)}
+			>
+				<span className="inline-flex w-full items-center justify-between group-data-[collapsible=icon]:justify-center">
+					<span className="flex items-center gap-2">
+						<Search className="h-4 w-4" />
+						<span className="group-data-[collapsible=icon]:hidden">
 							Search or press
 						</span>
-						<kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-medium font-mono text-[10px] text-foreground sm:flex">
-							<span className="text-xs">⌘</span>K
-						</kbd>
 					</span>
-				</SidebarMenuButton>
-			) : (
-				<SidebarMenuButton
-					variant="outline"
-					size="sm"
-					tooltip="Search"
-					onClick={() => setOpen(true)}
-					className="h-8 w-8 border border-border p-0 dark:bg-muted"
-				>
-					<Search className="h-4 w-4 text-muted-foreground" />
-					<span className="sr-only">Search</span>
-				</SidebarMenuButton>
-			)}
+					<kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-medium font-mono text-[10px] text-foreground sm:flex group-data-[collapsible=icon]:hidden">
+						<span className="text-xs">⌘</span>K
+					</kbd>
+				</span>
+			</SidebarMenuButton>
 
 			<CommandDialog open={open} onOpenChange={setOpen}>
 				<DialogContent
