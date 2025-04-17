@@ -15,6 +15,7 @@ import { LinearIcon } from "@/components/ui/icons/linear";
 import { MsTeamsIcon } from "@/components/ui/icons/ms-teams";
 import { NotionIcon } from "@/components/ui/icons/notion";
 import { SlackIcon } from "@/components/ui/icons/slack";
+import { T0Logo } from "@/components/ui/icons/t0-logo";
 import {
 	Sidebar,
 	SidebarContent,
@@ -24,12 +25,12 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarRail,
+	SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import {
 	SignInButton,
-	SignUpButton,
 	SignedIn,
 	SignedOut,
 	UserButton,
@@ -41,6 +42,7 @@ import {
 	FileText,
 	FolderOpen,
 	LayoutGrid,
+	PanelRight,
 	Plus,
 	Settings,
 	X,
@@ -134,24 +136,39 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 				collapsible="icon"
 				className="relative flex flex-col border-border border-r bg-background text-foreground transition-all duration-300 ease-in-out"
 			>
-				{/* Header with User Name */}
-				<SidebarHeader className="flex-none px-3 py-2">
+				{/* Header with Text0 Logo */}
+				<SidebarHeader className="flex flex-row w-full group-data-[collapsible=icon]:flex-col justify-between">
 					<div className="flex items-center gap-2">
-						<SignedOut>
-							<div className="flex gap-2 group-data-[collapsible=icon]:hidden">
-								<SignInButton />
-								<SignUpButton />
+						<Link
+							href="/"
+							className={cn(
+								"flex items-center gap-2",
+								"group-data-[collapsible=icon]:flex-col",
+							)}
+							aria-label="Text0 Home"
+						>
+							<div className="flex items-center justify-center rounded-lg bg-foreground hover:bg-foreground/80 transition-colors duration-150 p-2">
+								<T0Logo
+									className={cn(
+										"h-4 w-4 text-primary",
+										"group-data-[collapsible=icon]:h-4 group-data-[collapsible=icon]:w-4",
+									)}
+								/>
 							</div>
-						</SignedOut>
-						<SignedIn>
-							<UserButton />
-						</SignedIn>
-						{user.user && (
-							<span className="truncate font-medium text-xs group-data-[collapsible=icon]:hidden">
-								{user.user.fullName}
+							<span className="text-foreground font-semibold group-data-[collapsible=icon]:hidden">
+								text0
 							</span>
-						)}
+						</Link>
 					</div>
+					<SidebarMenuButton
+						tooltip="Toggle Sidebar"
+						className="h-8 w-8 flex items-center justify-center"
+						asChild
+					>
+						<SidebarTrigger>
+							<PanelRight className="h-4 w-4" />
+						</SidebarTrigger>
+					</SidebarMenuButton>
 				</SidebarHeader>
 
 				<SidebarContent className="flex-1">
@@ -299,20 +316,19 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 														</div>
 													</form>
 												) : (
-													<div>
-														<SidebarMenuButton
-															variant="default"
-															size="sm"
-															tooltip="New Document"
-															className="flex h-8 w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
-															onClick={() => setIsCreatingDoc(true)}
-														>
-															<Plus className="h-4 w-4 shrink-0" />
-															<span className="group-data-[collapsible=icon]:hidden">
-																New Document
-															</span>
-														</SidebarMenuButton>
-													</div>
+													<SidebarMenuButton
+														variant="outline"
+														size="sm"
+														tooltip="New Document"
+														className="flex h-9 w-full items-center justify-start gap-2 border border-foreground/20 border-dashed pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0 dark:bg-muted"
+														onClick={() => setIsCreatingDoc(true)}
+														data-new-doc-trigger
+													>
+														<Plus className="h-4 w-4 shrink-0" />
+														<span className="group-data-[collapsible=icon]:hidden">
+															New Document
+														</span>
+													</SidebarMenuButton>
 												)}
 											</div>
 										</div>
@@ -376,6 +392,68 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 										</div>
 									</CollapsibleContent>
 								</Collapsible>
+							</SidebarMenuItem>
+						</SidebarMenu>
+					</SidebarGroup>
+
+					{/* User/Sign In Buttons at Bottom */}
+					<SidebarGroup className="mt-auto pb-2">
+						<SidebarMenu>
+							<SidebarMenuItem>
+								<SignedIn>
+									<SidebarMenuButton
+										tooltip="User Profile"
+										className="flex w-full items-center justify-start gap-2 !p-0 group-data-[collapsible=icon]:!p-0 text-sm text-foreground hover:bg-muted/50 transition-colors"
+									>
+										<UserButton
+											showName={true}
+											appearance={{
+												elements: {
+													userButtonAvatarBox: "h-5 w-5",
+													userButtonAvatarImage: "h-5 w-5",
+													userButtonTrigger: "!p-0 w-full flex items-center",
+													userButtonBox:
+														"!text-foreground !flex-row-reverse !gap-2 items-center",
+													userButtonOuterIdentifier:
+														"text-sm font-medium truncate group-data-[collapsible=icon]:!hidden",
+												},
+											}}
+										/>
+									</SidebarMenuButton>
+								</SignedIn>
+								<SignedOut>
+									<SignInButton mode="modal">
+										<SidebarMenuButton
+											className={cn(
+												"flex w-full items-center justify-start gap-1.5 px-2 py-1 rounded-sm text-xs font-medium transition-colors duration-150",
+												"bg-primary/10 text-foreground hover:bg-primary/20",
+												"border border-primary/10 hover:border-primary/30",
+												"focus:ring-1 focus:ring-primary focus:ring-offset-1 focus:ring-offset-background",
+												"group-data-[collapsible=icon]:p-1 group-data-[collapsible=icon]:text-[10px] group-data-[collapsible=icon]:justify-center",
+												"aria-label:Sign in to your account",
+											)}
+										>
+											<span className="group-data-[collapsible=icon]:hidden">
+												Sign In
+											</span>
+											<svg
+												className="h-3 w-3 group-data-[collapsible=icon]:h-2.5 group-data-[collapsible=icon]:w-2.5"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+												xmlns="http://www.w3.org/2000/svg"
+												aria-hidden="true"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M11 16l-4-4m0 0l4-4m-4 4h14"
+												/>
+											</svg>
+										</SidebarMenuButton>
+									</SignInButton>
+								</SignedOut>
 							</SidebarMenuItem>
 						</SidebarMenu>
 					</SidebarGroup>
