@@ -1,3 +1,7 @@
+import { AppHeader } from "@/components/home/app-header";
+import { QuickActionButton } from "@/components/home/quick-action-button";
+import { RecentFilesCard } from "@/components/home/recent-files-card";
+import { StatusBar } from "@/components/home/status-bar";
 import { getSecureUser } from "@/lib/auth/server";
 import {
 	DOCUMENT_KEY,
@@ -8,10 +12,6 @@ import {
 	USER_REFERENCES_KEY,
 	redis,
 } from "@/lib/redis";
-import { QuickActionButton } from "@/components/home/quick-action-button";
-import { RecentFilesCard } from "@/components/home/recent-files-card";
-import { StatusBar } from "@/components/home/status-bar";
-import { AppHeader } from "@/components/home/app-header";
 
 export default async function HomePage() {
 	const user = await getSecureUser();

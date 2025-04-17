@@ -1,10 +1,10 @@
 "use client";
 
-import { T0Logo } from "@/components/ui/icons/t0-logo";
 import { SpinnerIcon } from "@/components/ui/icons/spinner";
+import { T0Logo } from "@/components/ui/icons/t0-logo";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface KeyProps {
 	char: string;

@@ -1,9 +1,9 @@
+import { AnimatedPrompt } from "@/components/animated-prompt";
 import { T0Keycap } from "@/components/t0-keycap";
 import { TextScramble } from "@/components/text-scramble";
 import { GithubIcon } from "@/components/ui/icons/github";
 import { VercelIcon } from "@/components/ui/icons/vercel";
 import { XIcon } from "@/components/ui/icons/x-icon";
-import { AnimatedPrompt } from "@/components/animated-prompt";
 
 export default async function LandingPage() {
 	return (
