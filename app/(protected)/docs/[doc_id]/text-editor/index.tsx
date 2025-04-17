@@ -1,18 +1,14 @@
 "use client";
-
-import { AddReference } from "@/components/add-reference";
 import { EditableDocumentName } from "@/components/editable-document-name";
 import { InlineDiffView } from "@/components/inline-diff-view";
 import { TextSelectionMenu } from "@/components/text-selection-menu";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import useDebouncedCallback from "@/hooks/use-debounced-callback";
 import { useModel } from "@/hooks/use-model";
 import { useSelectedReferences } from "@/hooks/use-selected-references";
 import { cn } from "@/lib/utils";
 import { useCompletion } from "@ai-sdk/react";
-import { Coffee, Maximize2, MessageSquare, Sparkles } from "lucide-react";
+import { Coffee, MessageSquare, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import { AIChatSidebar } from "./ai-chat-sidebar";
 import {
@@ -583,7 +579,7 @@ export function TextEditor({
 										<Toggle
 											id="autocomplete"
 											variant="outline"
-											className="size-8"
+											className="size-8 hover:bg-foreground/10 hover:dark:bg-muted"
 											key={isAutocompleteEnabled ? "true" : "false"}
 											pressed={isAutocompleteEnabled}
 											onPressedChange={setIsAutocompleteEnabled}
@@ -601,7 +597,7 @@ export function TextEditor({
 									<Button
 										variant="outline"
 										size="icon"
-										className="flex size-8 items-center"
+										className="flex size-8 items-center hover:bg-foreground/10 hover:dark:bg-muted"
 										onClick={() => {
 											setIsZenMode((prev) => !prev);
 											if (!isZenMode) {
@@ -644,7 +640,7 @@ export function TextEditor({
 									<Button
 										variant="outline"
 										size="icon"
-										className="flex size-8 items-center"
+										className="flex size-8 items-center hover:bg-foreground/10 hover:dark:bg-muted"
 										onClick={() => setIsAIChatOpen((prev) => !prev)}
 									>
 										<MessageSquare className="size-4" />

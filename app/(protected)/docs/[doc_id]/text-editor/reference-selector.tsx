@@ -118,7 +118,7 @@ export function ReferenceSelector() {
 							<div className="flex items-center">
 								<label
 									htmlFor={reference.id}
-									className="line-clamp-2 text-xs font-medium w-[calc(100%-120px)] leading-tight text-foreground/80 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+									className="line-clamp-2 text-xs font-medium w-[calc(100%-350px)] leading-tight text-foreground/80 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 								>
 									{reference.name ?? reference.filename}
 								</label>
