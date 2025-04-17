@@ -21,7 +21,9 @@ interface NewDocumentButtonProps {
 	className?: string;
 }
 
-export function NewDocumentButton({ className }: NewDocumentButtonProps) {
+export function NewDocumentButton({
+	className,
+}: Readonly<NewDocumentButtonProps>) {
 	const [state, formAction, isPending] = React.useActionState(
 		createDocument,
 		undefined,

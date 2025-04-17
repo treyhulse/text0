@@ -197,7 +197,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 										href="/"
 										className="flex w-full items-center gap-2 group-data-[collapsible=icon]:justify-center"
 									>
-										<LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground" />
+										<LayoutGrid className="h-4 w-4 shrink-0" />
 										<span className="truncate group-data-[collapsible=icon]:hidden">
 											Home
 										</span>
@@ -213,7 +213,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 											tooltip="My Documents"
 											className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-muted hover:text-foreground group-data-[collapsible=icon]:justify-center"
 										>
-											<FolderOpen className="h-4 w-4 shrink-0 text-muted-foreground" />
+											<FolderOpen className="h-4 w-4 shrink-0" />
 											<span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
 												My Documents
 											</span>
@@ -241,7 +241,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 													</SidebarMenuButton>
 												</div>
 											))}
-											<div className="px-1 group-data-[collapsible=icon]:px-0">
+											<div className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0">
 												{isCreatingDoc ? (
 													<form
 														action={formAction}
@@ -259,7 +259,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 																	setNewDocName("");
 																}
 															}}
-															className="h-9 text-sm dark:bg-muted"
+															className="h-8 text-sm dark:bg-muted"
 															autoFocus
 															disabled={isPending}
 														/>
@@ -293,18 +293,20 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 														</div>
 													</form>
 												) : (
-													<SidebarMenuButton
-														variant="outline"
-														size="sm"
-														tooltip="New Document"
-														className="flex h-9 w-full items-center justify-start gap-2 border border-foreground/20 border-dashed pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0 dark:bg-muted"
-														onClick={() => setIsCreatingDoc(true)}
-													>
-														<Plus className="h-4 w-4 shrink-0" />
-														<span className="group-data-[collapsible=icon]:hidden">
-															New Document
-														</span>
-													</SidebarMenuButton>
+													<div>
+														<SidebarMenuButton
+															variant="default"
+															size="sm"
+															tooltip="New Document"
+															className="flex h-8 w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
+															onClick={() => setIsCreatingDoc(true)}
+														>
+															<Plus className="h-4 w-4 shrink-0" />
+															<span className="group-data-[collapsible=icon]:hidden">
+																New Document
+															</span>
+														</SidebarMenuButton>
+													</div>
 												)}
 											</div>
 										</div>
@@ -317,9 +319,9 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									<CollapsibleTrigger asChild>
 										<SidebarMenuButton
 											tooltip="Integrations"
-											className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-muted hover:text-foreground group-data-[collapsible=icon]:justify-center"
+											className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-foreground group-data-[collapsible=icon]:justify-center"
 										>
-											<Settings className="h-4 w-4 shrink-0 text-muted-foreground" />
+											<Settings className="h-4 w-4 shrink-0" />
 											<span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
 												Integrations
 											</span>
