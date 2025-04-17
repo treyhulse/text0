@@ -247,129 +247,144 @@ export function AIChatSidebar({
 						<div className="space-y-2 group-data-[collapsible=icon]:space-y-1">
 							<div className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:gap-1">
 								<ModelSelector />
-								<div className="mt-2 group-data-[collapsible=icon]:hidden">
-									<div className="flex items-center justify-between">
-										<span className="font-medium text-sm">References</span>
-										<Dialog
-											open={openReferenceDialog}
-											onOpenChange={setOpenReferenceDialog}
-										>
-											<DialogTrigger asChild>
-												<Button variant="outline" size="sm" className="ml-auto">
-													<Upload className="h-3.5 w-3.5 mr-1" />
-													Add Reference
-												</Button>
-											</DialogTrigger>
-											<DialogContent
-												title="Add Reference"
-												className="sm:max-w-md"
+								<div className="mt-3 group-data-[collapsible=icon]:hidden">
+									<div className="rounded-md border border-border/40 overflow-hidden">
+										<div className="bg-muted border-b border-border/40 flex items-center justify-between px-3 py-1.5">
+											<span className="text-xs font-medium text-foreground">
+												References
+											</span>
+											<Dialog
+												open={openReferenceDialog}
+												onOpenChange={setOpenReferenceDialog}
 											>
-												<DialogHeader>
-													<DialogTitle>Add Reference</DialogTitle>
-												</DialogHeader>
-												<form action={formAction} className="space-y-4">
-													<div className="space-y-2">
-														<Label htmlFor="url">Website URL</Label>
-														<Input
-															id="url"
-															name="url"
-															type="url"
-															placeholder="https://example.com"
-															value={url}
-															onChange={(e) => setUrl(e.target.value)}
+												<DialogTrigger asChild>
+													<Button
+														variant="outline"
+														size="sm"
+														className="text-xs h-6 px-2 hover:bg-accent/50"
+													>
+														<Upload className="!size-3" />
+														Add
+													</Button>
+												</DialogTrigger>
+												<DialogContent
+													title="Add Reference"
+													className="sm:max-w-md"
+												>
+													<DialogHeader>
+														<DialogTitle>Add Reference</DialogTitle>
+													</DialogHeader>
+													<form action={formAction} className="space-y-4">
+														<div className="space-y-1.5">
+															<Label
+																htmlFor="url"
+																className="text-xs font-medium"
+															>
+																Website URL
+															</Label>
+															<Input
+																id="url"
+																name="url"
+																type="url"
+																placeholder="https://example.com"
+																value={url}
+																onChange={(e) => setUrl(e.target.value)}
+																disabled={
+																	isPendingAddWebsiteReferenceAction ||
+																	isUploading
+																}
+																className="h-8 text-sm"
+															/>
+														</div>
+														<Button
+															type="submit"
 															disabled={
+																!url ||
 																isPendingAddWebsiteReferenceAction ||
 																isUploading
 															}
-														/>
+															size="sm"
+															className="h-8 text-xs font-medium"
+														>
+															{isPendingAddWebsiteReferenceAction
+																? "Adding..."
+																: "Add Website Reference"}
+														</Button>
+													</form>
+													<div className="relative my-3">
+														<div className="absolute inset-0 flex items-center">
+															<span className="w-full border-t border-border/40" />
+														</div>
+														<div className="relative flex justify-center text-xs uppercase">
+															<span className="bg-background px-2 text-muted-foreground text-[10px] tracking-wider">
+																Or upload a file
+															</span>
+														</div>
 													</div>
-													<Button
-														type="submit"
+													<FileUpload
+														accept=".pdf,.docx,.xlsx,.pptx,.txt,.md"
+														maxFiles={1}
+														maxSize={16 * 1024 * 1024}
+														className="w-full max-w-md"
+														onAccept={(files) => setFiles(files)}
+														onUpload={onUpload}
+														onFileReject={onFileReject}
+														multiple={false}
 														disabled={
-															!url ||
-															isPendingAddWebsiteReferenceAction ||
-															isUploading
+															isUploading || isPendingAddWebsiteReferenceAction
 														}
 													>
-														{isPendingAddWebsiteReferenceAction
-															? "Adding..."
-															: "Add Website Reference"}
-													</Button>
-												</form>
-												<div className="relative my-4">
-													<div className="absolute inset-0 flex items-center">
-														<span className="w-full border-t" />
-													</div>
-													<div className="relative flex justify-center text-xs uppercase">
-														<span className="bg-background px-2 text-muted-foreground">
-															Or upload a file
-														</span>
-													</div>
-												</div>
-												<FileUpload
-													accept=".pdf,.docx,.xlsx,.pptx,.txt,.md"
-													maxFiles={1}
-													maxSize={16 * 1024 * 1024}
-													className="w-full max-w-md"
-													onAccept={(files) => setFiles(files)}
-													onUpload={onUpload}
-													onFileReject={onFileReject}
-													multiple={false}
-													disabled={
-														isUploading || isPendingAddWebsiteReferenceAction
-													}
-												>
-													<FileUploadDropzone>
-														<div className="flex flex-col items-center gap-1">
-															<div className="flex items-center justify-center rounded-full border p-2.5">
-																<Upload className="size-6 text-muted-foreground" />
-															</div>
-															<p className="font-medium text-sm">
-																Drag & drop documents here
-															</p>
-															<p className="text-muted-foreground text-xs">
-																Or click to browse (PDF, Word, Excel,
-																PowerPoint, TXT, Markdown)
-															</p>
-														</div>
-														<FileUploadTrigger asChild>
-															<Button
-																variant="outline"
-																size="sm"
-																className="mt-2 w-fit"
-															>
-																Browse files
-															</Button>
-														</FileUploadTrigger>
-													</FileUploadDropzone>
-													<FileUploadList>
-														{files.map((file) => (
-															<FileUploadItem
-																key={file.lastModified}
-																value={file}
-															>
-																<div className="flex w-full items-center gap-2">
-																	<FileUploadItemPreview />
-																	<FileUploadItemMetadata />
-																	<FileUploadItemDelete asChild>
-																		<Button
-																			variant="ghost"
-																			size="icon"
-																			className="size-7"
-																		>
-																			<X />
-																		</Button>
-																	</FileUploadItemDelete>
+														<FileUploadDropzone className="border-dashed border-border/50 bg-accent/5 hover:bg-accent/10">
+															<div className="flex flex-col items-center gap-1.5 py-2">
+																<div className="flex items-center justify-center rounded-full bg-background/80 border border-border/40 p-2">
+																	<Upload className="size-5 text-muted-foreground" />
 																</div>
-																<FileUploadItemProgress />
-															</FileUploadItem>
-														))}
-													</FileUploadList>
-												</FileUpload>
-											</DialogContent>
-										</Dialog>
+																<p className="font-medium text-xs text-foreground/80">
+																	Drag & drop documents here
+																</p>
+																<p className="text-muted-foreground text-[10px] max-w-[80%] text-center">
+																	PDF, Word, Excel, PowerPoint, TXT, Markdown
+																</p>
+															</div>
+															<FileUploadTrigger asChild>
+																<Button
+																	variant="outline"
+																	size="sm"
+																	className="mt-1 w-fit h-7 text-xs border-border/50"
+																>
+																	Browse files
+																</Button>
+															</FileUploadTrigger>
+														</FileUploadDropzone>
+														<FileUploadList>
+															{files.map((file) => (
+																<FileUploadItem
+																	key={file.lastModified}
+																	value={file}
+																>
+																	<div className="flex w-full items-center gap-2 bg-accent/10 p-2 rounded-sm">
+																		<FileUploadItemPreview />
+																		<FileUploadItemMetadata />
+																		<FileUploadItemDelete asChild>
+																			<Button
+																				variant="ghost"
+																				size="icon"
+																				className="size-6 ml-auto"
+																			>
+																				<X className="size-3.5" />
+																			</Button>
+																		</FileUploadItemDelete>
+																	</div>
+																	<FileUploadItemProgress className="h-1 mt-1" />
+																</FileUploadItem>
+															))}
+														</FileUploadList>
+													</FileUpload>
+												</DialogContent>
+											</Dialog>
+										</div>
+										<ReferenceSelector />
 									</div>
-									<ReferenceSelector />
 								</div>
 							</div>
 						</div>

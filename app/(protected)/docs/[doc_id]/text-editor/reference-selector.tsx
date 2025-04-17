@@ -91,7 +91,7 @@ export function ReferenceSelector() {
 	}
 
 	return (
-		<ScrollArea className="h-[250px] space-y-1 rounded-md border p-1">
+		<ScrollArea className="h-[250px] bg-background/50">
 			{references?.map((reference: Reference) => {
 				const processing = processingStatus[reference.id];
 				const isProcessing = processing?.isProcessing;
@@ -101,10 +101,10 @@ export function ReferenceSelector() {
 				return (
 					<div
 						key={reference.id}
-						className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors duration-200 ${
+						className={`flex items-start gap-2 px-3 py-2 transition-colors border-b border-border/20 last:border-b-0 ${
 							recentlyAdded.includes(reference.id)
-								? "bg-primary/10 animate-pulse"
-								: "hover:bg-accent"
+								? "bg-primary/5 animate-pulse"
+								: "hover:bg-accent/30"
 						}`}
 					>
 						<Checkbox
@@ -112,17 +112,20 @@ export function ReferenceSelector() {
 							checked={isReferenceSelected(reference.id)}
 							onCheckedChange={() => toggleReference(reference.id)}
 							disabled={isProcessing}
+							className="data-[state=checked]:bg-primary/90 data-[state=checked]:text-primary-foreground mt-0.5"
 						/>
-						<div className="flex-1">
-							<label
-								htmlFor={reference.id}
-								className="group flex items-center text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-							>
-								{reference.name ?? reference.filename}
+						<div className="flex-1 min-w-0">
+							<div className="flex items-center">
+								<label
+									htmlFor={reference.id}
+									className="line-clamp-2 text-xs font-medium w-[calc(100%-120px)] leading-tight text-foreground/80 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+								>
+									{reference.name ?? reference.filename}
+								</label>
 								<Button
 									variant="ghost"
 									size="icon"
-									className="ml-1 size-4 opacity-0 transition-opacity group-hover:opacity-100"
+									className="ml-1 size-4 opacity-0 text-muted-foreground transition-opacity group-hover:opacity-100 flex-shrink-0 mt-0"
 									asChild
 									aria-label={`Open ${
 										reference.name ?? reference.filename
@@ -136,22 +139,24 @@ export function ReferenceSelector() {
 											reference.name ?? reference.filename
 										} in new tab`}
 									>
-										<ExternalLink className="h-4 w-4" />
+										<ExternalLink className="!size-3" />
 									</a>
 								</Button>
-							</label>
+							</div>
 
 							{/* Processing indicator */}
 							{isProcessing && (
-								<div className="mt-0.5">
+								<div className="mt-1">
 									<div className="flex items-center text-xs text-muted-foreground">
-										<Loader2 className="h-3 w-3 mr-1 animate-spin" />
-										<span>{processing.status || "Processing..."}</span>
+										<Loader2 className="h-3 w-3 mr-1.5 animate-spin" />
+										<span className="text-[10px] font-medium uppercase tracking-wide opacity-80">
+											{processing.status || "Processing..."}
+										</span>
 									</div>
 									{typeof progress === "number" && (
 										<Progress
 											value={progress}
-											className="h-1 mt-1"
+											className="h-1 mt-1.5"
 											aria-label="Processing progress"
 										/>
 									)}
@@ -160,23 +165,27 @@ export function ReferenceSelector() {
 
 							{/* Error indicator */}
 							{hasError && (
-								<div className="mt-0.5 flex items-center text-xs text-destructive">
-									<AlertCircle className="h-3 w-3 mr-1" />
-									<span>{processing.error}</span>
+								<div className="mt-1 flex items-center text-xs text-destructive">
+									<AlertCircle className="h-3 w-3 mr-1.5" />
+									<span className="text-[10px] font-medium">
+										{processing.error}
+									</span>
 								</div>
 							)}
 
 							{/* Completed indicator */}
 							{!isProcessing && !hasError && processing && (
-								<div className="mt-0.5 flex items-center text-xs text-primary">
-									<CheckCircle className="h-3 w-3 mr-1" />
-									<span>Processing complete</span>
+								<div className="mt-1 flex items-center text-xs text-primary">
+									<CheckCircle className="h-3 w-3 mr-1.5" />
+									<span className="text-[10px] font-medium uppercase tracking-wide">
+										Processing complete
+									</span>
 								</div>
 							)}
 						</div>
 
 						{recentlyAdded.includes(reference.id) && (
-							<span className="text-xs text-primary font-medium ml-auto flex items-center">
+							<span className="text-[10px] text-primary font-semibold ml-auto flex items-center uppercase tracking-wider">
 								new
 							</span>
 						)}
@@ -184,9 +193,14 @@ export function ReferenceSelector() {
 				);
 			})}
 			{references?.length === 0 && (
-				<p className="py-4 text-center text-muted-foreground text-sm">
-					No references found. Add some references first.
-				</p>
+				<div className="flex flex-col items-center justify-center h-full py-8 px-4">
+					<p className="text-center text-muted-foreground text-xs mb-1">
+						No references available
+					</p>
+					<p className="text-center text-muted-foreground/70 text-[10px]">
+						Add references to enhance AI responses
+					</p>
+				</div>
 			)}
 		</ScrollArea>
 	);
