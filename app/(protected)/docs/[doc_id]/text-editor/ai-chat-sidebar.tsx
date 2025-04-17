@@ -40,12 +40,16 @@ import { cn } from "@/lib/utils";
 import { uploadFiles } from "@/lib/uploadthing";
 import { useChat } from "@ai-sdk/react";
 import { Loader2, PanelRight, Send, Upload, X } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useActionState } from "react";
+import { useParams } from "next/navigation";
+import {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	useActionState,
+} from "react";
 import { toast } from "sonner";
 import { UploadThingError } from "uploadthing/server";
-import { ModelSelector } from "./model-selector";
 import { ReferenceSelector } from "./reference-selector";
 
 export interface AIChatSidebarProps {
@@ -59,7 +63,6 @@ export function AIChatSidebar({
 	isEnabled,
 	onPendingUpdate,
 }: Readonly<AIChatSidebarProps>) {
-	const router = useRouter();
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 
 	const { doc_id } = useParams();
@@ -82,7 +85,6 @@ export function AIChatSidebar({
 		setInput,
 		status,
 		error,
-		reload: reloadChat,
 		stop,
 	} = useChat({
 		api: "/api/chat",
@@ -247,9 +249,9 @@ export function AIChatSidebar({
 						<div className="space-y-2 group-data-[collapsible=icon]:space-y-1">
 							<div className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:gap-1">
 								<div className="group-data-[collapsible=icon]:hidden">
-									<div className="rounded-md border border-border/40 overflow-hidden">
-										<div className="bg-muted border-b border-border/40 flex items-center justify-between px-3 py-1.5">
-											<span className="text-xs font-medium text-foreground">
+									<div className="overflow-hidden rounded-md border border-border/40">
+										<div className="flex items-center justify-between border-border/40 border-b bg-muted px-3 py-1.5">
+											<span className="font-medium text-foreground text-xs">
 												References
 											</span>
 											<Dialog
@@ -260,7 +262,7 @@ export function AIChatSidebar({
 													<Button
 														variant="outline"
 														size="sm"
-														className="text-xs h-6 px-2 hover:bg-accent/50"
+														className="h-6 px-2 text-xs hover:bg-accent/50"
 													>
 														<Upload className="!size-3" />
 														Add
@@ -277,7 +279,7 @@ export function AIChatSidebar({
 														<div className="space-y-1.5">
 															<Label
 																htmlFor="url"
-																className="text-xs font-medium"
+																className="font-medium text-xs"
 															>
 																Website URL
 															</Label>
@@ -297,13 +299,14 @@ export function AIChatSidebar({
 														</div>
 														<Button
 															type="submit"
+															variant="outline"
 															disabled={
 																!url ||
 																isPendingAddWebsiteReferenceAction ||
 																isUploading
 															}
 															size="sm"
-															className="h-8 text-xs font-medium"
+															className="h-8 w-full font-medium text-xs"
 														>
 															{isPendingAddWebsiteReferenceAction
 																? "Adding..."
@@ -312,10 +315,10 @@ export function AIChatSidebar({
 													</form>
 													<div className="relative my-3">
 														<div className="absolute inset-0 flex items-center">
-															<span className="w-full border-t border-border/40" />
+															<span className="w-full border-border/40 border-t" />
 														</div>
 														<div className="relative flex justify-center text-xs uppercase">
-															<span className="bg-background px-2 text-muted-foreground text-[10px] tracking-wider">
+															<span className="bg-background px-2 text-[10px] text-muted-foreground tracking-wider">
 																Or upload a file
 															</span>
 														</div>
@@ -333,15 +336,15 @@ export function AIChatSidebar({
 															isUploading || isPendingAddWebsiteReferenceAction
 														}
 													>
-														<FileUploadDropzone className="border-dashed border-border/50 bg-accent/5 hover:bg-accent/10">
+														<FileUploadDropzone className="border-border/50 border-dashed bg-accent/5 hover:bg-accent/10">
 															<div className="flex flex-col items-center gap-1.5 py-2">
-																<div className="flex items-center justify-center rounded-full bg-background/80 border border-border/40 p-2">
+																<div className="flex items-center justify-center rounded-full border border-border/40 bg-background/80 p-2">
 																	<Upload className="size-5 text-muted-foreground" />
 																</div>
-																<p className="font-medium text-xs text-foreground/80">
+																<p className="font-medium text-foreground/80 text-xs">
 																	Drag & drop documents here
 																</p>
-																<p className="text-muted-foreground text-[10px] max-w-[80%] text-center">
+																<p className="max-w-[80%] text-center text-[10px] text-muted-foreground">
 																	PDF, Word, Excel, PowerPoint, TXT, Markdown
 																</p>
 															</div>
@@ -349,7 +352,7 @@ export function AIChatSidebar({
 																<Button
 																	variant="outline"
 																	size="sm"
-																	className="mt-1 w-fit h-7 text-xs border-border/50"
+																	className="mt-1 h-7 w-fit border-border/50 text-xs"
 																>
 																	Browse files
 																</Button>
@@ -361,20 +364,20 @@ export function AIChatSidebar({
 																	key={file.lastModified}
 																	value={file}
 																>
-																	<div className="flex w-full items-center gap-2 bg-accent/10 p-2 rounded-sm">
+																	<div className="flex w-full items-center gap-2 rounded-sm bg-accent/10 p-2">
 																		<FileUploadItemPreview />
 																		<FileUploadItemMetadata />
 																		<FileUploadItemDelete asChild>
 																			<Button
 																				variant="ghost"
 																				size="icon"
-																				className="size-6 ml-auto"
+																				className="ml-auto size-6"
 																			>
 																				<X className="size-3.5" />
 																			</Button>
 																		</FileUploadItemDelete>
 																	</div>
-																	<FileUploadItemProgress className="h-1 mt-1" />
+																	<FileUploadItemProgress className="mt-1 h-1" />
 																</FileUploadItem>
 															))}
 														</FileUploadList>

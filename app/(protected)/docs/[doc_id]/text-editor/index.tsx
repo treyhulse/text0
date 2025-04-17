@@ -1,4 +1,5 @@
 "use client";
+
 import { EditableDocumentName } from "@/components/editable-document-name";
 import { InlineDiffView } from "@/components/inline-diff-view";
 import { TextSelectionMenu } from "@/components/text-selection-menu";
@@ -199,6 +200,15 @@ export function TextEditor({
 			e.preventDefault();
 			stop();
 			setCompletion("");
+			// Add this block to handle closing Zen Mode on Escape
+			if (isZenMode) {
+				setIsZenMode(false);
+				if (document.fullscreenElement) {
+					document.exitFullscreen().catch((err) => {
+						console.log("Error attempting to exit full-screen mode:", err);
+					});
+				}
+			}
 		}
 	};
 

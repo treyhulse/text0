@@ -166,7 +166,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 					</SidebarMenuButton>
 				</SidebarHeader>
 
-				<SidebarContent className="flex-1">
+				<SidebarContent className="flex-1 gap-0">
 					{/* Command Menu */}
 					<SidebarGroup>
 						<div className="relative w-full">
