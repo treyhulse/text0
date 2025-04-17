@@ -44,7 +44,8 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 						userButtonAvatarBox: "h-5 w-5",
 						userButtonAvatarImage: "h-5 w-5",
 						userButtonTrigger:
-							"!h-10 !p-0 !w-full flex !justify-start !bg-muted !border !border-input hover:!bg-sidebar-accent !px-2 transition-colors",
+							"!h-10 !p-0 !w-full flex !justify-start !bg-muted !border !border-input hover:!bg-sidebar-accent  group-data-[collapsible=icon]:hover:!bg-transparent !px-2 group-data-[collapsible=icon]:!px-0 group-data-[collapsible=icon]:!bg-transparent group-data-[collapsible=icon]:!border-none transition-colors",
+
 						userButtonBox:
 							"!text-foreground !flex-row-reverse !gap-2 items-center",
 						userButtonOuterIdentifier:

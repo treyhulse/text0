@@ -391,7 +391,11 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 						<SidebarMenu>
 							<SidebarMenuItem>
 								<SignedIn>
-									<SidebarMenuButton tooltip="User Profile" asChild>
+									<SidebarMenuButton
+										className="flex w-full items-center justify-start gap-2 !p-0 group-data-[collapsible=icon]:!p-0 text-sm text-foreground hover:bg-muted/50 transition-colors"
+										tooltip="User Profile"
+										asChild
+									>
 										<UserButton showName={true} />
 									</SidebarMenuButton>
 								</SignedIn>
