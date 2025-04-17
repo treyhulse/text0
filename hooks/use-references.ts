@@ -13,5 +13,7 @@ export function useReferences() {
 	return useQuery({
 		queryKey: ["references"],
 		queryFn: fetchReferences,
+		staleTime: 3000, // Consider data stale after 3 seconds
+		refetchInterval: 10000, // Refetch every 10 seconds
 	});
 }
