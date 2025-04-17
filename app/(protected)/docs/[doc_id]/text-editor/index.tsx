@@ -692,9 +692,29 @@ function parseCompletion(completion: string | undefined, input: string) {
 		const startIndex = startTag.length;
 		const endIndex = completion.indexOf(endTag);
 		let result = completion.substring(startIndex, endIndex);
+
+		// Handle space after input
 		if (input.endsWith(" ") && result.startsWith(" ")) {
 			result = result.trimStart();
 		}
+
+		// Remove spaces at the start of each new line
+		result = result
+			.split("\n")
+			.map((line) => {
+				// If line is only whitespace, return empty string
+				if (line.trim() === "") {
+					return "";
+				}
+				// If line starts with multiple spaces/tabs (likely code indentation), preserve it
+				if (RegExp(/^[\t ]{2,}/).exec(line)) {
+					return line;
+				}
+				// Otherwise remove leading whitespace
+				return line.trimStart();
+			})
+			.join("\n");
+
 		return result;
 	}
 	return "";
