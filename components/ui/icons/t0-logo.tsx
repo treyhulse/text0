@@ -7,8 +7,8 @@ type T0LogoProps = {
 };
 
 export const T0Logo: React.FC<T0LogoProps> = ({
-	width = 681,
-	height = 479,
+	width = 32,
+	height = 32,
 	className,
 }) => (
 	<svg

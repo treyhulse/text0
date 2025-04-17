@@ -1,13 +1,3 @@
-import {
-	BrainIcon,
-	BugOffIcon,
-	ExternalLink,
-	FileText,
-	Search,
-} from "lucide-react";
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
 import { getSecureUser } from "@/lib/auth/server";
 import {
 	DOCUMENT_KEY,
@@ -18,6 +8,10 @@ import {
 	USER_REFERENCES_KEY,
 	redis,
 } from "@/lib/redis";
+import { QuickActionButton } from "@/components/home/quick-action-button";
+import { RecentFilesCard } from "@/components/home/recent-files-card";
+import { StatusBar } from "@/components/home/status-bar";
+import { AppHeader } from "@/components/home/app-header";
 
 export default async function HomePage() {
 	const user = await getSecureUser();
@@ -69,117 +63,24 @@ export default async function HomePage() {
 			{/* Main Content */}
 			<main className="flex flex-1 items-center justify-center overflow-auto">
 				<div className="container mx-auto my-auto max-w-2xl px-4 py-12">
-					{/* App Title */}
-					<div className="mb-8 flex items-start justify-start gap-4">
-						<div className="rounded-lg bg-primary/10 p-3">
-							<BugOffIcon className="h-8 w-8 text-primary" />
-						</div>
-						<div className="flex flex-col gap-1">
-							<h1 className="font-semibold text-2xl tracking-tight">text0</h1>
-							<p className="text-muted-foreground text-sm">
-								Your documents and memories in one place
-							</p>
-						</div>
-					</div>
+					<AppHeader />
 
 					{/* Quick Actions */}
 					<div className="mb-8 grid grid-cols-3 gap-3">
-						<Button
-							variant="outline"
-							className="group flex h-[80px] flex-col items-start justify-center gap-3 rounded-lg border border-border bg-background px-6 hover:border-border hover:bg-background"
-						>
-							<FileText className="h-4 w-4" />
-							<span className="font-medium text-sm">New Document</span>
-						</Button>
-						<Button
-							variant="outline"
-							className="group flex h-[80px] flex-col items-start justify-center gap-3 rounded-lg border border-border bg-background px-6 hover:border-border hover:bg-background"
-						>
-							<BrainIcon className="h-4 w-4" />
-							<span className="font-medium text-sm">New Memory</span>
-						</Button>
-						<Button
-							variant="outline"
-							className="group flex h-[80px] flex-col items-start justify-center gap-3 rounded-lg border border-border bg-background px-6 hover:border-border hover:bg-background"
-						>
-							<Search className="h-4 w-4" />
-							<span className="font-medium text-sm">Search</span>
-						</Button>
+						<QuickActionButton iconName="FileText" label="New Document" />
+						<QuickActionButton iconName="Brain" label="New Memory" />
+						<QuickActionButton iconName="Search" label="Search" />
 					</div>
 
-					{/* Files List */}
-					<div className="overflow-hidden rounded-lg border border-border">
-						<div className="grid divide-y divide-border">
-							{allFiles.map((file) =>
-								file.type === "document" ? (
-									<Link
-										href={`/docs/${file.id}`}
-										key={file.id}
-										className="relative flex items-start gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
-									>
-										<div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-blue-500/5 text-blue-500">
-											<FileText className="h-4 w-4" />
-										</div>
-										<div className="flex grow justify-between">
-											<div className="grow pr-16">
-												<h3 className="truncate font-medium text-[15px]">
-													{file.name}
-												</h3>
-												<p className="text-muted-foreground text-xs ">
-													{file.content.slice(0, 200)}...
-												</p>
-											</div>
-											<div className="absolute right-4 bottom-4">
-												<p className="text-muted-foreground text-xs">
-													{new Date(file.createdAt).toLocaleDateString()}
-												</p>
-											</div>
-										</div>
-									</Link>
-								) : (
-									<a
-										href={file.url}
-										target="_blank"
-										rel="noopener noreferrer"
-										key={file.id}
-										className="items-top relative flex gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
-									>
-										<div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-purple-500/5 text-purple-500">
-											<BrainIcon className="h-4 w-4" />
-										</div>
-										<div className="flex grow justify-between">
-											<div className="grow pr-16">
-												<h3 className="text-balance font-medium text-[15px]">
-													{file.name ?? file.filename ?? "Untitled"}
-													<ExternalLink className="ml-1 inline-block h-3 w-3" />
-												</h3>
-											</div>
-											<div className="absolute right-4 bottom-4">
-												<p className="text-muted-foreground text-xs">
-													{new Date(file.uploadedAt).toLocaleDateString()}
-												</p>
-											</div>
-										</div>
-									</a>
-								),
-							)}
-						</div>
-					</div>
+					<RecentFilesCard files={allFiles} />
 				</div>
 			</main>
 
-			{/* Status Bar */}
-			<footer className="border-border/40 border-t bg-background">
-				<div className="container mx-auto flex h-8 max-w-2xl items-center justify-between px-4">
-					<div className="flex items-center gap-4 text-muted-foreground text-xs">
-						<span>{validReferences.length} references</span>
-						<span>{validDocuments.length} documents</span>
-					</div>
-					<div className="text-muted-foreground text-xs">
-						{user.fullName} • text0
-					</div>
-				</div>
-			</footer>
+			<StatusBar
+				documentsCount={validDocuments.length}
+				referencesCount={validReferences.length}
+				userName={user.fullName}
+			/>
 		</div>
 	);
 }
