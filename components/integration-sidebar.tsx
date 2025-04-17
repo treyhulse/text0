@@ -46,7 +46,7 @@ import {
 	X,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as React from "react";
 import { toast } from "sonner";
@@ -70,6 +70,10 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 		createDocument,
 		undefined,
 	);
+	const pathname = usePathname();
+	React.useEffect(() => {
+		console.log(pathname);
+	}, [pathname]);
 
 	useEffect(() => {
 		if (state?.success && state.data?.documentId) {
@@ -194,8 +198,9 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									className="flex w-full items-center justify-start gap-2 px-2 py-1.5 text-sm group-data-[collapsible=icon]:justify-center"
 								>
 									<Link
-										href="/"
-										className="flex w-full items-center gap-2 group-data-[collapsible=icon]:justify-center"
+										href="/home"
+										data-active={pathname === "/home"}
+										className="flex w-full items-center gap-2 text-muted-foreground group-data-[collapsible=icon]:justify-center"
 									>
 										<LayoutGrid className="h-4 w-4 shrink-0" />
 										<span className="truncate group-data-[collapsible=icon]:hidden">
@@ -230,6 +235,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 													<SidebarMenuButton
 														asChild
 														tooltip={doc.name}
+														data-active={pathname.split("/").at(-1) === doc.id}
 														className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
 													>
 														<Link href={`/docs/${doc.id}`}>
