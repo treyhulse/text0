@@ -48,6 +48,7 @@ export async function addWebsiteReference(
 		uploadedAt: new Date().toISOString(),
 		chunksCount: 0,
 		processed: false,
+		name: url,
 	} satisfies Reference);
 
 	// Trigger the document processing task

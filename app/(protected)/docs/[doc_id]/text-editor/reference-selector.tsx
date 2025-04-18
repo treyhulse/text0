@@ -91,26 +91,11 @@ export function ReferenceSelector() {
 		);
 	}
 
-	const references_ = [
-		...(references || []),
-		{
-			id: "1",
-			name: "Referenceasfjhaksdjfhkasjfdhkajshdfkjasdfkjhasdfkjhaskdfhkjhasdsadfasdfsadf",
-			filename: "reference1.pdf",
-			url: "https://www.google.com",
-			uploadedAt: new Date().toISOString(),
-			createdAt: new Date().toISOString(),
-			processed: true,
-			chunksCount: 1,
-			userId: "1",
-		},
-	];
-
 	return (
 		<ScrollArea className="h-[250px] bg-background/50">
 			<Table className="table-fixed w-full">
 				<TableBody>
-					{(references_ || []).map((reference: Reference) => {
+					{(references ?? []).map((reference: Reference) => {
 						const processing = processingStatus[reference.id];
 						const isProcessing = processing?.isProcessing;
 						const progress = processing?.progress;

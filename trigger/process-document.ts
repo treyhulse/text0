@@ -2,8 +2,11 @@ import { Firecrawl } from "@/lib/firecrawl";
 import { nanoid } from "@/lib/nanoid";
 import { REFERENCE_KEY, type Reference, redis } from "@/lib/redis";
 import { vector } from "@/lib/vector";
+import { openai } from "@ai-sdk/openai";
 import { logger, task } from "@trigger.dev/sdk/v3";
+import { generateText } from "ai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { z } from "zod";
 
 export const processReferenceTask = task({
 	id: "process-reference",
@@ -71,6 +74,14 @@ export const processReferenceTask = task({
 
 		if (response.title) {
 			info.name = response.title;
+		}
+
+		if (!info.name || z.string().url().safeParse(info.name).success) {
+			const text = await generateText({
+				model: openai("gpt-4o-mini"),
+				prompt: `Extract the name of the document from the following text: ${response.markdown}. The name should be less than 50 characters. Just return the name, no other text.`,
+			});
+			info.name = text.text;
 		}
 
 		await redis.hset(REFERENCE_KEY(referenceId), info);
