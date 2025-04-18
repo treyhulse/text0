@@ -6,7 +6,7 @@ import type { Reference } from "@/lib/redis";
 import type { ActionState } from "@/lib/utils";
 import type { processReferenceTask } from "@/trigger/process-document";
 import { tasks } from "@trigger.dev/sdk/v3";
-import { nanoid } from "nanoid";
+import { nanoid } from "@/lib/nanoid";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
