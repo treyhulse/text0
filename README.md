@@ -7,8 +7,9 @@ A text editor with absurdly smart autocomplete. Text0 serves as a copilot for wr
 ## Features
 
 - Smart autocomplete powered by AI
-- Chat with your files
+- Chat with your content 
 - Reference-aware suggestions
+- Github, Linear and Notion integrations
 - Seamless writing experience
 - Voice input and output
 - Zen mode

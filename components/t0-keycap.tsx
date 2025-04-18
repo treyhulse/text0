@@ -3,9 +3,10 @@
 import { SpinnerIcon } from "@/components/ui/icons/spinner";
 import { T0Logo } from "@/components/ui/icons/t0-logo";
 import { useRouter } from "next/navigation";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-
+import { cn } from "@/lib/utils";
 interface KeyProps {
 	char: string;
 	span?: boolean;
@@ -119,6 +120,7 @@ export const T0Keycap: React.FC = () => {
 	const { add, remove, has } = useSetState([]);
 	const { play, stop } = useSound("/keytype.mp3");
 	const [isNavigating, setIsNavigating] = useState(false);
+	const isMobile = useIsMobile();
 
 	const handleNavigation = useCallback(() => {
 		setIsNavigating(true);
@@ -209,11 +211,21 @@ export const T0Keycap: React.FC = () => {
 		));
 
 	return (
-		<div className="keyboard">
+		<div className={cn("keyboard", "relative")}>
 			<Column>
 				<Row>{keys(["t"])}</Row>
 			</Column>
 			<div className="cover" />
+			<button
+				disabled={!isMobile}
+				className="-inset-30 absolute z-10 bg-transparent sm:hidden"
+				onClick={() => {
+					if (isMobile) {
+						handleNavigation();
+					}
+				}}
+				type="button"
+			/>
 		</div>
 	);
 };
