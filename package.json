@@ -49,6 +49,7 @@
 		"@uploadthing/react": "^7.3.0",
 		"@upstash/redis": "^1.34.7",
 		"@upstash/vector": "^1.2.1",
+		"@vercel/analytics": "^1.5.0",
 		"ai": "^4.3.5",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
