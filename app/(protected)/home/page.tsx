@@ -80,7 +80,10 @@ export default async function HomePage() {
 						</div>
 						<div id={TOUR_STEP_IDS.NEW_MEMORY}>
 							<AddReference>
-								<QuickActionButton iconName="Brain" label="New Memory" />
+								<QuickActionButton iconName="Brain" label="New Memory">
+									<span className="hidden md:block">New Memory</span>
+									<span className="block md:hidden">New Mem</span>
+								</QuickActionButton>
 							</AddReference>
 						</div>
 						<div id={TOUR_STEP_IDS.SEARCH_COMMAND}>

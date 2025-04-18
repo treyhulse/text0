@@ -15,6 +15,7 @@ interface QuickActionButtonProps {
 	disabled?: boolean;
 	loading?: boolean;
 	className?: string;
+	children?: React.ReactNode;
 }
 
 export function QuickActionButton({
@@ -26,6 +27,7 @@ export function QuickActionButton({
 	disabled = false,
 	loading = false,
 	className,
+	children,
 }: Readonly<QuickActionButtonProps>) {
 	const [isHovered, setIsHovered] = useState(false);
 
@@ -33,7 +35,7 @@ export function QuickActionButton({
 
 	const sizeStyles = {
 		sm: "h-[60px] px-4 gap-2 text-xs",
-		md: "h-[80px] px-6 gap-3 text-sm",
+		md: "h-[80px] p-2 md:px-6 gap-3 text-sm",
 		lg: "h-[100px] px-8 gap-4 text-base",
 	};
 
@@ -124,7 +126,7 @@ export function QuickActionButton({
 				</motion.div>
 
 				{/* Label */}
-				<span className="font-medium">{label}</span>
+				{children}
 			</Button>
 		</motion.div>
 	);

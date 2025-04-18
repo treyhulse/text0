@@ -45,7 +45,10 @@ export function SearchCommand({ documents }: SearchCommandProps) {
 				iconName="Search"
 				label="Search"
 				onClick={() => setOpen(true)}
-			/>
+			>
+				<span className="hidden md:block">Search</span>
+				<span className="block md:hidden">Search</span>
+			</QuickActionButton>
 
 			<CommandDialog open={open} onOpenChange={setOpen}>
 				<DialogContent

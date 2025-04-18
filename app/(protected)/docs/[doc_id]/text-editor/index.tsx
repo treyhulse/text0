@@ -24,6 +24,7 @@ import { TextToSpeech } from "./text-to-speech";
 import Image from "next/image";
 import { TOUR_STEP_IDS } from "@/lib/tour-constants";
 import { DocTour } from "../tour";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface TextEditorProps {
 	initialContent: string;
@@ -435,6 +436,7 @@ export function TextEditor({
 
 	return (
 		<div className="relative flex h-full w-full bg-background">
+			<SidebarTrigger />
 			<DocTour />
 			{/* Background Image */}
 			<Image
