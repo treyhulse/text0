@@ -42,16 +42,29 @@ export async function POST(request: NextRequest) {
 			model = openai("gpt-4o-mini");
 		}
 
-		const filter = `userId = '${
-			session.userId
-		}' AND referenceId IN ('${body.references.join("','")}')`;
+		const andFilter =
+			body.references.length > 0
+				? ` AND referenceId IN ('${body.references.join("','")}')`
+				: "";
 
-		const context = await vector.query({
+		const userFilter = `userId = '${session.userId}'`;
+
+		let context = await vector.query({
 			data: body.prompt,
 			topK: 5,
 			includeData: true,
-			filter,
+			filter: `${userFilter}${andFilter}`,
 		});
+
+		if (andFilter && !context.some((c) => c.score > 0.875)) {
+			context = await vector.query({
+				data: body.prompt,
+				topK: 5,
+				includeData: true,
+				filter: userFilter,
+			});
+		}
+
 
 		const contextData = context.map((c) => c.data).join("\n");
 

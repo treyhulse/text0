@@ -37,8 +37,6 @@ export async function GET() {
 					new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime(),
 			);
 
-		console.log(validReferences);
-
 		return NextResponse.json(validReferences);
 	} catch (error) {
 		console.error("Error fetching references:", error);
