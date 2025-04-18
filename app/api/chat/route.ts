@@ -40,19 +40,36 @@ export async function POST(req: Request) {
 
 		const session = await getSecureSession();
 
-		const filter = `userId = '${
-			session.userId
-		}' AND referenceId IN ('${references.join("','")}')`;
+		const andFilter =
+			references.length > 0
+				? ` AND referenceId IN ('${references.join("','")}')`
+				: "";
 
-		const closestReferences = await vector.query({
+		const userFilter = `userId = '${session.userId}'`;
+
+		let closestReferences = await vector.query({
 			data: messages
 				.slice(-3)
 				.map((m: Message) => m.content)
 				.join("\n"),
 			topK: 5,
 			includeData: true,
-			filter,
+			filter: `${userFilter}${andFilter}`,
 		});
+
+		if (andFilter && !closestReferences.some((c) => c.score > 0.875)) {
+			closestReferences = await vector.query({
+				data: messages
+					.slice(-3)
+					.map((m: Message) => m.content)
+					.join("\n"),
+				topK: 5,
+				includeData: true,
+				filter: userFilter,
+			});
+		}
+
+		closestReferences = closestReferences.filter((c) => c.score > 0.8);
 
 		const context = closestReferences.map((c) => c.data).join("\n");
 
