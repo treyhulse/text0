@@ -29,7 +29,6 @@ const Key: React.FC<KeyProps> = ({
 	onKeyUp,
 	tabIndex = 0,
 }) => {
-	console.log({ active });
 	return (
 		<div
 			className={`key ${span ? "span" : ""} ${active ? "active" : ""}`}

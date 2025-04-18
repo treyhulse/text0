@@ -14,7 +14,6 @@ export const NewDoc = () => {
 	const pathname = usePathname();
 
 	React.useEffect(() => {
-		console.log(state);
 		if (state?.success) {
 			router.push(`/docs/${state.data?.documentId}`);
 		}

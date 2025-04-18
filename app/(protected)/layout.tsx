@@ -32,8 +32,6 @@ export default async function ProtectedLayout({
 				new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
 		);
 
-	console.log(documents);
-
 	return (
 		<SidebarProvider defaultOpen={true}>
 			<div className="flex h-screen w-full">

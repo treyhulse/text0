@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NotionIcon } from "@/components/ui/icons/notion";
 import { useUser } from "@clerk/nextjs";
-import { Calendar, CheckCircle2 } from "lucide-react";
+import { Calendar, CheckCircle2, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface NotionUser {
 	id: string;
@@ -94,6 +95,7 @@ export default function NotionIntegrationPage() {
 	const [pages, setPages] = useState<NotionPage[]>([]);
 	const [databases, setDatabases] = useState<NotionDatabase[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [isSyncing, setIsSyncing] = useState(false);
 	const [error, setError] = useState<{
 		message: string;
 		details?: unknown;
@@ -216,6 +218,44 @@ export default function NotionIntegrationPage() {
 		}
 	};
 
+	const handleSync = async () => {
+		setIsSyncing(true);
+		try {
+			const response = await fetch("/api/notion/sync", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error, { cause: errorData });
+			}
+
+			const result = await response.json();
+			toast.success("Notion Data Synced", {
+				description: `Successfully stored ${result.chunks} chunks in the database.`,
+			});
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError({
+					message: err.message,
+					details: (err.cause as { details?: unknown })?.details,
+				});
+				toast.error("Sync Failed", {
+					description: err.message,
+				});
+			} else {
+				toast.error("Sync Failed", {
+					description: "An unknown error occurred",
+				});
+			}
+		} finally {
+			setIsSyncing(false);
+		}
+	};
+
 	if (!userLoaded || loading) {
 		return (
 			<div className="flex h-full items-center justify-center">
@@ -290,9 +330,24 @@ export default function NotionIntegrationPage() {
 						Connected
 					</Badge>
 				</div>
-				<Button variant="outline" onClick={handleDisconnect}>
-					Disconnect
-				</Button>
+				<div className="flex space-x-2">
+					<Button variant="default" onClick={handleSync} disabled={isSyncing}>
+						{isSyncing ? (
+							<>
+								<RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+								Syncing...
+							</>
+						) : (
+							<>
+								<RefreshCw className="mr-2 h-4 w-4" />
+								Sync Data
+							</>
+						)}
+					</Button>
+					<Button variant="outline" onClick={handleDisconnect}>
+						Disconnect
+					</Button>
+				</div>
 			</div>
 
 			{/* User Profile */}
