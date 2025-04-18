@@ -2,7 +2,7 @@
 
 A text editor with absurdly smart autocomplete. Text0 serves as a copilot for writing, accessing user-provided references to offer context and help users write faster.
 
-![Text0 Screenshot](path-to-screenshot.png)
+![Text0 Screenshot](./public/autocomplete.png)
 
 ## Features
 
@@ -56,8 +56,9 @@ To use the local development version, navigate to `http://localhost:3000` after 
 
 ## Screenshots
 
-![Feature 1](path-to-feature1.png)
-![Feature 2](path-to-feature2.png)
+![Landing](./public/landing.png)
+![Autocomplete](./public/autocomplete.png)
+![File navigation](./public/home.png)
 
 ## Contributing
 
