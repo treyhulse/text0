@@ -38,7 +38,7 @@ A text editor with absurdly smart autocomplete. Text0 serves as a copilot for wr
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/text0.git
+git clone https://github.com/crafter-station/text0.git
 cd text0
 
 # Install dependencies
@@ -74,5 +74,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-- Railly Hugo - [GitHub](https://github.com/Railly)
-- Anthony Cueva - [GitHub](https://github.com/cueva.io)
+- [Railly Hugo](https://github.com/Railly)
+- [Anthony Cueva](https://github.com/cuevaio)
