@@ -1,6 +1,8 @@
+"use client";
 import type { Document, Reference } from "@/lib/redis";
 import { BrainIcon, ExternalLink, FileText } from "lucide-react";
 import Link from "next/link";
+import { motion } from "motion/react";
 
 type FileItem =
 	| (Document & { type: "document" })
@@ -11,6 +13,11 @@ interface RecentFilesCardProps {
 }
 
 export function RecentFilesCard({ files }: RecentFilesCardProps) {
+	const iconVariants = {
+		initial: { scale: 1, rotate: 0 },
+		hover: { scale: 1.2, rotate: 5, transition: { duration: 0.2 } },
+	};
+
 	return (
 		<div className="overflow-hidden rounded-lg border border-border">
 			<div className="grid divide-y divide-border">
@@ -19,10 +26,18 @@ export function RecentFilesCard({ files }: RecentFilesCardProps) {
 						<Link
 							href={`/docs/${file.id}`}
 							key={file.id}
-							className="relative flex items-start gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
+							className="group relative flex items-start gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
 						>
 							<div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-blue-500/5 text-blue-500">
-								<FileText className="h-4 w-4" />
+								<motion.div
+									variants={iconVariants}
+									initial="initial"
+									animate={false}
+									className="flex items-center justify-center group-hover:animate-[wiggle_0.2s_ease-in-out]"
+									whileHover=""
+								>
+									<FileText className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3" />
+								</motion.div>
 							</div>
 							<div className="flex grow justify-between">
 								<div className="grow pr-16">
@@ -46,10 +61,18 @@ export function RecentFilesCard({ files }: RecentFilesCardProps) {
 							target="_blank"
 							rel="noopener noreferrer"
 							key={file.id}
-							className="items-top relative flex gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
+							className="group items-top relative flex gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
 						>
 							<div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-purple-500/5 text-purple-500">
-								<BrainIcon className="h-4 w-4" />
+								<motion.div
+									variants={iconVariants}
+									initial="initial"
+									animate={false}
+									className="flex items-center justify-center group-hover:animate-[wiggle_0.2s_ease-in-out]"
+									whileHover=""
+								>
+									<BrainIcon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3" />
+								</motion.div>
 							</div>
 							<div className="flex grow justify-between">
 								<div className="grow pr-16">

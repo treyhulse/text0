@@ -22,13 +22,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { uploadFiles } from "@/lib/uploadthing";
-import { BrainIcon, Upload, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import * as React from "react";
 import { useActionState } from "react";
 import { toast } from "sonner";
 import { UploadThingError } from "uploadthing/server";
 import { addWebsiteReference } from "../actions/websites";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import {} from "./ui/tooltip";
 
 export function AddReference({
 	children,
@@ -114,20 +114,7 @@ export function AddReference({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				{children || (
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button variant="outline" size="sm" className="size-8">
-								<BrainIcon className="size-4" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Add Reference</p>
-						</TooltipContent>
-					</Tooltip>
-				)}
-			</DialogTrigger>
+			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent title="Add Reference" className="sm:max-w-md">
 				<DialogHeader>
 					<DialogTitle>Add Reference</DialogTitle>
@@ -167,6 +154,7 @@ export function AddReference({
 						</span>
 					</div>
 				</div>
+
 				<FileUpload
 					accept=".pdf,.docx,.xlsx,.pptx,.txt,.md"
 					maxFiles={1}
@@ -178,18 +166,24 @@ export function AddReference({
 					multiple={false}
 					disabled={isUploading || isPendingAddWebsiteReferenceAction}
 				>
-					<FileUploadDropzone>
-						<div className="flex flex-col items-center gap-1">
-							<div className="flex items-center justify-center rounded-full border p-2.5">
-								<Upload className="size-6 text-muted-foreground" />
+					<FileUploadDropzone className="border-border/50 border-dashed bg-accent/5 hover:bg-accent/10">
+						<div className="flex flex-col items-center gap-1.5 py-2">
+							<div className="flex items-center justify-center rounded-full border border-border/40 bg-background/80 p-2">
+								<Upload className="size-5 text-muted-foreground" />
 							</div>
-							<p className="font-medium text-sm">Drag & drop documents here</p>
-							<p className="text-muted-foreground text-xs">
-								Or click to browse (PDF, Word, Excel, PowerPoint, TXT, Markdown)
+							<p className="font-medium text-foreground/80 text-xs">
+								Drag & drop documents here
+							</p>
+							<p className="max-w-[80%] text-center text-[10px] text-muted-foreground">
+								PDF, Word, Excel, PowerPoint, TXT, Markdown
 							</p>
 						</div>
 						<FileUploadTrigger asChild>
-							<Button variant="outline" size="sm" className="mt-2 w-fit">
+							<Button
+								variant="outline"
+								size="sm"
+								className="mt-1 h-7 w-fit border-border/50 text-xs"
+							>
 								Browse files
 							</Button>
 						</FileUploadTrigger>
@@ -197,16 +191,20 @@ export function AddReference({
 					<FileUploadList>
 						{files.map((file) => (
 							<FileUploadItem key={file.lastModified} value={file}>
-								<div className="flex w-full items-center gap-2">
+								<div className="flex w-full items-center gap-2 rounded-sm bg-accent/10 p-2">
 									<FileUploadItemPreview />
 									<FileUploadItemMetadata />
 									<FileUploadItemDelete asChild>
-										<Button variant="ghost" size="icon" className="size-7">
-											<X />
+										<Button
+											variant="ghost"
+											size="icon"
+											className="ml-auto size-6"
+										>
+											<X className="size-3.5" />
 										</Button>
 									</FileUploadItemDelete>
 								</div>
-								<FileUploadItemProgress />
+								<FileUploadItemProgress className="mt-1 h-1" />
 							</FileUploadItem>
 						))}
 					</FileUploadList>

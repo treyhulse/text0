@@ -589,7 +589,7 @@ export function TextEditor({
 										<Toggle
 											id="autocomplete"
 											variant="outline"
-											className="size-8 hover:bg-foreground/10 hover:dark:bg-muted"
+											className="size-8 hover:bg-foreground/10 hover:dark:bg-muted data-[state=on]:hover:bg-foreground/10 data-[state=on]:dark:hover:bg-accent/70"
 											key={isAutocompleteEnabled ? "true" : "false"}
 											pressed={isAutocompleteEnabled}
 											onPressedChange={setIsAutocompleteEnabled}

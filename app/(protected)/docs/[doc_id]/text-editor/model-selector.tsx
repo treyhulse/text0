@@ -94,13 +94,13 @@ export function ModelSelector() {
 
 	return (
 		<div className="group-data-[collapsible=icon]:w-auto [&_[data-slot=select-trigger]>svg]:group-data-[collapsible=icon]:hidden">
-			<Select
-				value={model}
-				onValueChange={(value: string) => setModel(value)}
-				name="model-selector"
-			>
-				<Tooltip>
-					<TooltipTrigger asChild>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Select
+						value={model}
+						onValueChange={(value: string) => setModel(value)}
+						name="model-selector"
+					>
 						<SelectTrigger
 							withoutIcon
 							className="!w-8 !h-8 flex items-center justify-center p-0"
@@ -108,41 +108,41 @@ export function ModelSelector() {
 						>
 							{selectedModel && <ModelLogo model={selectedModel} />}
 						</SelectTrigger>
-					</TooltipTrigger>
-					<TooltipContent
-						side="left"
-						className="hidden group-data-[collapsible=icon]:block"
-					>
-						<div className="flex flex-col gap-1">
-							<span className="font-medium">{selectedModel?.name}</span>
-							<span className="text-accent text-xs">
-								{selectedModel?.description}
-							</span>
-						</div>
-					</TooltipContent>
-				</Tooltip>
-				<SelectContent>
-					{models.map((model) => (
-						<SelectItem
-							key={model.id}
-							value={model.id}
-							aria-label={`${model.name} - ${model.description}`}
-						>
-							<div className="flex items-center gap-2">
-								<span aria-hidden={true}>
-									<ModelLogo model={model} />
-								</span>
-								<div className="flex flex-col">
-									<span className="font-medium">{model.name}</span>
-									<span className="text-muted-foreground text-sm">
-										{model.description}
-									</span>
-								</div>
-							</div>
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+						<SelectContent>
+							{models.map((model) => (
+								<SelectItem
+									key={model.id}
+									value={model.id}
+									aria-label={`${model.name} - ${model.description}`}
+								>
+									<div className="flex items-center gap-2">
+										<span aria-hidden={true}>
+											<ModelLogo model={model} />
+										</span>
+										<div className="flex flex-col">
+											<span className="font-medium">{model.name}</span>
+											<span className="text-muted-foreground text-sm">
+												{model.description}
+											</span>
+										</div>
+									</div>
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</TooltipTrigger>
+				<TooltipContent
+					side="left"
+					className="hidden group-data-[collapsible=icon]:block"
+				>
+					<div className="flex flex-col gap-1">
+						<span className="font-medium">{selectedModel?.name}</span>
+						<span className="text-accent text-xs">
+							{selectedModel?.description}
+						</span>
+					</div>
+				</TooltipContent>
+			</Tooltip>
 		</div>
 	);
 }

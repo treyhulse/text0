@@ -1,14 +1,13 @@
-// components/QuickActionButton.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2, icons } from "lucide-react"; // Import icons dynamically
+import { Loader2, icons } from "lucide-react";
 import { useState } from "react";
 
 interface QuickActionButtonProps {
-	iconName: keyof typeof icons; // Icon name as string (e.g., "FileText")
+	iconName: keyof typeof icons;
 	label: string;
 	onClick?: () => void;
 	variant?: "default" | "primary" | "secondary";
@@ -30,17 +29,14 @@ export function QuickActionButton({
 }: Readonly<QuickActionButtonProps>) {
 	const [isHovered, setIsHovered] = useState(false);
 
-	// Dynamically resolve the icon component
-	const Icon = icons[iconName] || Loader2; // Fallback to Loader2 if icon not found
+	const Icon = icons[iconName] || Loader2;
 
-	// Size variants
 	const sizeStyles = {
 		sm: "h-[60px] px-4 gap-2 text-xs",
 		md: "h-[80px] px-6 gap-3 text-sm",
 		lg: "h-[100px] px-8 gap-4 text-base",
 	};
 
-	// Variant styles
 	const variantStyles = {
 		default:
 			"border-border bg-muted dark:bg-card hover:bg-muted/50 hover:border-primary/50",
@@ -50,13 +46,11 @@ export function QuickActionButton({
 			"border-secondary/20 bg-secondary/10 hover:bg-secondary/20 hover:border-secondary",
 	};
 
-	// Animation variants for the icon
 	const iconVariants = {
 		initial: { scale: 1, rotate: 0 },
 		hover: { scale: 1.2, rotate: 5, transition: { duration: 0.2 } },
 	};
 
-	// Animation variants for the button
 	const buttonVariants = {
 		initial: { scale: 1, boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" },
 		hover: {

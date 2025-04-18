@@ -25,7 +25,14 @@ export default async function ProtectedLayout({
 			redis.hgetall<Document>(DOCUMENT_KEY(documentId)),
 		),
 	);
-	const documents = _documents.map((document) => document as Document);
+	const documents = _documents
+		.map((document) => document as Document)
+		.sort(
+			(a, b) =>
+				new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+		);
+
+	console.log(documents);
 
 	return (
 		<SidebarProvider defaultOpen={true}>

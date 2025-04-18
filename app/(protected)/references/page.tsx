@@ -1,4 +1,5 @@
 import { AddReference } from "@/components/add-reference";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSecureSession } from "@/lib/auth/server";
 import {
@@ -7,7 +8,7 @@ import {
 	USER_REFERENCES_KEY,
 	redis,
 } from "@/lib/redis";
-import { ArrowRight, FileText } from "lucide-react";
+import { ArrowRight, BrainIcon, FileText } from "lucide-react";
 
 async function getReferences(userId: string): Promise<Reference[]> {
 	// Get all document IDs for the user
@@ -49,7 +50,11 @@ export default async function FilesPage() {
 						<FileText className="h-4 w-4 text-muted-foreground" />
 						<h2 className="font-medium text-sm tracking-wide">My References</h2>
 					</div>
-					<AddReference />
+					<AddReference>
+						<Button variant="outline" size="sm" className="size-8">
+							<BrainIcon className="size-4" />
+						</Button>
+					</AddReference>
 				</div>
 
 				<div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">

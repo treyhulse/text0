@@ -1,27 +1,7 @@
 "use client";
-
-import { addWebsiteReference } from "@/actions/add-website-reference";
 import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-	FileUpload,
-	FileUploadDropzone,
-	FileUploadItem,
-	FileUploadItemDelete,
-	FileUploadItemMetadata,
-	FileUploadItemPreview,
-	FileUploadItemProgress,
-	FileUploadList,
-	FileUploadTrigger,
-} from "@/components/ui/file-upload";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {} from "@/components/ui/dialog";
+import {} from "@/components/ui/file-upload";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	Sidebar,
@@ -37,20 +17,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useModel } from "@/hooks/use-model";
 import { useSelectedReferences } from "@/hooks/use-selected-references";
 import { cn } from "@/lib/utils";
-import { uploadFiles } from "@/lib/uploadthing";
 import { useChat } from "@ai-sdk/react";
 import { Loader2, PanelRight, Send, Upload, X } from "lucide-react";
 import { useParams } from "next/navigation";
-import {
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-	useActionState,
-} from "react";
-import { toast } from "sonner";
-import { UploadThingError } from "uploadthing/server";
+import { useCallback, useEffect, useRef } from "react";
 import { ReferenceSelector } from "./reference-selector";
+import { AddReference } from "@/components/add-reference";
 
 export interface AIChatSidebarProps {
 	content: string;
@@ -68,14 +40,6 @@ export function AIChatSidebar({
 	const { doc_id } = useParams();
 	const [model] = useModel();
 	const { getSelectedReferences } = useSelectedReferences(doc_id as string);
-
-	// Add reference state
-	const [isUploading, setIsUploading] = useState(false);
-	const [files, setFiles] = useState<File[]>([]);
-	const [openReferenceDialog, setOpenReferenceDialog] = useState(false);
-	const [url, setUrl] = useState("");
-	const [state, formAction, isPendingAddWebsiteReferenceAction] =
-		useActionState(addWebsiteReference, undefined);
 
 	const {
 		messages,
@@ -142,75 +106,6 @@ export function AIChatSidebar({
 	};
 
 	// Handle file upload
-	const onUpload = useCallback(
-		async (
-			files: File[],
-			{
-				onProgress,
-			}: {
-				onProgress: (file: File, progress: number) => void;
-			},
-		) => {
-			try {
-				setIsUploading(true);
-				const res = await uploadFiles("documentUploader", {
-					files,
-					onUploadProgress: ({ file, progress }) => {
-						onProgress(file, progress);
-					},
-				});
-
-				toast.success("Uploaded files:", {
-					description: (
-						<pre className="mt-2 w-80 rounded-md bg-accent/30 p-4 text-accent-foreground">
-							<code>
-								{JSON.stringify(
-									res.map((file) =>
-										file.name.length > 25
-											? `${file.name.slice(0, 25)}...`
-											: file.name,
-									),
-									null,
-									2,
-								)}
-							</code>
-						</pre>
-					),
-				});
-
-				// Close the dialog after 2 seconds
-				setTimeout(() => {
-					setOpenReferenceDialog(false);
-				}, 2000);
-			} catch (error) {
-				setIsUploading(false);
-
-				if (error instanceof UploadThingError) {
-					const errorMessage =
-						error.data && "error" in error.data
-							? error.data.error
-							: "Upload failed";
-					toast.error(errorMessage);
-					return;
-				}
-
-				toast.error(
-					error instanceof Error ? error.message : "An unknown error occurred",
-				);
-			} finally {
-				setIsUploading(false);
-			}
-		},
-		[],
-	);
-
-	const onFileReject = useCallback((file: File, message: string) => {
-		toast(message, {
-			description: `"${
-				file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name
-			}" has been rejected`,
-		});
-	}, []);
 
 	return (
 		<SidebarProvider>
@@ -254,136 +149,16 @@ export function AIChatSidebar({
 											<span className="font-medium text-foreground text-xs">
 												References
 											</span>
-											<Dialog
-												open={openReferenceDialog}
-												onOpenChange={setOpenReferenceDialog}
-											>
-												<DialogTrigger asChild>
-													<Button
-														variant="outline"
-														size="sm"
-														className="h-6 px-2 text-xs hover:bg-accent/50"
-													>
-														<Upload className="!size-3" />
-														Add
-													</Button>
-												</DialogTrigger>
-												<DialogContent
-													title="Add Reference"
-													className="sm:max-w-md"
+											<AddReference>
+												<Button
+													variant="outline"
+													size="sm"
+													className="h-6 px-2 text-xs hover:bg-accent/50"
 												>
-													<DialogHeader>
-														<DialogTitle>Add Reference</DialogTitle>
-													</DialogHeader>
-													<form action={formAction} className="space-y-4">
-														<div className="space-y-1.5">
-															<Label
-																htmlFor="url"
-																className="font-medium text-xs"
-															>
-																Website URL
-															</Label>
-															<Input
-																id="url"
-																name="url"
-																type="url"
-																placeholder="https://example.com"
-																value={url}
-																onChange={(e) => setUrl(e.target.value)}
-																disabled={
-																	isPendingAddWebsiteReferenceAction ||
-																	isUploading
-																}
-																className="h-8 text-sm"
-															/>
-														</div>
-														<Button
-															type="submit"
-															variant="outline"
-															disabled={
-																!url ||
-																isPendingAddWebsiteReferenceAction ||
-																isUploading
-															}
-															size="sm"
-															className="h-8 w-full font-medium text-xs"
-														>
-															{isPendingAddWebsiteReferenceAction
-																? "Adding..."
-																: "Add Website Reference"}
-														</Button>
-													</form>
-													<div className="relative my-3">
-														<div className="absolute inset-0 flex items-center">
-															<span className="w-full border-border/40 border-t" />
-														</div>
-														<div className="relative flex justify-center text-xs uppercase">
-															<span className="bg-background px-2 text-[10px] text-muted-foreground tracking-wider">
-																Or upload a file
-															</span>
-														</div>
-													</div>
-													<FileUpload
-														accept=".pdf,.docx,.xlsx,.pptx,.txt,.md"
-														maxFiles={1}
-														maxSize={16 * 1024 * 1024}
-														className="w-full max-w-md"
-														onAccept={(files) => setFiles(files)}
-														onUpload={onUpload}
-														onFileReject={onFileReject}
-														multiple={false}
-														disabled={
-															isUploading || isPendingAddWebsiteReferenceAction
-														}
-													>
-														<FileUploadDropzone className="border-border/50 border-dashed bg-accent/5 hover:bg-accent/10">
-															<div className="flex flex-col items-center gap-1.5 py-2">
-																<div className="flex items-center justify-center rounded-full border border-border/40 bg-background/80 p-2">
-																	<Upload className="size-5 text-muted-foreground" />
-																</div>
-																<p className="font-medium text-foreground/80 text-xs">
-																	Drag & drop documents here
-																</p>
-																<p className="max-w-[80%] text-center text-[10px] text-muted-foreground">
-																	PDF, Word, Excel, PowerPoint, TXT, Markdown
-																</p>
-															</div>
-															<FileUploadTrigger asChild>
-																<Button
-																	variant="outline"
-																	size="sm"
-																	className="mt-1 h-7 w-fit border-border/50 text-xs"
-																>
-																	Browse files
-																</Button>
-															</FileUploadTrigger>
-														</FileUploadDropzone>
-														<FileUploadList>
-															{files.map((file) => (
-																<FileUploadItem
-																	key={file.lastModified}
-																	value={file}
-																>
-																	<div className="flex w-full items-center gap-2 rounded-sm bg-accent/10 p-2">
-																		<FileUploadItemPreview />
-																		<FileUploadItemMetadata />
-																		<FileUploadItemDelete asChild>
-																			<Button
-																				variant="ghost"
-																				size="icon"
-																				className="ml-auto size-6"
-																			>
-																				<X className="size-3.5" />
-																			</Button>
-																		</FileUploadItemDelete>
-																	</div>
-																	<FileUploadItemProgress className="mt-1 h-1" />
-																</FileUploadItem>
-															))}
-														</FileUploadList>
-													</FileUpload>
-												</DialogContent>
-											</Dialog>
+													<Upload className="!size-3" />
+													Add
+												</Button>
+											</AddReference>
 										</div>
 										<ReferenceSelector />
 									</div>

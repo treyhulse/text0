@@ -225,30 +225,8 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 									</CollapsibleTrigger>
 									<CollapsibleContent>
 										<ScrollArea className="h-96">
-											<div className="space-y-1 py-1">
-												{documents.map((doc) => (
-													<div
-														key={doc.id}
-														className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0"
-													>
-														<SidebarMenuButton
-															asChild
-															tooltip={doc.name}
-															data-active={
-																pathname.split("/").at(-1) === doc.id
-															}
-															className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
-														>
-															<Link href={`/docs/${doc.id}`}>
-																<FileText className="h-4 w-4 shrink-0" />
-																<span className="truncate group-data-[collapsible=icon]:hidden">
-																	{doc.name}
-																</span>
-															</Link>
-														</SidebarMenuButton>
-													</div>
-												))}
-												<div className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0">
+											<div className="space-y-1">
+												<div className="sticky ml-4 top-0 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0">
 													{isCreatingDoc ? (
 														<form
 															action={formAction}
@@ -320,6 +298,28 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 														</SidebarMenuButton>
 													)}
 												</div>
+												{documents.map((doc) => (
+													<div
+														key={doc.id}
+														className="ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0"
+													>
+														<SidebarMenuButton
+															asChild
+															tooltip={doc.name}
+															data-active={
+																pathname.split("/").at(-1) === doc.id
+															}
+															className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:justify-center"
+														>
+															<Link href={`/docs/${doc.id}`}>
+																<FileText className="h-4 w-4 shrink-0" />
+																<span className="truncate group-data-[collapsible=icon]:hidden">
+																	{doc.name}
+																</span>
+															</Link>
+														</SidebarMenuButton>
+													</div>
+												))}
 											</div>
 										</ScrollArea>
 									</CollapsibleContent>
