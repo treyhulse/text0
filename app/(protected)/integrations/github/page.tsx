@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GithubIcon } from "@/components/ui/icons/github";
 import { useUser } from "@clerk/nextjs";
-import { CheckCircle2, GitFork, Star } from "lucide-react";
+import { CheckCircle2, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface GitHubUser {
 	login: string;
@@ -42,6 +43,7 @@ export default function GitHubIntegrationPage() {
 	const [repos, setRepos] = useState<GitHubRepo[]>([]);
 	const [notifications, setNotifications] = useState<GitHubNotification[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [isSyncing, setIsSyncing] = useState(false);
 	const [error, setError] = useState<{
 		message: string;
 		details?: unknown;
@@ -79,7 +81,7 @@ export default function GitHubIntegrationPage() {
 				if (err instanceof Error) {
 					setError({
 						message: err.message,
-						details: (err.cause as unknown as { details?: unknown })?.details,
+						details: (err.cause as { details?: unknown })?.details,
 					});
 				} else {
 					setError({ message: "An unknown error occurred" });
@@ -112,11 +114,49 @@ export default function GitHubIntegrationPage() {
 			if (err instanceof Error) {
 				setError({
 					message: err.message,
-					details: (err.cause as unknown as { details?: unknown })?.details,
+					details: (err.cause as { details?: unknown })?.details,
 				});
 			} else {
 				setError({ message: "An unknown error occurred" });
 			}
+		}
+	};
+
+	const handleSync = async () => {
+		setIsSyncing(true);
+		try {
+			const response = await fetch("/api/github/sync", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error, { cause: errorData });
+			}
+
+			const result = await response.json();
+			toast.success("GitHub Data Synced", {
+				description: `Successfully stored ${result.chunks} chunks in the database.`,
+			});
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError({
+					message: err.message,
+					details: (err.cause as { details?: unknown })?.details,
+				});
+				toast.error("Sync Failed", {
+					description: err.message,
+				});
+			} else {
+				toast.error("Sync Failed", {
+					description: "An unknown error occurred",
+				});
+			}
+		} finally {
+			setIsSyncing(false);
 		}
 	};
 
@@ -196,9 +236,24 @@ export default function GitHubIntegrationPage() {
 						Connected
 					</Badge>
 				</div>
-				<Button variant="outline" onClick={handleDisconnect}>
-					Disconnect
-				</Button>
+				<div className="flex space-x-2">
+					<Button variant="default" onClick={handleSync} disabled={isSyncing}>
+						{isSyncing ? (
+							<>
+								<RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+								Syncing...
+							</>
+						) : (
+							<>
+								<RefreshCw className="mr-2 h-4 w-4" />
+								Sync Data
+							</>
+						)}
+					</Button>
+					<Button variant="outline" onClick={handleDisconnect}>
+						Disconnect
+					</Button>
+				</div>
 			</div>
 
 			{/* User Profile */}
@@ -229,56 +284,6 @@ export default function GitHubIntegrationPage() {
 					</CardContent>
 				</Card>
 			)}
-
-			{/* Repositories */}
-			<Card>
-				<CardHeader>
-					<CardTitle>Repositories</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="grid gap-4">
-						{repos.map((repo) => (
-							<div
-								key={repo.id}
-								className="flex items-center justify-between border-b py-2"
-							>
-								<div>
-									<Link
-										href={repo.html_url}
-										target="_blank"
-										className="text-blue-500 hover:underline"
-									>
-										{repo.full_name}
-									</Link>
-									{repo.description && (
-										<p className="text-muted-foreground text-sm">
-											{repo.description}
-										</p>
-									)}
-									<div className="mt-1 flex items-center space-x-4">
-										<span className="flex items-center text-muted-foreground text-sm">
-											<Star className="mr-1 h-4 w-4" />
-											{repo.stargazers_count}
-										</span>
-										<span className="flex items-center text-muted-foreground text-sm">
-											<GitFork className="mr-1 h-4 w-4" />
-											{repo.forks_count}
-										</span>
-										<span className="text-muted-foreground text-sm">
-											Updated: {new Date(repo.updated_at).toLocaleDateString()}
-										</span>
-									</div>
-								</div>
-								<Button variant="outline" asChild>
-									<Link href={`/integrations/github/repos/${repo.name}`}>
-										View Details
-									</Link>
-								</Button>
-							</div>
-						))}
-					</div>
-				</CardContent>
-			</Card>
 
 			{/* Notifications */}
 			<Card>

@@ -68,9 +68,6 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 		undefined,
 	);
 	const pathname = usePathname();
-	React.useEffect(() => {
-		console.log(pathname);
-	}, [pathname]);
 
 	useEffect(() => {
 		if (state?.success && state.data?.documentId) {

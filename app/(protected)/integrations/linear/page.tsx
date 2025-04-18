@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LinearIcon } from "@/components/ui/icons/linear";
 import { useUser } from "@clerk/nextjs";
-import { CheckCircle2, FileText, Users } from "lucide-react";
+import { CheckCircle2, FileText, RefreshCw, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface LinearUser {
 	id: string;
@@ -38,6 +39,7 @@ export default function LinearIntegrationPage() {
 	const [issues, setIssues] = useState<LinearIssue[]>([]);
 	const [teams, setTeams] = useState<LinearTeam[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [isSyncing, setIsSyncing] = useState(false);
 	const [error, setError] = useState<{
 		message: string;
 		details?: unknown;
@@ -87,6 +89,44 @@ export default function LinearIntegrationPage() {
 
 		fetchLinearData();
 	}, [userLoaded, isConnected]);
+
+	const handleSync = async () => {
+		setIsSyncing(true);
+		try {
+			const response = await fetch("/api/linear/sync", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error, { cause: errorData });
+			}
+
+			const result = await response.json();
+			toast.success("Linear Data Synced", {
+				description: `Successfully stored ${result.chunks} chunks in the database.`,
+			});
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError({
+					message: err.message,
+					details: (err.cause as { details?: unknown })?.details,
+				});
+				toast.error("Sync Failed", {
+					description: err.message,
+				});
+			} else {
+				toast.error("Sync Failed", {
+					description: "An unknown error occurred",
+				});
+			}
+		} finally {
+			setIsSyncing(false);
+		}
+	};
 
 	if (!userLoaded || loading) {
 		return (
@@ -162,9 +202,24 @@ export default function LinearIntegrationPage() {
 						Connected
 					</Badge>
 				</div>
-				<Button variant="outline" disabled>
-					Disconnect
-				</Button>
+				<div className="flex space-x-2">
+					<Button variant="default" onClick={handleSync} disabled={isSyncing}>
+						{isSyncing ? (
+							<>
+								<RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+								Syncing...
+							</>
+						) : (
+							<>
+								<RefreshCw className="mr-2 h-4 w-4" />
+								Sync Data
+							</>
+						)}
+					</Button>
+					<Button variant="outline" disabled>
+						Disconnect
+					</Button>
+				</div>
 			</div>
 
 			{/* User Profile */}
