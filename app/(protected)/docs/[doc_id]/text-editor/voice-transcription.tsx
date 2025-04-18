@@ -449,7 +449,7 @@ export function VoiceTranscription({
 							size="icon"
 							variant="outline"
 							onClick={handleStartRecording}
-							className="h-8 w-8"
+							className="flex size-8 items-center hover:bg-foreground/10 hover:dark:bg-muted"
 						>
 							<Mic className="h-4 w-4" />
 						</Button>
