@@ -29,7 +29,10 @@ export const NewDoc = () => {
 				iconName="FileText"
 				label="New Document"
 				loading={isPending}
-			/>
+			>
+				<span className="hidden md:block">New Document</span>
+				<span className="block md:hidden">New Doc</span>
+			</QuickActionButton>
 		</form>
 	);
 };
