@@ -284,7 +284,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 															variant="outline"
 															size="sm"
 															tooltip="New Document"
-															className="flex h-8 w-full items-center justify-start gap-2 pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0"
+															className="flex bg-background dark:bg-muted border border-border h-8 w-full items-center justify-start gap-2 pl-2 text-sm group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pr-0 group-data-[collapsible=icon]:pl-0"
 															onClick={() => setIsCreatingDoc(true)}
 															data-new-doc-trigger
 														>
@@ -367,7 +367,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 												<SidebarMenuButton
 													asChild
 													tooltip="View all integrations"
-													className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 font-medium text-primary text-sm hover:bg-muted group-data-[collapsible=icon]:justify-center"
+													className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 font-medium text-primary brightness-150 text-sm hover:bg-muted group-data-[collapsible=icon]:justify-center"
 												>
 													<Link href="/integrations">
 														<span className="truncate group-data-[collapsible=icon]:hidden">
