@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
 			});
 		}
 
+		context = context.filter((c) => c.score > 0.8);
 
 		const contextData = context.map((c) => c.data).join("\n");
 

@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Text0
+
+A text editor with absurdly smart autocomplete. Text0 serves as a copilot for writing, accessing user-provided references to offer context and help users write faster.
+
+![Text0 Screenshot](path-to-screenshot.png)
+
+## Features
+
+- Smart autocomplete powered by AI
+- Chat with your files
+- Reference-aware suggestions
+- Seamless writing experience
+- Voice input and output
+- Zen mode
+
+## Tech Stack
+
+- React
+- Next.js
+- Tailwind CSS
+- RadixUI
+- Upstash Redis
+- Upstash Vector
+- AI SDK
+- UploadThing
+- Cursor
+- Vercel
+- Clerk (Authentication)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js
+- Bun (preferred)
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+# Clone the repository
+git clone https://github.com/your-username/text0.git
+cd text0
+
+# Install dependencies
+bun install
+
+# Start the development server
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Visit [www.text0.dev](https://www.text0.dev) to access the hosted version.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To use the local development version, navigate to `http://localhost:3000` after starting the development server.
 
-## Learn More
+## Screenshots
 
-To learn more about Next.js, take a look at the following resources:
+![Feature 1](path-to-feature1.png)
+![Feature 2](path-to-feature2.png)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Contributions are welcome! Please feel free to:
 
-## Deploy on Vercel
+1. Open issues for bugs or feature requests
+2. Submit PRs for new functionality
+3. Fork the project for your own use
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+- Railly Hugo - [GitHub](https://github.com/Railly)
+- Anthony Cueva - [GitHub](https://github.com/cueva.io)
