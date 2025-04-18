@@ -15,6 +15,8 @@ import {
 import { NewDoc } from "./new-doc";
 import { SearchCommand } from "./search-command";
 import { AddReference } from "@/components/add-reference";
+import { TOUR_STEP_IDS } from "@/lib/tour-constants";
+import { HomeTour } from "./tour";
 
 export default async function HomePage() {
 	const user = await getSecureUser();
@@ -63,29 +65,42 @@ export default async function HomePage() {
 
 	return (
 		<div className="flex h-screen flex-col bg-background text-foreground">
+			<HomeTour />
 			{/* Main Content */}
 			<main className="flex flex-1 items-center justify-center overflow-auto">
 				<div className="container mx-auto my-auto max-w-2xl px-4 py-12">
-					<AppHeader />
+					<div>
+						<AppHeader />
+					</div>
 
 					{/* Quick Actions */}
 					<div className="mb-8 grid grid-cols-3 gap-3">
-						<NewDoc />
-						<AddReference>
-							<QuickActionButton iconName="Brain" label="New Memory" />
-						</AddReference>
-						<SearchCommand documents={validDocuments} />
+						<div id={TOUR_STEP_IDS.NEW_DOC}>
+							<NewDoc />
+						</div>
+						<div id={TOUR_STEP_IDS.NEW_MEMORY}>
+							<AddReference>
+								<QuickActionButton iconName="Brain" label="New Memory" />
+							</AddReference>
+						</div>
+						<div id={TOUR_STEP_IDS.SEARCH_COMMAND}>
+							<SearchCommand documents={validDocuments} />
+						</div>
 					</div>
 
-					<RecentFilesCard files={allFiles} />
+					<div id={TOUR_STEP_IDS.RECENT_FILES}>
+						<RecentFilesCard files={allFiles} />
+					</div>
 				</div>
 			</main>
 
-			<StatusBar
-				documentsCount={validDocuments.length}
-				referencesCount={validReferences.length}
-				userName={user.fullName}
-			/>
+			<div id={TOUR_STEP_IDS.STATUS_BAR}>
+				<StatusBar
+					documentsCount={validDocuments.length}
+					referencesCount={validReferences.length}
+					userName={user.fullName}
+				/>
+			</div>
 		</div>
 	);
 }

@@ -15,9 +15,11 @@ export const NewDoc = () => {
 
 	React.useEffect(() => {
 		if (state?.success) {
-			router.push(`/docs/${state.data?.documentId}`);
+			router.push(
+				`/docs/${state.data?.documentId}?from=${encodeURIComponent(pathname)}`,
+			);
 		}
-	}, [state, router]);
+	}, [state, router, pathname]);
 
 	return (
 		<form action={formAction}>

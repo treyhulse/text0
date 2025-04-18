@@ -23,6 +23,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 import { ReferenceSelector } from "./reference-selector";
 import { AddReference } from "@/components/add-reference";
+import { TOUR_STEP_IDS } from "@/lib/tour-constants";
 
 export interface AIChatSidebarProps {
 	content: string;
@@ -126,6 +127,7 @@ export function AIChatSidebar({
 						tooltip="Toggle AI Assistant"
 						className="-mr-2 h-8 w-8"
 						asChild
+						id={TOUR_STEP_IDS.AI_SIDEBAR_TOGGLE}
 					>
 						<SidebarTrigger>
 							<PanelRight className="h-4 w-4" />
@@ -144,10 +146,13 @@ export function AIChatSidebar({
 						<div className="space-y-2 group-data-[collapsible=icon]:space-y-1">
 							<div className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:gap-1">
 								<div className="group-data-[collapsible=icon]:hidden">
-									<div className="overflow-hidden rounded-md border border-border/40">
+									<div
+										id={TOUR_STEP_IDS.AI_REFERENCES}
+										className="overflow-hidden rounded-md border border-border/40"
+									>
 										<div className="flex items-center justify-between border-border/40 border-b bg-muted px-3 py-1.5">
 											<span className="font-medium text-foreground text-xs">
-												References
+												Memories
 											</span>
 											<AddReference>
 												<Button
@@ -195,7 +200,11 @@ export function AIChatSidebar({
 
 					{/* Input Area - Hide when collapsed */}
 					<SidebarGroup className="border-t bg-background p-2 group-data-[collapsible=icon]:hidden">
-						<form onSubmit={customSubmit} className="flex flex-col gap-2">
+						<form
+							id={TOUR_STEP_IDS.AI_CHAT_INPUT}
+							onSubmit={customSubmit}
+							className="flex flex-col gap-2"
+						>
 							<div className="relative">
 								<Textarea
 									value={input}
@@ -208,7 +217,7 @@ export function AIChatSidebar({
 										"flex w-full min-w-0 shrink px-3 py-1 text-sm",
 										"disabled:cursor-not-allowed disabled:opacity-50",
 										"placeholder:text-muted-foreground",
-										"max-h-[400px] min-h-[44px]",
+										"max-h-[400px] min-h-[64px]",
 										"pr-24",
 										"resize-none",
 									)}

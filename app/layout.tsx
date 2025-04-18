@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
+import { TourProvider } from "@/components/tour";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -17,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
 	title: "Text0 – The AI-Native Personal Text Editor",
 	description:
-		"Text0 is your personal thinking partner. It completes your thoughts, remembers your context, and adapts the interface as you write. Built for developers, powered by AI, and integrated with your tools. This isn’t just a text editor — it’s your second brain.",
+		"Text0 is your personal thinking partner. It completes your thoughts, remembers your context, and adapts the interface as you write. Built for developers, powered by AI, and integrated with your tools. This isn't just a text editor — it's your second brain.",
 	keywords: [
 		"Text0",
 		"AI text editor",
@@ -91,7 +92,7 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
 			>
 				<Providers>
-					{children}
+					<TourProvider>{children}</TourProvider>
 					<Toaster />
 				</Providers>
 			</body>

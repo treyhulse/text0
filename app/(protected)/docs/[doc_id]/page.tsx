@@ -33,11 +33,13 @@ export default async function DocumentPage({
 	}
 
 	return (
-		<TextEditor
-			initialContent={document.content}
-			documentId={document.id}
-			initialName={document.name}
-			updatedAt={document.updatedAt}
-		/>
+		<div>
+			<TextEditor
+				initialContent={document.content}
+				documentId={document.id}
+				initialName={document.name}
+				updatedAt={document.updatedAt}
+			/>
+		</div>
 	);
 }

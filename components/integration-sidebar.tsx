@@ -50,6 +50,7 @@ import { toast } from "sonner";
 import { CommandMenu } from "./command-menu";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
+import { TOUR_STEP_IDS } from "@/lib/tour-constants";
 
 interface Document {
 	id: string;
@@ -156,6 +157,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 						tooltip="Toggle Sidebar"
 						className="flex h-8 w-8 items-center justify-center"
 						asChild
+						id={TOUR_STEP_IDS.SIDEBAR_TOGGLE}
 					>
 						<SidebarTrigger>
 							<PanelRight className="h-4 w-4" />
@@ -166,7 +168,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 				<SidebarContent className="flex-1 gap-0">
 					{/* Command Menu */}
 					<SidebarGroup>
-						<div className="relative w-full">
+						<div className="relative w-full" id={TOUR_STEP_IDS.COMMAND_MENU}>
 							<CommandMenu
 								documents={documents}
 								onCreateDocument={() => {
@@ -212,6 +214,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 										<SidebarMenuButton
 											tooltip="My Documents"
 											className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-foreground group-data-[collapsible=icon]:justify-center"
+											id={TOUR_STEP_IDS.MY_DOCUMENTS}
 										>
 											<FolderOpen className="h-4 w-4 shrink-0" />
 											<span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
@@ -324,11 +327,12 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 							</SidebarMenuItem>
 
 							<SidebarMenuItem>
-								<Collapsible defaultOpen={false} className="w-full">
+								<Collapsible defaultOpen={true} className="w-full">
 									<CollapsibleTrigger asChild>
 										<SidebarMenuButton
 											tooltip="Integrations"
 											className="flex w-full items-center gap-2 px-2 py-1.5 text-muted-foreground text-sm hover:bg-accent hover:text-foreground group-data-[collapsible=icon]:justify-center"
+											id={TOUR_STEP_IDS.INTEGRATIONS}
 										>
 											<Settings className="h-4 w-4 shrink-0" />
 											<span className="truncate font-medium tracking-wide group-data-[collapsible=icon]:hidden">
@@ -342,10 +346,13 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 											{integrations.map((integration) => (
 												<div
 													key={integration.name}
-													className={cn("px-1", {
-														"cursor-not-allowed opacity-50":
-															integration.disabled,
-													})}
+													className={cn(
+														"ml-4 border-border border-l border-dashed px-2 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:px-0",
+														{
+															"cursor-not-allowed opacity-50":
+																integration.disabled,
+														},
+													)}
 												>
 													{!integration.disabled && (
 														<SidebarMenuButton

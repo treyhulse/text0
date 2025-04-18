@@ -248,7 +248,7 @@ export function CommandMenu({
 										className="flex cursor-pointer items-center gap-3 px-2 py-2.5 aria-selected:bg-accent aria-selected:text-accent-foreground"
 									>
 										<FileText className="h-4 w-4 text-muted-foreground/70" />
-										<span className="font-medium">References</span>
+										<span className="font-medium">Memories</span>
 										<div className="ml-auto flex items-center">
 											<div className="flex items-center justify-center rounded border bg-background px-1.5 py-0.5 text-xs">
 												R
