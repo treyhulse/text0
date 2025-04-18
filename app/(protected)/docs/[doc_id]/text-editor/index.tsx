@@ -9,7 +9,7 @@ import { useModel } from "@/hooks/use-model";
 import { useSelectedReferences } from "@/hooks/use-selected-references";
 import { cn } from "@/lib/utils";
 import { useCompletion } from "@ai-sdk/react";
-import { Coffee, MessageSquare, Sparkles } from "lucide-react";
+import { Coffee, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import { AIChatSidebar } from "./ai-chat-sidebar";
 import {
@@ -21,6 +21,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { ModelSelector } from "./model-selector";
 import { VoiceTranscription } from "./voice-transcription";
 import { TextToSpeech } from "./text-to-speech";
+import Image from "next/image";
 
 interface TextEditorProps {
 	initialContent: string;
@@ -165,19 +166,6 @@ export function TextEditor({
 		window.addEventListener("keydown", handleKeyPress);
 		return () => window.removeEventListener("keydown", handleKeyPress);
 	}, [isZenMode]);
-
-	// Handle AI Chat toggle with keyboard shortcut
-	React.useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			if (e.key === "o" && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				setIsAIChatOpen((prev) => !prev);
-			}
-		};
-
-		window.addEventListener("keydown", handleKeyPress);
-		return () => window.removeEventListener("keydown", handleKeyPress);
-	}, []);
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "Tab" && completion) {
@@ -445,6 +433,15 @@ export function TextEditor({
 
 	return (
 		<div className="relative flex h-full w-full bg-background">
+			{/* Background Image */}
+			<Image
+				src="/bghero.webp"
+				alt="Light ray background"
+				width={2048}
+				height={2048}
+				className="pointer-events-none absolute -top-20 left-0 right-0 z-0 mx-auto hidden h-full w-full select-none md:block"
+				priority
+			/>
 			<div
 				className={cn(
 					"relative flex flex-1 flex-col",
@@ -476,7 +473,7 @@ export function TextEditor({
 					</>
 				)}
 
-				<div className="flex h-full justify-center py-4">
+				<div className="flex h-full justify-center py-8">
 					<div className={cn("h-full w-full max-w-4xl")}>
 						{/* Add EditableDocumentName component */}
 						<EditableDocumentName
@@ -633,32 +630,11 @@ export function TextEditor({
 									</TooltipContent>
 								</Tooltip>
 
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<Button
-											variant="outline"
-											size="icon"
-											className="flex size-8 items-center hover:bg-foreground/10 hover:dark:bg-muted"
-											onClick={() => setIsAIChatOpen((prev) => !prev)}
-										>
-											<MessageSquare className="size-4" />
-										</Button>
-									</TooltipTrigger>
-									<TooltipContent>
-										<p>
-											<kbd className="inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
-												⌘O
-											</kbd>{" "}
-											Toggle AI Chat
-										</p>
-									</TooltipContent>
-								</Tooltip>
+								<TextToSpeech selectedText={selectedText} />
 
 								<VoiceTranscription
 									onTranscriptionComplete={handleVoiceTranscription}
 								/>
-
-								<TextToSpeech selectedText={selectedText} />
 
 								<Tooltip>
 									<TooltipTrigger asChild>

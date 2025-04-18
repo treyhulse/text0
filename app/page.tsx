@@ -4,18 +4,20 @@ import { TextScramble } from "@/components/text-scramble";
 import { GithubIcon } from "@/components/ui/icons/github";
 import { VercelIcon } from "@/components/ui/icons/vercel";
 import { XIcon } from "@/components/ui/icons/x-icon";
+import Image from "next/image";
 
 export default async function LandingPage() {
 	return (
 		<div className="relative flex h-screen flex-col overflow-hidden bg-background text-foreground">
-			{/* Gradient Background Effects */}
-			<div className="pointer-events-none absolute inset-0 z-0">
-				{/* Primary gradient */}
-				<div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/5 to-transparent" />
-				{/* Accent gradients */}
-				<div className="-left-1/4 absolute top-0 h-[500px] w-[500px] rounded-full bg-primary/5 opacity-50 blur-[100px]" />
-				<div className="-right-1/4 absolute bottom-0 h-[500px] w-[500px] rounded-full bg-primary/5 opacity-50 blur-[100px]" />
-			</div>
+			{/* Background Image */}
+			<Image
+				src="/bghero.webp"
+				alt="Light ray background"
+				width={2048}
+				height={2048}
+				className="pointer-events-none absolute -top-20 left-0 right-0 z-0 mx-auto hidden h-full w-full select-none md:block"
+				priority
+			/>
 
 			{/* Main Content */}
 			<main className="relative z-10 flex h-full flex-1 items-center justify-center overflow-auto">
