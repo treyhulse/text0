@@ -39,8 +39,10 @@ export function AddReference({
 	const [files, setFiles] = React.useState<File[]>([]);
 	const [open, setOpen] = React.useState(false);
 	const [url, setUrl] = React.useState("");
-	const [state, formAction, isPendingAddWebsiteReferenceAction] =
-		useActionState(addWebsiteReference, undefined);
+	const [, formAction, isPendingAddWebsiteReferenceAction] = useActionState(
+		addWebsiteReference,
+		undefined,
+	);
 
 	const onUpload = React.useCallback(
 		async (
