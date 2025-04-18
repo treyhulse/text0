@@ -52,10 +52,10 @@ export default async function HomePage() {
 	]
 		.sort((a, b) => {
 			const dateA = new Date(
-				a.type === "document" ? a.createdAt : a.uploadedAt,
+				a.type === "document" ? a.updatedAt : a.uploadedAt,
 			);
 			const dateB = new Date(
-				b.type === "document" ? b.createdAt : b.uploadedAt,
+				b.type === "document" ? b.updatedAt : b.uploadedAt,
 			);
 			return dateA.getTime() - dateB.getTime();
 		})

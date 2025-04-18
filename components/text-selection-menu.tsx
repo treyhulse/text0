@@ -29,6 +29,7 @@ import {
 	Sparkles,
 	Type,
 	Wand2,
+	Volume2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -155,6 +156,22 @@ export function TextSelectionMenu({
 									⌘G
 								</MenubarShortcut>
 							)}
+						</MenubarItem>
+
+						<MenubarItem
+							onClick={() =>
+								window.dispatchEvent(
+									new CustomEvent("text0:text-to-speech", {
+										detail: { text: selectedText },
+									}),
+								)
+							}
+							className="group relative cursor-pointer gap-2"
+							disabled={isLoading}
+						>
+							<Volume2 className="h-4 w-4 text-blue-400" />
+							<span>Text to speech</span>
+							<MenubarShortcut className="text-foreground">⌘S</MenubarShortcut>
 						</MenubarItem>
 
 						<MenubarSeparator />

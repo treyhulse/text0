@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Toggle } from "@/components/ui/toggle";
 import { ModelSelector } from "./model-selector";
+import { VoiceTranscription } from "./voice-transcription";
+import { TextToSpeech } from "./text-to-speech";
 
 interface TextEditorProps {
 	initialContent: string;
@@ -412,6 +414,33 @@ export function TextEditor({
 		}
 	};
 
+	const handleVoiceTranscription = (text: string) => {
+		if (!editorRef.current) return;
+
+		// Insert text at current cursor position
+		const startPos = editorRef.current.selectionStart;
+		const endPos = editorRef.current.selectionEnd;
+		const newText =
+			input.substring(0, startPos) + text + input.substring(endPos);
+
+		setInput(newText);
+		setLastManualInput(newText);
+
+		// Update cursor position after the inserted text
+		const newCursorPosition = startPos + text.length;
+		setCursorPosition(newCursorPosition);
+
+		// Update the textarea cursor position
+		if (editorRef.current) {
+			editorRef.current.selectionStart = newCursorPosition;
+			editorRef.current.selectionEnd = newCursorPosition;
+			editorRef.current.focus();
+		}
+
+		// Save changes
+		debouncedUpdateContent(documentId, newText);
+	};
+
 	const displayedCompletion = parseCompletion(completion, input);
 
 	return (
@@ -581,91 +610,101 @@ export function TextEditor({
 
 				{/* Floating Bottom Bar - Only show when not in Zen mode */}
 				{!isZenMode && (
-					<div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex w-full max-w-[18rem] items-center justify-center px-4">
-						<div className="flex w-full items-center justify-center gap-x-4 rounded-lg border bg-background/80 px-4 py-2 shadow-sm backdrop-blur-sm">
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<div>
-										<Toggle
-											id="autocomplete"
+					<div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex w-full max-w-[22rem] items-center justify-center px-4">
+						<div className="flex w-full flex-col items-center justify-center rounded-lg border bg-background/80 shadow-sm backdrop-blur-sm">
+							<div className="flex w-full items-center justify-center gap-x-4 px-4 py-2">
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<div>
+											<Toggle
+												id="autocomplete"
+												variant="outline"
+												className="size-8 hover:bg-foreground/10 hover:dark:bg-muted data-[state=on]:hover:bg-foreground/10 data-[state=on]:dark:hover:bg-accent/70"
+												key={isAutocompleteEnabled ? "true" : "false"}
+												pressed={isAutocompleteEnabled}
+												onPressedChange={setIsAutocompleteEnabled}
+											>
+												<Sparkles className="size-3.5" />
+											</Toggle>
+										</div>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>Toggle AI Autocomplete</p>
+									</TooltipContent>
+								</Tooltip>
+
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
 											variant="outline"
-											className="size-8 hover:bg-foreground/10 hover:dark:bg-muted data-[state=on]:hover:bg-foreground/10 data-[state=on]:dark:hover:bg-accent/70"
-											key={isAutocompleteEnabled ? "true" : "false"}
-											pressed={isAutocompleteEnabled}
-											onPressedChange={setIsAutocompleteEnabled}
+											size="icon"
+											className="flex size-8 items-center hover:bg-foreground/10 hover:dark:bg-muted"
+											onClick={() => setIsAIChatOpen((prev) => !prev)}
 										>
-											<Sparkles className="size-3.5" />
-										</Toggle>
-									</div>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Toggle AI Autocomplete</p>
-								</TooltipContent>
-							</Tooltip>
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button
-										variant="outline"
-										size="icon"
-										className="flex size-8 items-center hover:bg-foreground/10 hover:dark:bg-muted"
-										onClick={() => {
-											setIsZenMode((prev) => !prev);
-											if (!isZenMode) {
-												setIsAIChatOpen(false);
-												// Request full screen when clicking the button
-												document.documentElement
-													.requestFullscreen()
-													.catch((err) => {
+											<MessageSquare className="size-4" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>
+											<kbd className="inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
+												⌘O
+											</kbd>{" "}
+											Toggle AI Chat
+										</p>
+									</TooltipContent>
+								</Tooltip>
+
+								<VoiceTranscription
+									onTranscriptionComplete={handleVoiceTranscription}
+								/>
+
+								<TextToSpeech selectedText={selectedText} />
+
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											variant="outline"
+											size="icon"
+											className="flex size-8 items-center hover:bg-foreground/10 hover:dark:bg-muted"
+											onClick={() => {
+												setIsZenMode((prev) => !prev);
+												if (!isZenMode) {
+													setIsAIChatOpen(false);
+													// Request full screen when clicking the button
+													document.documentElement
+														.requestFullscreen()
+														.catch((err) => {
+															console.log(
+																"Error attempting to enable full-screen mode:",
+																err,
+															);
+														});
+												} else if (document.fullscreenElement) {
+													// Exit full screen when leaving zen mode
+													document.exitFullscreen().catch((err) => {
 														console.log(
-															"Error attempting to enable full-screen mode:",
+															"Error attempting to exit full-screen mode:",
 															err,
 														);
 													});
-											} else if (document.fullscreenElement) {
-												// Exit full screen when leaving zen mode
-												document.exitFullscreen().catch((err) => {
-													console.log(
-														"Error attempting to exit full-screen mode:",
-														err,
-													);
-												});
-											}
-										}}
-									>
-										<Coffee className="size-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>
-										<kbd className="inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
-											⌘J
-										</kbd>{" "}
-										Toggle Zen Mode
-									</p>
-								</TooltipContent>
-							</Tooltip>
+												}
+											}}
+										>
+											<Coffee className="size-4" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>
+											<kbd className="inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
+												⌘J
+											</kbd>{" "}
+											Toggle Zen Mode
+										</p>
+									</TooltipContent>
+								</Tooltip>
 
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button
-										variant="outline"
-										size="icon"
-										className="flex size-8 items-center hover:bg-foreground/10 hover:dark:bg-muted"
-										onClick={() => setIsAIChatOpen((prev) => !prev)}
-									>
-										<MessageSquare className="size-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>
-										<kbd className="inline-flex h-5 max-h-full items-center rounded border bg-muted px-1 font-medium font-mono text-[0.625rem] text-foreground">
-											⌘O
-										</kbd>{" "}
-										Toggle AI Chat
-									</p>
-								</TooltipContent>
-							</Tooltip>
-							<ModelSelector />
+								<ModelSelector />
+							</div>
 						</div>
 					</div>
 				)}
