@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Toggle } from "@/components/ui/toggle";
 import { ModelSelector } from "./model-selector";
+console.log(1);
 
 interface TextEditorProps {
 	initialContent: string;
