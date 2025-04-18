@@ -31,7 +31,7 @@ const Key: React.FC<KeyProps> = ({
 }) => {
 	return (
 		<div
-			className={`key ${span ? "span" : ""} ${active ? "active" : ""}`}
+			className={`key p-2 ${span ? "span" : ""} ${active ? "active" : ""}`}
 			onClick={onClick}
 			onMouseDown={onMouseDown}
 			onMouseUp={onMouseUp}
@@ -39,8 +39,18 @@ const Key: React.FC<KeyProps> = ({
 			onKeyUp={onKeyUp}
 			tabIndex={tabIndex}
 		>
-			<div className="side" />
-			<div className="top" />
+			<div
+				onClick={onClick}
+				className="side"
+				onKeyDown={onKeyDown}
+				onKeyUp={onKeyUp}
+			/>
+			<div
+				className="top"
+				onClick={onClick}
+				onKeyDown={onKeyDown}
+				onKeyUp={onKeyUp}
+			/>
 			{active ? (
 				<SpinnerIcon className="char h-10 w-10 animate-spin" />
 			) : (

@@ -7,7 +7,6 @@ import {
 	USER_DOCUMENTS_KEY,
 	redis,
 } from "@/lib/redis";
-
 export default async function ProtectedLayout({
 	children,
 }: Readonly<{

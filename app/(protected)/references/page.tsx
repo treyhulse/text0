@@ -48,7 +48,7 @@ export default async function FilesPage() {
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
 						<FileText className="h-4 w-4 text-muted-foreground" />
-						<h2 className="font-medium text-sm tracking-wide">My References</h2>
+						<h2 className="font-medium text-sm tracking-wide">My Memories</h2>
 					</div>
 					<AddReference>
 						<Button variant="outline" size="sm" className="size-8">
@@ -91,12 +91,12 @@ export default async function FilesPage() {
 				{references.length === 0 && (
 					<Card>
 						<CardHeader>
-							<CardTitle>No References Yet</CardTitle>
+							<CardTitle>No Memories Yet</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<p className="text-muted-foreground">
-								Upload your first reference to get started. We support various
-								file formats including PDF, DOCX, and more.
+								Upload your first memory to get started. We support various file
+								formats including PDF, DOCX, and more.
 							</p>
 							<div className="mt-4">
 								<AddReference />

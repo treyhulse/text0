@@ -22,6 +22,8 @@ import { ModelSelector } from "./model-selector";
 import { VoiceTranscription } from "./voice-transcription";
 import { TextToSpeech } from "./text-to-speech";
 import Image from "next/image";
+import { TOUR_STEP_IDS } from "@/lib/tour-constants";
+import { DocTour } from "../tour";
 
 interface TextEditorProps {
 	initialContent: string;
@@ -433,6 +435,7 @@ export function TextEditor({
 
 	return (
 		<div className="relative flex h-full w-full bg-background">
+			<DocTour />
 			{/* Background Image */}
 			<Image
 				src="/bghero.webp"
@@ -443,6 +446,7 @@ export function TextEditor({
 				priority
 			/>
 			<div
+				id={TOUR_STEP_IDS.TEXT_EDITOR}
 				className={cn(
 					"relative flex flex-1 flex-col",
 					!isAIChatOpen && "pr-0",
@@ -494,7 +498,7 @@ export function TextEditor({
 								onMouseUp={handleSelectionChange}
 								placeholder="Start writing..."
 								className={cn(
-									"h-full w-full flex-1 resize-none whitespace-pre-wrap bg-transparent px-8 font-serif text-base outline-none placeholder:text-muted-foreground/50",
+									"h-[calc(100%-2rem)] w-full flex-1 resize-none whitespace-pre-wrap bg-transparent px-8 font-serif text-base outline-none placeholder:text-muted-foreground/50",
 									isZenMode && "px-4 leading-relaxed",
 									pendingUpdate && "opacity-0",
 									isTextLoading && "selection:bg-primary/20",
@@ -607,7 +611,10 @@ export function TextEditor({
 
 				{/* Floating Bottom Bar - Only show when not in Zen mode */}
 				{!isZenMode && (
-					<div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex w-full max-w-[22rem] items-center justify-center px-4">
+					<div
+						id={TOUR_STEP_IDS.ACTION_BAR}
+						className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex w-full max-w-[22rem] items-center justify-center px-4"
+					>
 						<div className="flex w-full flex-col items-center justify-center rounded-lg border bg-background/80 shadow-sm backdrop-blur-sm">
 							<div className="flex w-full items-center justify-center gap-x-4 px-4 py-2">
 								<Tooltip>
