@@ -7,12 +7,17 @@ import {
 	USER_DOCUMENTS_KEY,
 	redis,
 } from "@/lib/redis";
+import { redirect } from "next/navigation";
 export default async function ProtectedLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
 	const user = await getSecureUser();
+
+	if (!user) {
+		redirect("/sign-in");
+	}
 
 	const documentsWithIds = await redis.zrange<string[]>(
 		USER_DOCUMENTS_KEY(user.id),

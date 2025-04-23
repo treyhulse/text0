@@ -122,7 +122,7 @@ export const T0Keycap: React.FC = () => {
 
 	const handleNavigation = useCallback(() => {
 		setIsNavigating(true);
-		router.push("/home");
+		router.push("/sign-in");
 	}, [router]);
 
 	useEffect(() => {
