@@ -2,13 +2,14 @@
 
 A text editor with absurdly smart autocomplete. Text0 serves as a copilot for writing, accessing user-provided references to offer context and help users write faster.
 
-![Text0 Screenshot](path-to-screenshot.png)
+![Text0 Screenshot](./public/autocomplete.png)
 
 ## Features
 
 - Smart autocomplete powered by AI
-- Chat with your files
+- Chat with your content 
 - Reference-aware suggestions
+- Github, Linear and Notion integrations
 - Seamless writing experience
 - Voice input and output
 - Zen mode
@@ -38,7 +39,7 @@ A text editor with absurdly smart autocomplete. Text0 serves as a copilot for wr
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/text0.git
+git clone https://github.com/crafter-station/text0.git
 cd text0
 
 # Install dependencies
@@ -56,8 +57,9 @@ To use the local development version, navigate to `http://localhost:3000` after 
 
 ## Screenshots
 
-![Feature 1](path-to-feature1.png)
-![Feature 2](path-to-feature2.png)
+![Landing](./public/landing.png)
+![Autocomplete](./public/autocomplete.png)
+![File navigation](./public/home.png)
 
 ## Contributing
 
@@ -73,5 +75,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-- Railly Hugo - [GitHub](https://github.com/Railly)
-- Anthony Cueva - [GitHub](https://github.com/cueva.io)
+- [Railly Hugo](https://github.com/Railly)
+- [Anthony Cueva](https://github.com/cuevaio)
