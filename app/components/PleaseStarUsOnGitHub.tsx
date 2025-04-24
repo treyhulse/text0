@@ -136,7 +136,7 @@ export function PleaseStarUsOnGitHub() {
         </div>
 
         <motion.a
-          href="https://github.com/raidendotai/text0"
+          href="https://github.com/crafter-station/text0"
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleStarClick}
@@ -202,7 +202,7 @@ export function PleaseStarUsOnGitHub() {
               rel="noopener noreferrer"
               className="hover:text-foreground"
             >
-              Cueva
+              Anthony
             </a>
           </div>
           <div className="flex items-center gap-4">
