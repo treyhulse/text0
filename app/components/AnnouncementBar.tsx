@@ -10,7 +10,7 @@ export function AnnouncementBar() {
   if (!showAnnouncement) return null;
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-muted text-foreground px-4 py-2 flex items-center justify-center">
+    <div className="absolute top-0 z-50 w-full bg-muted text-foreground px-4 py-2 flex items-center justify-center">
       <div className="flex text-center items-center gap-2 text-sm">
         <span>🏆 We won the first global ▲ Next.js Hackathon!</span>
         <Button

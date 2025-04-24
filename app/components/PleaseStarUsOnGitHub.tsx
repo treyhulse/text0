@@ -232,14 +232,8 @@ export function PleaseStarUsOnGitHub() {
     return (
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogTrigger asChild>
-          <div className="fixed bottom-4 right-4 z-50">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.2 }}
-            >
-              <StarButton />
-            </motion.div>
+          <div className="fixed sr-only bottom-4 right-4 z-50">
+            Open Modal
           </div>
         </DialogTrigger>
         <DialogContent title="Star Text0" className="p-0 gap-0">
