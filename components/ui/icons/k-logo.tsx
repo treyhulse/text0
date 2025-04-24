@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type React from "react";
+import { cn } from "@/lib/utils";
 
 type KLogoProps = {
 	width?: number;
@@ -16,11 +17,14 @@ export const KLogo: React.FC<KLogoProps> = ({
 }) => (
 	<div className={className} style={{ width, height }}>
 		<Image
-			src={inverted ? "/k-logo-light.png" : "/k-logo.png"}
+			src="/k-logo.png"
 			alt="KC Store Fixtures Logo"
 			width={width}
 			height={height}
-			className="object-contain"
+			className={cn(
+				"object-contain",
+				inverted && "brightness-0 invert"
+			)}
 			priority
 		/>
 	</div>

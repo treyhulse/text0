@@ -53,9 +53,13 @@ const Key: React.FC<KeyProps> = ({
 				onKeyUp={onKeyUp}
 			/>
 			{active ? (
-				<SpinnerIcon className="char h-10 w-10 animate-spin" />
+				<SpinnerIcon className="char h-12 w-12 animate-spin" />
 			) : (
-				<KLogo className="char h-10 w-10 transition-transform" />
+				<KLogo 
+					className="char h-12 w-12 transition-transform hover:scale-110 drop-shadow-lg" 
+					width={48}
+					height={48}
+				/>
 			)}
 		</div>
 	);

@@ -22,13 +22,6 @@ export default async function LandingPage() {
 			{/* Main Content */}
 			<main className="relative z-10 flex h-full flex-1 items-center justify-center overflow-auto">
 				<div className="container mx-auto my-auto flex h-full max-w-2xl flex-col items-center justify-center">
-					{/* Hackathon Badge */}
-					<div className="mb-8 flex items-center gap-2 rounded-full border border-border/50 bg-background/50 px-3 py-1.5 backdrop-blur-sm">
-						<VercelIcon size={16} className="text-foreground" />
-						<span className="text-muted-foreground text-sm">
-							Built for Vercel Hackathon
-						</span>
-					</div>
 
 					{/* App Title */}
 					<div className="mb-8 flex items-center justify-center gap-4 px-4 text-center">

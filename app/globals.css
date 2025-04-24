@@ -119,7 +119,7 @@
 	--keyboard-bg: oklch(0.15 0 0);
 	--keyboard-base: oklch(0.2 0 0);
 	--keyboard-highlight: oklch(0.25 0 0);
-	--keyboard-shadow: oklch(0.61 0.001 286);
+	--keyboard-shadow: oklch(0.61 0.001 25.33);
 	--keyboard-text: oklch(0.98 0 0);
 	--keyboard-text-shadow: oklch(0.85 0 0);
 	--keyboard-text-shadow-dark: oklch(0.2 0 0);
@@ -159,12 +159,12 @@
 	--chart-5: oklch(0.42 0.18 25.33);
 	--sidebar: oklch(0.2 0 0);
 	--sidebar-foreground: oklch(0.92 0 0);
-	--sidebar-primary: oklch(0.62 0.19 259.81);
+	--sidebar-primary: oklch(0.62 0.19 25.33);
 	--sidebar-primary-foreground: oklch(1.0 0 0);
-	--sidebar-accent: oklch(0.48 0.1315 254.79);
-	--sidebar-accent-foreground: oklch(0.88 0.06 254.13);
+	--sidebar-accent: oklch(0.48 0.1315 25.33);
+	--sidebar-accent-foreground: oklch(0.88 0.06 25.33);
 	--sidebar-border: oklch(0.37 0 0);
-	--sidebar-ring: oklch(0.62 0.19 259.81);
+	--sidebar-ring: oklch(0.62 0.19 25.33);
 	--font-sans: Inter, sans-serif;
 	--font-serif: Source Serif 4, serif;
 	--font-mono: JetBrains Mono, monospace;
@@ -183,18 +183,18 @@
 	--shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 
 	/* Keyboard theme colors - Vercel Light Theme */
-	--keyboard-bg: oklch(1 0 0); /* Pure white background for the keyboard */
-	--keyboard-base: oklch(0.98 0 0); /* Near-white for subtle depth */
-	--keyboard-highlight: oklch(0.99 0.005 270); /* Slightly purple-tinted white for vibrant highlights */
-	--keyboard-shadow: oklch(0.6 0.02 260); /* Bolder gray-blue shadow for stronger contrast */
-	--keyboard-text: oklch(0.2 0 0); /* Dark charcoal for high-contrast text */
-	--keyboard-text-shadow: oklch(0.7 0.015 260); /* Slightly darker gray for text shadow */
-	--keyboard-text-shadow-dark: oklch(0.35 0.02 260); /* Stronger gray for text shadow depth */
-	--keyboard-key-bg: oklch(0.99 0 0); /* Off-white key background for contrast */
-	--keyboard-key-highlight: oklch(0.99 0.005 270); /* Matching purple-tinted highlight for keys */
-	--keyboard-key-shadow: oklch(0.78 0.02 260); /* More pronounced gray-blue for key shadows */
-	--keyboard-inset-highlight: oklch(0.88 0.005 270); /* Subtle purple-tinted inset highlight */
-	--keyboard-inset-shadow: oklch(0.8 0.02 260); /* Bolder gray-blue for inset shadows */
+	--keyboard-bg: oklch(1 0 0);
+	--keyboard-base: oklch(0.98 0 0);
+	--keyboard-highlight: oklch(0.99 0.005 25.33);
+	--keyboard-shadow: oklch(0.6 0.02 25.33);
+	--keyboard-text: oklch(0.2 0 0);
+	--keyboard-text-shadow: oklch(0.7 0.015 25.33);
+	--keyboard-text-shadow-dark: oklch(0.35 0.02 25.33);
+	--keyboard-key-bg: oklch(0.99 0 0);
+	--keyboard-key-highlight: oklch(0.99 0.005 25.33);
+	--keyboard-key-shadow: oklch(0.78 0.02 25.33);
+	--keyboard-inset-highlight: oklch(0.88 0.005 25.33);
+	--keyboard-inset-shadow: oklch(0.8 0.02 25.33);
 }
 
 @layer base {

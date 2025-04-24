@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { InvertedKLogo } from "@/components/ui/icons/k-logo";
+import { KLogo } from "@/components/ui/icons/k-logo";
 
 export interface TourStep {
 	content: React.ReactNode;
@@ -434,25 +434,29 @@ export function TourAlertDialog({
 							animate={{
 								scale: 1,
 								filter: "blur(0px)",
-								y: [0, -8, 0],
-								rotate: [42, 48, 42],
+								y: [0, -12, 0],
+								rotate: [0, 0, 0],
 							}}
 							transition={{
-								duration: 0.4,
+								duration: 0.6,
 								ease: "easeOut",
 								y: {
-									duration: 2.5,
+									duration: 2,
 									repeat: Number.POSITIVE_INFINITY,
 									ease: "easeInOut",
 								},
 								rotate: {
-									duration: 3,
+									duration: 2,
 									repeat: Number.POSITIVE_INFINITY,
 									ease: "easeInOut",
 								},
 							}}
 						>
-							<InvertedKLogo className="size-16 stroke-1 text-primary" />
+							<KLogo 
+								className="size-24 drop-shadow-2xl" 
+								width={96}
+								height={96}
+							/>
 						</motion.div>
 					</div>
 					<AlertDialogTitle className="text-center text-xl font-medium">

@@ -1,6 +1,6 @@
-# kcsf note
+# kcsf Note
 
-A text editor with absurdly smart autocomplete. kcsf note serves as a copilot for writing, accessing user-provided references to offer context and help users write faster.
+A text editor with absurdly smart autocomplete. kcsf Note serves as a copilot for writing, accessing user-provided references to offer context and help users write faster.
 
 ![Text0 Screenshot](./public/autocomplete.png)
 
@@ -61,19 +61,3 @@ To use the local development version, navigate to `http://localhost:3000` after 
 ![Autocomplete](./public/autocomplete.png)
 ![File navigation](./public/home.png)
 
-## Contributing
-
-Contributions are welcome! Please feel free to:
-
-1. Open issues for bugs or feature requests
-2. Submit PRs for new functionality
-3. Fork the project for your own use
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-- [Railly Hugo](https://github.com/Railly)
-- [Anthony Cueva](https://github.com/cuevaio)
