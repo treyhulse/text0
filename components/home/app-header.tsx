@@ -1,11 +1,11 @@
-import { T0Logo } from "@/components/ui/icons/t0-logo";
+import { KLogo } from "@/components/ui/icons/k-logo";
 import { TextScramble } from "../text-scramble";
 
 export function AppHeader() {
 	return (
 		<div className="mb-8 flex items-start justify-start gap-4">
 			<div className="rounded-lg bg-foreground p-3">
-				<T0Logo className="h-8 w-8 text-primary" />
+				<KLogo className="h-8 w-8 text-primary" />
 			</div>
 			<div className="flex flex-col gap-1">
 				<TextScramble

@@ -85,7 +85,7 @@ const DOC_TOUR_STEPS: TourStep[] = [
 					</div>
 					<div className="flex items-center gap-2">
 						<div className="flex h-7 w-7 items-center justify-center rounded-md bg-muted">
-							<Volume2 className="h-3.5 w-3.5 text-blue-400" />
+							<Volume2 className="h-3.5 w-3.5 text-red-400" />
 						</div>
 						<span className="text-sm">Text-to-speech for any selection</span>
 					</div>

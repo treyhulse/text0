@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { InvertedT0Logo } from "./ui/icons/t0-logo";
+import { InvertedKLogo } from "@/components/ui/icons/k-logo";
 
 export interface TourStep {
 	content: React.ReactNode;
@@ -452,7 +452,7 @@ export function TourAlertDialog({
 								},
 							}}
 						>
-							<InvertedT0Logo className="size-16 stroke-1 text-primary" />
+							<InvertedKLogo className="size-16 stroke-1 text-primary" />
 						</motion.div>
 					</div>
 					<AlertDialogTitle className="text-center text-xl font-medium">

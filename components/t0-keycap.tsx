@@ -1,7 +1,7 @@
 "use client";
 
 import { SpinnerIcon } from "@/components/ui/icons/spinner";
-import { T0Logo } from "@/components/ui/icons/t0-logo";
+import { KLogo } from "@/components/ui/icons/k-logo";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type React from "react";
@@ -55,7 +55,7 @@ const Key: React.FC<KeyProps> = ({
 			{active ? (
 				<SpinnerIcon className="char h-10 w-10 animate-spin" />
 			) : (
-				<T0Logo className="char h-10 w-10 transition-transform" />
+				<KLogo className="char h-10 w-10 transition-transform" />
 			)}
 		</div>
 	);

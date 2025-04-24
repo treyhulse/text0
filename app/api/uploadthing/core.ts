@@ -17,92 +17,71 @@ export const ourFileRouter = {
 	// Define as many FileRoutes as you like, each with a unique routeSlug
 	documentUploader: f({
 		pdf: {
-			maxFileSize: "4MB",
+			maxFileSize: "16KB",
 			maxFileCount: 1,
 		},
 		text: {
-			maxFileSize: "1MB",
+			maxFileSize: "16KB",
 			maxFileCount: 1,
 		},
 		"text/markdown": {
-			maxFileSize: "1MB",
+			maxFileSize: "16KB",
 			maxFileCount: 1,
 		},
 		"application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
-			maxFileSize: "4MB",
+			maxFileSize: "16KB",
 			maxFileCount: 1,
 		},
 		"text/plain": {
-			maxFileSize: "1MB",
+			maxFileSize: "16KB",
 			maxFileCount: 1,
 		},
 		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
-			maxFileSize: "4MB",
+			maxFileSize: "16KB",
 			maxFileCount: 1,
 		},
-		"application/vnd.openxmlformats-officedocument.presentationml.presentation": {
-			maxFileSize: "4MB",
-			maxFileCount: 1,
-		},
+		"application/vnd.openxmlformats-officedocument.presentationml.presentation":
+			{
+				maxFileSize: "16KB",
+				maxFileCount: 1,
+			},
 	})
 		.middleware(async () => {
-			try {
-				// This code runs on your server before upload
-				const session = await getSecureSession();
+			// This code runs on your server before upload
+			const session = await getSecureSession();
 
-				// Add detailed logging for debugging
-				console.log("Upload middleware - Session:", {
-					userId: session.userId,
-					hasSession: !!session,
-				});
+			// If you throw, the user will not be able to upload
+			if (!session.userId) throw new UploadThingError("Unauthorized");
 
-				// If you throw, the user will not be able to upload
-				if (!session.userId) {
-					console.error("Upload middleware - No user ID in session");
-					throw new UploadThingError("Unauthorized: No user ID found");
-				}
-
-				// Whatever is returned here is accessible in onUploadComplete as `metadata`
-				return { userId: session.userId };
-			} catch (error: any) {
-				console.error("Upload middleware error:", error);
-				throw new UploadThingError(`Authentication failed: ${error?.message || 'Unknown error'}`);
-			}
+			// Whatever is returned here is accessible in onUploadComplete as `metadata`
+			return { userId: session.userId };
 		})
 		.onUploadComplete(async ({ metadata, file }) => {
-			try {
-				console.log("Upload complete - Starting processing", { metadata, file });
-				const referenceId = nanoid();
+			console.log("Upload complete", { metadata, file });
+			const referenceId = nanoid();
 
-				await redis.sadd(USER_REFERENCES_KEY(metadata.userId), referenceId);
-				await redis.hset(REFERENCE_KEY(referenceId), {
-					id: referenceId,
-					userId: metadata.userId,
-					url: file.url,
-					name: file.name,
-					uploadedAt: new Date().toISOString(),
-					chunksCount: 0,
-					processed: false,
-					filename: file.name,
-				} satisfies Reference);
+			await redis.sadd(USER_REFERENCES_KEY(metadata.userId), referenceId);
+			await redis.hset(REFERENCE_KEY(referenceId), {
+				id: referenceId,
+				userId: metadata.userId,
+				url: file.ufsUrl,
+				name: file.name,
+				uploadedAt: new Date().toISOString(),
+				chunksCount: 0,
+				processed: false,
+				filename: file.name,
+			} satisfies Reference);
+			// Trigger the document processing task
+			await tasks.trigger<typeof processReferenceTask>("process-reference", {
+				userId: metadata.userId,
+				referenceId,
+			});
 
-				// Trigger the document processing task
-				await tasks.trigger<typeof processReferenceTask>("process-reference", {
-					userId: metadata.userId,
-					referenceId,
-				});
-
-				console.log("Upload complete - Processing triggered", { referenceId });
-
-				// Return immediately to the client
-				return {
-					uploadedBy: metadata.userId,
-					referenceId,
-				};
-			} catch (error: any) {
-				console.error("Upload complete error:", error);
-				throw new UploadThingError(`Processing failed: ${error?.message || 'Unknown error'}`);
-			}
+			// Return immediately to the client
+			return {
+				uploadedBy: metadata.userId,
+				referenceId,
+			};
 		}),
 } satisfies FileRouter;
 

@@ -15,7 +15,7 @@ import { LinearIcon } from "@/components/ui/icons/linear";
 import { MsTeamsIcon } from "@/components/ui/icons/ms-teams";
 import { NotionIcon } from "@/components/ui/icons/notion";
 import { SlackIcon } from "@/components/ui/icons/slack";
-import { T0Logo } from "@/components/ui/icons/t0-logo";
+import { KLogo } from "@/components/ui/icons/k-logo";
 import {
 	Sidebar,
 	SidebarContent,
@@ -142,7 +142,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 							aria-label="kcsf note Home"
 						>
 							<div className="flex items-center justify-center rounded-lg bg-foreground p-2 transition-colors duration-150 hover:bg-foreground/80">
-								<T0Logo
+								<KLogo
 									className={cn(
 										"h-4 w-4 text-primary",
 										"group-data-[collapsible=icon]:h-4 group-data-[collapsible=icon]:w-4",
@@ -410,7 +410,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 										<SidebarMenuButton
 											className={cn(
 												"h-10 flex w-full items-center justify-center gap-1.5 px-2 py-1 rounded-sm text-base font-medium transition-colors duration-150",
-												"bg-sidebar-accent text-foreground hover:bg-sidebar-accent/80 hover:text-foreground active:!bg-sidebar-accent/60 active:!text-foreground",
+												"bg-primary text-primary-foreground hover:bg-primary/80 hover:text-primary-foreground active:!bg-primary/60 active:!text-primary-foreground",
 												"group-data-[collapsible=icon]:p-1 group-data-[collapsible=icon]:text-[10px] group-data-[collapsible=icon]:justify-center",
 												"aria-label:Sign in to your account",
 											)}

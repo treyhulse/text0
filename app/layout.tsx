@@ -17,12 +17,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "KCSF Note – AI-Powered Note Taking Interface",
+	title: "kcsf Note – AI-Powered Note Taking Interface",
 	description:
-		"KCSF Note is your intelligent note-taking companion. Streamline your workflow with AI-powered assistance, smart organization, and seamless integration. Built for KC Store Fixtures team members to enhance productivity and collaboration.",
+		"kcsf Note is your intelligent note-taking companion. Streamline your workflow with AI-powered assistance, smart organization, and seamless integration. Built for KC Store Fixtures team members to enhance productivity and collaboration.",
 	keywords: [
-		"KCSF Note",
-		"KC Store Fixtures",
+		"kcsf Note",
+		"kcsf",
 		"AI note taking",
 		"Business notes",
 		"Team collaboration",
@@ -37,36 +37,36 @@ export const metadata: Metadata = {
 		"Retail management",
 		"Store fixtures"
 	],
-	applicationName: "KCSF Note",
+	applicationName: "kcsf Note",
 	authors: [
 		{
 			name: "KC Store Fixtures",
 			url: "https://www.kcstore.com",
 		}
 	],
-	creator: "KC Store Fixtures",
-	publisher: "KC Store Fixtures",
+	creator: "kcsf",
+	publisher: "kcsf",
 	metadataBase: new URL("https://notes.kcstore.com"),
 	openGraph: {
 		type: "website",
-		title: "KCSF Note – AI-Powered Note Taking Interface",
+		title: "kcsf Note – AI-Powered Note Taking Interface",
 		description:
-			"Transform your note-taking experience with KCSF Note. Intelligent organization, AI assistance, and seamless team collaboration for KC Store Fixtures.",
+			"Transform your note-taking experience with kcsf Note. Intelligent organization, AI assistance, and seamless team collaboration for kcsf.",
 		url: "https://notes.kcstore.com",
 		images: [
 			{
 				url: "/og.png",
 				width: 1200,
 				height: 630,
-				alt: "KCSF Note – KC Store Fixtures' AI-Powered Note Taking Interface",
+				alt: "kcsf Note – kcsf's AI-Powered Note Taking Interface",
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "KCSF Note – Smart Note Taking for KC Store Fixtures",
+		title: "kcsf Note – Smart Note Taking for kcsf",
 		description:
-			"Experience intelligent note-taking with AI assistance. Built specifically for KC Store Fixtures team members to enhance productivity and collaboration.",
+			"Experience intelligent note-taking with AI assistance. Built specifically for kcsf team members to enhance productivity and collaboration.",
 		creator: "@treyhulse",
 		images: ["/og.png"],
 	},

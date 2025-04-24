@@ -169,7 +169,7 @@ export function TextSelectionMenu({
 							className="group relative cursor-pointer gap-2"
 							disabled={isLoading}
 						>
-							<Volume2 className="h-4 w-4 text-blue-400" />
+							<Volume2 className="h-4 w-4 text-red-400" />
 							<span>Text to speech</span>
 							<MenubarShortcut className="text-foreground">⌘S</MenubarShortcut>
 						</MenubarItem>
@@ -178,7 +178,7 @@ export function TextSelectionMenu({
 
 						<MenubarSub>
 							<MenubarSubTrigger className="gap-2">
-								<Type className="h-4 w-4 text-blue-500" />
+								<Type className="h-4 w-4 text-red-500" />
 								<span>Adjust length</span>
 							</MenubarSubTrigger>
 							<MenubarSubContent>

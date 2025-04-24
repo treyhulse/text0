@@ -28,7 +28,7 @@ export function RecentFilesCard({ files }: RecentFilesCardProps) {
 							key={file.id}
 							className="group relative flex items-start gap-3 bg-background p-4 transition-colors hover:bg-muted/50"
 						>
-							<div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-blue-500/5 text-blue-500">
+							<div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-border/40 bg-red-500/5 text-red-500">
 								<motion.div
 									variants={iconVariants}
 									initial="initial"

@@ -75,21 +75,15 @@ export function AddReference({
 					},
 				});
 
-				toast.success("Uploaded files:", {
+				toast.success("File uploaded", {
 					description: (
-						<pre className="mt-2 w-80 rounded-md bg-accent/30 p-4 text-accent-foreground">
-							<code>
-								{JSON.stringify(
-									res.map((file) =>
-										file.name.length > 25
-											? `${file.name.slice(0, 25)}...`
-											: file.name,
-									),
-									null,
-									2,
-								)}
-							</code>
-						</pre>
+						<div className="mt-2 text-accent-foreground">
+							{res.map((file, index) => (
+								<div key={index} className="truncate">
+									{file.name.length > 40 ? `${file.name.slice(0, 40)}...` : file.name}
+								</div>
+							))}
+						</div>
 					),
 				});
 
