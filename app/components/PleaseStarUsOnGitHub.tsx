@@ -11,7 +11,7 @@ import { T0Logo } from "@/components/ui/icons/t0-logo";
 import { GithubIcon } from "@/components/ui/icons/github";
 import { XIcon } from "@/components/ui/icons/x-icon";
 
-const LOCAL_STORAGE_KEY = "text0-github-star-shown";
+const LOCAL_STORAGE_KEY = "text0-github-modal-shown";
 
 export function PleaseStarUsOnGitHub() {
   const [isHovered, setIsHovered] = useState(false);
