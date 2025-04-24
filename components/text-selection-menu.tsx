@@ -161,7 +161,7 @@ export function TextSelectionMenu({
 						<MenubarItem
 							onClick={() =>
 								window.dispatchEvent(
-									new CustomEvent("text0:text-to-speech", {
+									new CustomEvent("kcsf note:text-to-speech", {
 										detail: { text: selectedText },
 									}),
 								)

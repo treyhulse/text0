@@ -20,7 +20,7 @@ export const maxDuration = 30;
 
 const SYSTEM_PROMPT = (
 	context: string,
-) => `Your name is text0. You are an AI writing assistant. When asked to modify text, you should:
+) => `Your name is kcsf note. You are an AI writing assistant. When asked to modify text, you should:
 1. Analyze the text and understand its context and purpose
 2. Make the requested changes while preserving the original meaning
 3. Return the modified text with the prefix "UPDATED_CONTENT:" followed by the new text

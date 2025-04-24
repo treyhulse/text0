@@ -116,7 +116,7 @@ export function AIChatSidebar({
 			>
 				<SidebarHeader className="flex flex-row items-center justify-between border-b bg-background px-4 group-data-[collapsible=icon]:px-2">
 					<div className="flex items-center gap-2 group-data-[collapsible=icon]:hidden">
-						<h2 className="font-semibold text-sm">text0 Assistant</h2>
+						<h2 className="font-semibold text-sm">kcsf note Assistant</h2>
 						{status === "streaming" && (
 							<Loader2 className="h-4 w-4 animate-spin" />
 						)}

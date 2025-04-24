@@ -5,8 +5,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import { TourProvider } from "@/components/tour";
 import { Analytics } from "@vercel/analytics/react";
-import { AnnouncementBar } from "./components/AnnouncementBar";
-import { PleaseStarUsOnGitHub } from "./components/PleaseStarUsOnGitHub";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -19,69 +17,65 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Text0 – The AI-Native Personal Text Editor",
+	title: "KCSF Note – AI-Powered Note Taking Interface",
 	description:
-		"Text0 is your personal thinking partner. It completes your thoughts, remembers your context, and adapts the interface as you write. Built for developers, powered by AI, and integrated with your tools. This isn't just a text editor — it's your second brain.",
+		"KCSF Note is your intelligent note-taking companion. Streamline your workflow with AI-powered assistance, smart organization, and seamless integration. Built for KC Store Fixtures team members to enhance productivity and collaboration.",
 	keywords: [
-		"Text0",
-		"AI text editor",
-		"Generative UI",
-		"Second brain",
-		"Memory-aware writing",
-		"GPT-4o text editor",
-		"AI-native interface",
-		"Personal AI workspace",
-		"Developer tools",
-		"Obsidian alternative",
-		"Next.js text editor",
-		"Context-aware autocomplete",
-		"Adaptive UI",
-		"Railly Hugo",
-		"Anthony Cueva",
+		"KCSF Note",
+		"KC Store Fixtures",
+		"AI note taking",
+		"Business notes",
+		"Team collaboration",
+		"Smart notes",
+		"AI-powered notes",
+		"Productivity tools",
+		"Business documentation",
+		"Team workspace",
+		"Digital notes",
+		"Smart organization",
+		"Enterprise notes",
+		"Retail management",
+		"Store fixtures"
 	],
-	applicationName: "Text0",
+	applicationName: "KCSF Note",
 	authors: [
 		{
-			name: "Railly Hugo",
-			url: "https://railly.dev",
-		},
-		{
-			name: "Anthony Cueva",
-			url: "https://cueva.io",
-		},
+			name: "KC Store Fixtures",
+			url: "https://www.kcstore.com",
+		}
 	],
-	creator: "Railly Hugo",
-	publisher: "Crafter Station",
-	metadataBase: new URL("https://text0.dev"),
+	creator: "KC Store Fixtures",
+	publisher: "KC Store Fixtures",
+	metadataBase: new URL("https://notes.kcstore.com"),
 	openGraph: {
 		type: "website",
-		title: "Text0 – The AI-Native Personal Text Editor",
+		title: "KCSF Note – AI-Powered Note Taking Interface",
 		description:
-			"A text editor that listens, completes, remembers. AI-native, voice-aware, memory-driven — built to match your flow.",
-		url: "https://text0.dev",
+			"Transform your note-taking experience with KCSF Note. Intelligent organization, AI assistance, and seamless team collaboration for KC Store Fixtures.",
+		url: "https://notes.kcstore.com",
 		images: [
 			{
-				url: "https://text0.dev/og.png",
+				url: "/og.png",
 				width: 1200,
 				height: 630,
-				alt: "Text0 – Built by Railly Hugo and Anthony Cueva",
+				alt: "KCSF Note – KC Store Fixtures' AI-Powered Note Taking Interface",
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Text0 – The AI-Native Text Editor That Thinks With You",
+		title: "KCSF Note – Smart Note Taking for KC Store Fixtures",
 		description:
-			"More than autocomplete. Text0 remembers your context, adapts the interface, and integrates your tools into your flow. Write with AI that feels personal.",
-		creator: "@raillyhugo, @cuevaio",
-		images: ["https://text0.dev/og.png"],
+			"Experience intelligent note-taking with AI assistance. Built specifically for KC Store Fixtures team members to enhance productivity and collaboration.",
+		creator: "@treyhulse",
+		images: ["/og.png"],
 	},
 	themeColor: "#000000",
 	icons: {
 		icon: "/favicon.ico",
 		apple: "/apple-touch-icon.png",
 	},
-	category: "technology",
+	category: "productivity",
 };
 
 export default function RootLayout({
@@ -94,8 +88,6 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
 			>
-				<AnnouncementBar />
-				<PleaseStarUsOnGitHub />
 				<Providers>
 					<TourProvider>{children}</TourProvider>
 					<Toaster />

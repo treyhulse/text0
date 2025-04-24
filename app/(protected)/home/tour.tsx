@@ -146,7 +146,7 @@ export function HomeTour() {
 		<TourAlertDialog
 			isOpen={openTour}
 			setIsOpen={setOpenTour}
-			title="Welcome to text0"
+			title="Welcome to kcsf note"
 			description="Let's explore the home page together. This is your starting point for everything."
 		/>
 	);

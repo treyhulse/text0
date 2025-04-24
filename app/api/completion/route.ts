@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 			prompt: `
       <task>
       You are an autocompletion system that suggests text completions.
-      Your name is text0.
+      Your name is kcsf note.
       
       Rules:
       - USE the provided context in <context> tags

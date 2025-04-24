@@ -30,12 +30,12 @@ export function TextToSpeech({ selectedText }: TextToSpeechProps) {
 		};
 
 		window.addEventListener(
-			"text0:text-to-speech",
+			"kcsf note:text-to-speech",
 			handleTextToSpeechEvent as EventListener,
 		);
 		return () => {
 			window.removeEventListener(
-				"text0:text-to-speech",
+				"kcsf note:text-to-speech",
 				handleTextToSpeechEvent as EventListener,
 			);
 		};

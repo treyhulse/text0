@@ -50,7 +50,7 @@ export default async function LandingPage() {
 								]}
 								animateOnHover={false}
 							>
-								text0
+								kcsf Note
 							</TextScramble>
 							<p className="font-mono text-base text-muted-foreground uppercase">
 								Your AI-native personal text editor
@@ -73,40 +73,10 @@ export default async function LandingPage() {
 				<div className="container mx-auto flex h-8 max-w-2xl items-center justify-between px-4">
 					<div className="flex items-center gap-4 text-muted-foreground text-xs">
 						<a
-							href="https://github.com/crafter-station/text0"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="hover:text-foreground"
+							href="/home"
+							className="hover:text-foreground transition-colors"
 						>
-							<GithubIcon className="h-3.5 w-3.5" />
-						</a>
-						<a
-							href="https://twitter.com/raillyhugo"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="hover:text-foreground"
-						>
-							<XIcon className="h-3.5 w-3.5" />
-						</a>
-					</div>
-					<div className="text-muted-foreground text-xs">
-						Built by{" "}
-						<a
-							href="https://github.com/Railly"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="hover:text-foreground"
-						>
-							Railly
-						</a>{" "}
-						&{" "}
-						<a
-							href="https://cueva.io"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="hover:text-foreground"
-						>
-							Anthony
+							Home
 						</a>
 					</div>
 				</div>

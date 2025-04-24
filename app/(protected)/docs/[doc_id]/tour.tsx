@@ -185,7 +185,7 @@ export function DocTour() {
 			isOpen={openTour}
 			setIsOpen={setOpenTour}
 			title="Welcome to the Document Editor"
-			description="Let's explore the document editor features to help you get the most out of text0."
+			description="Let's explore the document editor features to help you get the most out of kcsf note."
 		/>
 	);
 }

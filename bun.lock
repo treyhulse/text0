@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "text0",
+      "name": "kcsf note",
       "dependencies": {
         "@ai-sdk/anthropic": "^1.2.9",
         "@ai-sdk/elevenlabs": "^0.0.2",

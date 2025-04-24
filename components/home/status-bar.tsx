@@ -16,7 +16,7 @@ export function StatusBar({
 					<span>{referencesCount} references</span>
 					<span>{documentsCount} documents</span>
 				</div>
-				<div className="text-muted-foreground text-xs">{userName} • text0</div>
+				<div className="text-muted-foreground text-xs">{userName} • kcsf note</div>
 			</div>
 		</footer>
 	);

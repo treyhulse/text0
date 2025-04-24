@@ -14,7 +14,7 @@ export function AppHeader() {
 					characterSet={["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]}
 					animateOnHover={false}
 				>
-					text0
+					kcsf note
 				</TextScramble>
 				<p className="text-muted-foreground text-sm">
 					Your documents and memories in one place

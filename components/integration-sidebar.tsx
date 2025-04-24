@@ -130,7 +130,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 				collapsible="icon"
 				className="relative flex flex-col border-border border-r bg-background text-foreground transition-all duration-300 ease-in-out"
 			>
-				{/* Header with Text0 Logo */}
+				{/* Header with kcsf note Logo */}
 				<SidebarHeader className="flex w-full flex-row justify-between group-data-[collapsible=icon]:flex-col">
 					<div className="flex items-center gap-2">
 						<Link
@@ -139,7 +139,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 								"flex items-center gap-2",
 								"group-data-[collapsible=icon]:flex-col",
 							)}
-							aria-label="Text0 Home"
+							aria-label="kcsf note Home"
 						>
 							<div className="flex items-center justify-center rounded-lg bg-foreground p-2 transition-colors duration-150 hover:bg-foreground/80">
 								<T0Logo
@@ -150,7 +150,7 @@ export function MinimalIntegrationSidebar({ documents = [] as Document[] }) {
 								/>
 							</div>
 							<span className="font-semibold text-foreground group-data-[collapsible=icon]:hidden">
-								text0
+							kcsf note
 							</span>
 						</Link>
 					</div>

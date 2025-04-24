@@ -1,6 +1,6 @@
-# Text0
+# kcsf note
 
-A text editor with absurdly smart autocomplete. Text0 serves as a copilot for writing, accessing user-provided references to offer context and help users write faster.
+A text editor with absurdly smart autocomplete. kcsf note serves as a copilot for writing, accessing user-provided references to offer context and help users write faster.
 
 ![Text0 Screenshot](./public/autocomplete.png)
 
@@ -51,7 +51,7 @@ bun dev
 
 ## Usage
 
-Visit [www.text0.dev](https://www.text0.dev) to access the hosted version.
+Visit [www.kcsf-note.vercel.app](https://www.kcsf-note.vercel.app) to access the hosted version.
 
 To use the local development version, navigate to `http://localhost:3000` after starting the development server.
 

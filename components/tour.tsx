@@ -403,7 +403,7 @@ export function useTour() {
 export function TourAlertDialog({
 	isOpen,
 	setIsOpen,
-	title = "Welcome to text0",
+	title = "Welcome to kcsf note",
 	description = "Let's explore the home page together. This is your starting point for everything.",
 }: {
 	isOpen: boolean;

@@ -1,5 +1,10 @@
 import { InvertedT0Logo } from "@/components/ui/icons/t0-logo";
 import { SignIn } from "@clerk/nextjs";
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+	themeColor: "#000000",
+};
 
 export default function Page() {
 	return (
